@@ -1,5 +1,48 @@
 package varpedia;
 
-public class CreationTable {
+import java.io.File;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+
+public class CreationTable extends TableView<Creation>{
 	//List of all creations will have play and delete buttons
+	
+	public CreationTable() {
+		//Number column
+		TableColumn<Creation, Integer> numberColumn = new TableColumn<>("Number");
+        numberColumn.setMinWidth(100);
+        numberColumn.setStyle("-fx-alignment: CENTER-RIGHT");
+        numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
+
+        //Name Column
+        TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setMinWidth(898);
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        
+        this.setPlaceholder(new Label("You currently have no creations"));
+        loadCreations();
+        this.getColumns().addAll(numberColumn, nameColumn);
+
+	}
+	
+    //Loads all current creations and displays in table
+    public void loadCreations(){
+        
+    	File creationsFolder = new File("creations");
+    	File[] creations = creationsFolder.listFiles();
+		ObservableList<Creation> creationFileNames = FXCollections.observableArrayList();
+		for(int i = 0; i < creations.length; i++) {
+			//Remove extension from file name
+			String creationNameWithoutExtension = creations[i].getName().substring(0, creations[i].getName().lastIndexOf('.'));
+			creationFileNames.add(new Creation(creationNameWithoutExtension, i+1));
+		}
+		this.setItems(creationFileNames);
+    	
+    }
+	
 }
