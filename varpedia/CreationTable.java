@@ -36,12 +36,14 @@ public class CreationTable extends TableView<Creation>{
     	File creationsFolder = new File("creations");
     	File[] creations = creationsFolder.listFiles();
 		ObservableList<Creation> creationFileNames = FXCollections.observableArrayList();
-		for(int i = 0; i < creations.length; i++) {
-			//Remove extension from file name
-			String creationNameWithoutExtension = creations[i].getName().substring(0, creations[i].getName().lastIndexOf('.'));
-			creationFileNames.add(new Creation(creationNameWithoutExtension, i+1));
-		}
-		this.setItems(creationFileNames);
+		if(creations != null){
+            for(int i = 0; i < creations.length; i++) {
+                //Remove extension from file name
+                String creationNameWithoutExtension = creations[i].getName().substring(0, creations[i].getName().lastIndexOf('.'));
+                creationFileNames.add(new Creation(creationNameWithoutExtension, i+1));
+            }
+            this.setItems(creationFileNames);
+        }
     	
     }
 	
