@@ -68,7 +68,7 @@ public class CreationsViewerScreen extends VBox{
 			@Override
 			public void handle(ActionEvent arg0) {
 				CreatorMain c = new CreatorMain();
-				//c.beginCreate();
+				c.beginCreate();
 			}
 		});
 		
