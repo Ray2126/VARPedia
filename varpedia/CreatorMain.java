@@ -36,7 +36,7 @@ public class CreatorMain {
         searchScreenUp();
 
         creationWindow.setTitle("Creation Maker");
-        screen = new Scene(screenAndButtons, 700, 500);
+        screen = new Scene(screenAndButtons, 1500, 1000);
         creationWindow.setScene(screen);
         creationWindow.show();
     }

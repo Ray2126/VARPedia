@@ -38,13 +38,17 @@ public class Scripts {
 				break;
 			}
 	        try {
-	            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
-	            pb.inheritIO();
-	            Process process = pb.start();
-	            process.waitFor();
-	            return process;
+	        	if(tempScript != null) {
+					ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
+					pb.inheritIO();
+					Process process = pb.start();
+					process.waitFor();
+					return process;
+				}
 	        } finally {
-	            tempScript.delete();
+	        	if(tempScript != null) {
+					tempScript.delete();
+				}
 	        }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -190,7 +194,8 @@ public class Scripts {
     		return null;
     	}
     }
-    
+
+
     public File createScript(String term, String amount, String name) {
     	try {
 	        File tempScript = File.createTempFile("script", null);

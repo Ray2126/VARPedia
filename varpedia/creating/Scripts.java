@@ -11,6 +11,21 @@ public class Scripts {
         File tempScript = null;
 		try {
 			switch(request) {
+				case "cleanup":
+					tempScript = cleanupScript();
+					break;
+				case "deleteAudio":
+					tempScript = deleteAudioScript(params[0]);
+					break;
+				case "playAudio":
+					tempScript = playAudioScript(params[0]);
+					break;
+				case "selectSave":
+					tempScript = saveSelected(params[0], params[1]);
+					break;
+				case "listAudio":
+					tempScript = audioListFileScript();
+					break;
 				case "selectPlay":
 					tempScript = playSelected(params[0]);
 					break;
@@ -50,6 +65,24 @@ public class Scripts {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public File cleanupScript() {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -f ./audio/*");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 	
     public File searchScript(String searchTerm) {
@@ -99,6 +132,25 @@ public class Scripts {
     		return null;
     	}
     }
+
+	public File audioListFileScript() {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("#!/bin/bash");
+			printWriter.println("ls ./audio/*.txt >audios 2> /dev/null");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
     
     public File deleteScript(String name) {
     	try {
@@ -119,21 +171,63 @@ public class Scripts {
     		return null;
     	}
     }
-    
+
+	public File deleteAudioScript(String name) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("#!/bin/bash");
+			printWriter.println("SELECTED="+name);
+			printWriter.println("rm -f ${SELECTED}.txt");
+            printWriter.println("rm -f ${SELECTED}.wav");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File playAudioScript(String name) {
+		System.out.println("playing: "+name);
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("#!/bin/bash");
+			printWriter.println("SELECTED="+name);
+			printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.wav");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
     public File playScript(String name) {
     	try {
 	        File tempScript = File.createTempFile("script", null);
-	
+
 	        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
 	                tempScript));
 	        PrintWriter printWriter = new PrintWriter(streamWriter);
-	
+
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("SELECTED="+name);
 	        printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.avi");
-	
+
 	        printWriter.close();
-	
+
 	        return tempScript;
     	}catch (Exception e) {
     		return null;
@@ -203,6 +297,28 @@ public class Scripts {
 			printWriter.println("echo $TEXT > selected");
 			printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
 			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File saveSelected(String selected, String name){
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("#!/bin/bash");
+			printWriter.println("NAME="+name);
+			printWriter.println("TEXT='"+selected+"'");
+			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
+			printWriter.println("cat selected | text2wave -o ./audio/${NAME}.wav &>/dev/null");
 
 			printWriter.close();
 

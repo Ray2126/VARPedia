@@ -23,11 +23,18 @@ public class TextViewer {
 	BorderPane settings;
 	BorderPane bottomOptions;
 	String searchTerm;
-	public TextViewer(){
+    VoiceViewer voiceDisp;
+	int saved;
+	Scripts scripts;
+	public TextViewer(VoiceViewer voiceDisp){
+		scripts = new Scripts();
+		scripts.getScript("cleanup", new String[]{});
+		saved = 0;
 	    textArea = new TextArea();
 	    settings = new BorderPane();
 	    bottomOptions = new BorderPane();
 	    shell = new BorderPane();
+	    this.voiceDisp = voiceDisp;
     }
 
     public BorderPane getView(){
@@ -76,7 +83,6 @@ public class TextViewer {
     }
 
     public void setText(){
-		System.out.println("setText called");
 		if(searchTerm != null){
 			try {
 				// Open the file
@@ -88,7 +94,6 @@ public class TextViewer {
 				int index=0;
 				while ((strLine = br.readLine()) != null)   {
 					// Print the content on the console
-					System.out.println("adding line");
 					textArea.appendText(strLine+ "\n");
 				}
 
@@ -107,6 +112,7 @@ public class TextViewer {
 		Button play = new Button("Play Selected");
 		play.setOnAction(e -> playClicked());
 		Button save = new Button("Save Selected");
+		save.setOnAction(e -> saveClicked());
 		playSave.setAlignment(Pos.BASELINE_RIGHT);
 		playSave.getChildren().addAll(play, save);
 		bottomOptions.setRight(playSave);
@@ -119,5 +125,15 @@ public class TextViewer {
 		System.out.println(selected);
 		Scripts scripts = new Scripts();
 		scripts.getScript("selectPlay", new String[]{selected});
+	}
+
+	private void saveClicked(){
+		saved++;
+		String name = Integer.toString(saved);
+		String selected = textArea.getSelectedText();
+		selected.replaceAll("\n"," ");
+		System.out.println(selected);
+		scripts.getScript("selectSave", new String[]{selected, name});
+		voiceDisp.loadAudio();
 	}
 }

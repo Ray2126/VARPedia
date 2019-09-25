@@ -7,11 +7,13 @@ public class ChunkEditorScreen {
     BorderPane screen;
     TextViewer textSection;
     VoiceViewer voiceSection;
+
     public ChunkEditorScreen(){
-        textSection = new TextViewer();
         voiceSection = new VoiceViewer();
+        textSection = new TextViewer(voiceSection);
         screen = new BorderPane();
         screen.setTop(textSection.getView());
+        screen.setBottom(voiceSection.getAudioList());
     }
     public BorderPane getScreen(){
         return screen;
