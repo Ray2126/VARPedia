@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import varpedia.creating.ChunkEditorScreen;
 import varpedia.creating.SearchSelector;
 
 public class CreatorMain {
@@ -19,11 +20,13 @@ public class CreatorMain {
     BorderPane screenAndButtons;
     Scene screen;
     HBox nav;
+    ChunkEditorScreen editor;
     Stage creationWindow;
     SearchSelector search;
 
     public CreatorMain(){
         search = new SearchSelector();
+        editor = new ChunkEditorScreen();
         screenAndButtons = new BorderPane();
         creationWindow = new Stage();
     }
@@ -42,6 +45,10 @@ public class CreatorMain {
         screenAndButtons.setCenter(search.getScene());
     }
 
+    private void createScreenUp(){
+        screenAndButtons.setCenter(editor.getScreen());
+    }
+
     private void addButtons(){
         nav = new HBox();
         nav.setAlignment(Pos.BASELINE_RIGHT);
@@ -49,8 +56,8 @@ public class CreatorMain {
         Button back = new Button("Back");
 
         Button next = new Button("Next");
-        next.setOnAction(e->{
-
+        next.setOnAction(e -> {
+            createScreenUp();
         });
 
         Button cancel = new Button("Cancel");
