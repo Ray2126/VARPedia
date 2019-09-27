@@ -1,5 +1,7 @@
 package varpedia;
 
+import java.io.File;
+
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -13,6 +15,9 @@ public class Main extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		File f = new File("creations");
+		f.mkdir();
+		
 		primaryStage.setTitle("VARpedia");
     
 		BorderPane layout = new BorderPane();
