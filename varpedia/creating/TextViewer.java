@@ -1,16 +1,17 @@
 package varpedia.creating;
 
-import gemmas.main.Line;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import varpedia.CreatorMain;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -38,14 +39,12 @@ public class TextViewer {
     }
 
     public BorderPane getView(){
-		setSearched("banana");
 		return shell;
 	}
 
     private void createShell(){
 		loadOptions();
 		shell.setTop(settings);
-		setText();
 		addPlaySave();
 	}
 
@@ -69,20 +68,74 @@ public class TextViewer {
 		HBox options = new HBox();
 		options.getChildren().addAll(voices, syns);
 		options.setAlignment(Pos.CENTER);
+		options.setPadding(new Insets(10,10,10,10));
+		options.setSpacing(10);
 		settings.setRight(options);
 	}
 
-    public void setSearched(String searched){
+    public void setSearched(String searched, CreatorMain mainScreen){
 	    searchTerm = searched;
         Text searchTermScreen = new Text(searchTerm);
         HBox text = new HBox();
-        text.getChildren().add(searchTermScreen);
+		text.setAlignment(Pos.CENTER);
+		text.setPadding(new Insets(10,10,10,10));
+		text.getChildren().add(searchTermScreen);
         text.setAlignment(Pos.CENTER_LEFT);
         settings.setLeft(text);
+        startTaskSearch(mainScreen);
 		createShell();
     }
 
-    public void setText(){
+	//Task for having wikit search in own thread
+	public void startTaskSearch(CreatorMain mainScreen) {
+		Task<TextArea> task = new Task<TextArea>() {
+			@Override protected TextArea call() throws Exception {
+				Process process = scripts.getScript("search", new String[] {searchTerm});
+				if(process.exitValue() == 1) {
+					return null;
+				}
+				TextArea dummy = new TextArea();
+				try {
+					// Open the file
+					FileInputStream fstream = new FileInputStream(searchTerm+".text");
+					BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+					String strLine;
+					//Read File Line By Line
+					int index=0;
+					while ((strLine = br.readLine()) != null)   {
+						// Print the content on the console
+						dummy.appendText(strLine+ "\n");
+					}
+
+					//Close the input stream
+					fstream.close();
+
+				}catch(Exception e) {
+
+				}
+				return dummy;
+			}
+		};
+		task.setOnSucceeded(e -> {
+			TextArea dummy = task.getValue();
+			if(dummy == null) {
+				mainScreen.invalidSearch();
+			}else {
+				textArea=dummy;
+				shell.setCenter(textArea);
+				mainScreen.createScreenUp();
+			}
+		});
+		// Run the task in a background thread
+		Thread backgroundThread = new Thread(task);
+		// Terminate the running thread if the application exits
+		backgroundThread.setDaemon(true);
+		// Start the thread
+		backgroundThread.start();
+	}
+
+	public void setText(){
 		if(searchTerm != null){
 			try {
 				// Open the file
@@ -116,6 +169,8 @@ public class TextViewer {
 		playSave.setAlignment(Pos.BASELINE_RIGHT);
 		playSave.getChildren().addAll(play, save);
 		bottomOptions.setRight(playSave);
+		playSave.setPadding(new Insets(10,10,10,10));
+		playSave.setSpacing(10);
 		shell.setBottom(bottomOptions);
 	}
 

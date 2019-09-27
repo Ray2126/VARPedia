@@ -1,5 +1,6 @@
 package varpedia;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,6 +18,7 @@ public class CreatorMain {
     String searchedTerm;
     String creationName;
     int imageAmount;
+    String currentScreen;
     BorderPane screenAndButtons;
     Scene screen;
     HBox nav;
@@ -29,6 +31,7 @@ public class CreatorMain {
         editor = new ChunkEditorScreen();
         screenAndButtons = new BorderPane();
         creationWindow = new Stage();
+        currentScreen = "search";
     }
 
     public void beginCreate() {
@@ -45,7 +48,21 @@ public class CreatorMain {
         screenAndButtons.setCenter(search.getScene());
     }
 
-    private void createScreenUp(){
+    private void loadCreateScreen(){
+        searchedTerm = search.getInput();
+        if(searchedTerm.isEmpty() || searchedTerm.isBlank()){
+            invalidSearch();
+            return;
+        }
+        System.out.println("searched: "+searchedTerm.length());
+        editor.getTextSection().setSearched(searchedTerm, this);
+    }
+
+    public void invalidSearch(){
+        screenAndButtons.setCenter(search.invalidSearch());
+    }
+
+    public void createScreenUp(){
         screenAndButtons.setCenter(editor.getScreen());
     }
 
@@ -57,13 +74,16 @@ public class CreatorMain {
 
         Button next = new Button("Next");
         next.setOnAction(e -> {
-            createScreenUp();
+            loadCreateScreen();
         });
 
         Button cancel = new Button("Cancel");
 
-
+        nav.setPadding(new Insets(10,10,10,10));
+        nav.setSpacing(10);
         nav.getChildren().addAll(back, next, cancel);
         screenAndButtons.setBottom(nav);
     }
+
+
 }

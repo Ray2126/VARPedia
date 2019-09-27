@@ -25,11 +25,24 @@ public class SearchSelector {
         content.getChildren().addAll(prompt, searchInput);
         content.setAlignment(Pos.CENTER);
     }
+
+    public VBox invalidSearch(){
+        VBox errorContent = new VBox();
+        errorContent.setSpacing(10);
+        Text prompt = new Text("What would you like to search?");
+        Text errorPrompt = new Text("Cannot search on this term please try again");
+        errorPrompt.setStyle("-fx-text-fill: #ff0000;");
+        errorContent.getChildren().addAll(prompt, errorPrompt, searchInput);
+        errorContent.setAlignment(Pos.CENTER);
+        return errorContent;
+    }
+
     public VBox getScene() {
         return content;
     }
 
-    public String getInput(){
+    public String getInput()
+    {
         return searchInput.getText();
     }
 }

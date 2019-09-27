@@ -18,4 +18,8 @@ public class ChunkEditorScreen {
     public BorderPane getScreen(){
         return screen;
     }
+
+    public TextViewer getTextSection() {
+        return textSection;
+    }
 }

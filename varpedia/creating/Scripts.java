@@ -75,6 +75,7 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -f *.text");
 			printWriter.println("rm -f ./audio/*");
 
 			printWriter.close();
