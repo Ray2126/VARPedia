@@ -84,7 +84,7 @@ public class ImageSelector extends BorderPane{
 	}
 	
 	//Get the images that have been selected by the user(images in the table)
-	public List<BufferedImage> getSelectedImages() {
+	public void saveSelectedImages() {
 		List<BufferedImage> outputList = new ArrayList<BufferedImage>();
 		for(int i = 0; i < _observableListOfSelectedImages.size(); i++) {
 			for(int j = 0; j < _listOfImages.size(); j++) {
@@ -94,7 +94,18 @@ public class ImageSelector extends BorderPane{
 			}
 		}
 		
-		return outputList;
+		File newFolder = new File("selectedImages");
+		newFolder.mkdir();
+		
+		File file;
+		for(int i = 0 ; i < outputList.size(); i++) {
+			file = new File("selectedImages/" + i + ".jpg");
+			try {
+				ImageIO.write(outputList.get(i), "jpg", file);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	//Inner class for each image display box (10 of these)
