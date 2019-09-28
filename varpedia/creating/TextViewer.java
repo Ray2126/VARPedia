@@ -198,8 +198,9 @@ public class TextViewer {
         if(words.length > 30){
             return;
         }
-		selected.replaceAll("\n"," ");
-		Scripts scripts = new Scripts();
+		selected = selected.replaceAll("\n"," ");
+		selected = selected.replaceAll("'","");
+		selected = selected.replaceAll("\"","");
 		scripts.getScript("selectPlay", new String[]{selected});
 	}
 
@@ -215,7 +216,9 @@ public class TextViewer {
         }
 		saved++;
 		String name = Integer.toString(saved);
-		selected.replaceAll("\n"," ");
+		selected = selected.replaceAll("\n"," ");
+		selected = selected.replaceAll("'","");
+		selected = selected.replaceAll("\"","");
 		scripts.getScript("selectSave", new String[]{selected, name});
 		voiceDisp.loadAudio();
 	}

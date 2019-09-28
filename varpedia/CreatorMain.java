@@ -7,16 +7,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import varpedia.creating.ChunkEditorScreen;
-import varpedia.creating.FinalPreview;
-import varpedia.creating.GetImageTask;
-import varpedia.creating.SearchSelector;
+import varpedia.creating.*;
 
 public class CreatorMain {
     // manages the screens for creating a new creation
 	// Begins when create button clicked
 	// beginCreate()      pop up this dialog
 	// hi
+    CreationTable tableParent;
     String searchedTerm;
     String creationName;
     int imageAmount;
@@ -26,18 +24,21 @@ public class CreatorMain {
     Scene screen;
     HBox nav;
     ChunkEditorScreen editor;
+    ImageSelector images;
     FinalPreview preview;
     Stage creationWindow;
     SearchSelector search;
     Button back;
 
-    public CreatorMain(){
+    public CreatorMain(CreationTable parent){
+        this.tableParent = parent;
         search = new SearchSelector();
         editor = new ChunkEditorScreen();
         screenAndButtons = new BorderPane();
         creationWindow = new Stage();
         currentScreen = "search";
         preview = new FinalPreview();
+        images = new ImageSelector();
     }
 
     public void beginCreate() {
@@ -68,6 +69,7 @@ public class CreatorMain {
         screenAndButtons.setCenter(search.invalidSearch());
     }
 
+
     public void createScreenUp(){
         back.setDisable(false);
         screenAndButtons.setCenter(editor.getScreen());
@@ -89,6 +91,10 @@ public class CreatorMain {
     public int getImageAmount() {
         //imageSelector get image amount
         return imageAmount;
+    }
+
+    public void imageScreenUp(){
+
     }
 
     public FinalPreview getPreview() {
@@ -122,8 +128,10 @@ public class CreatorMain {
         screenAndButtons.setBottom(nav);
     }
 
-    private void close(){
-
+    public void close(){
+        //cleanup files
+        creationWindow.close();
+        tableParent.loadCreations();
     }
 
     private void backButtonClicked(){
@@ -147,8 +155,8 @@ public class CreatorMain {
             //Right now make audio combined
             loadPreviewScreen();
         }else if(currentScreen == "preview"){
+            preview.createNew(this);
             //clean up files
-            close();
         }
     }
 

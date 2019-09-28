@@ -78,6 +78,10 @@ public class ImageSelector extends BorderPane{
 		this.setCenter(rowsPane);
 		this.setBottom(_listOfSelectedImages);
 	}
+
+	public int getAmountSelected(){
+		return(getSelectedImages().size());
+	}
 	
 	//Get the images that have been selected by the user(images in the table)
 	public List<BufferedImage> getSelectedImages() {

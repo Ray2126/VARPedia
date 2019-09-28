@@ -11,6 +11,9 @@ public class Scripts {
         File tempScript = null;
 		try {
 			switch(request) {
+				case "name":
+					tempScript = renamePreview(params[0]);
+					break;
 				case "preview":
 					tempScript = createPreviewScript(params[0]);
 					break;
@@ -44,9 +47,6 @@ public class Scripts {
 				case "listCreations":
 					tempScript = createListFileScript();
 					break;
-				case "play":
-					tempScript = playScript(params[0]);
-					break;
 				case "delete":
 					tempScript = deleteScript(params[0]);
 					break;
@@ -79,6 +79,24 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
 			printWriter.println("sox ./audio/*.wav output.wav");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File renamePreview(String name) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+".mp4");
 
 			printWriter.close();
 
@@ -236,25 +254,6 @@ public class Scripts {
 		}
 	}
 
-    public File playScript(String name) {
-    	try {
-	        File tempScript = File.createTempFile("script", null);
-
-	        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-	                tempScript));
-	        PrintWriter printWriter = new PrintWriter(streamWriter);
-
-	        printWriter.println("#!/bin/bash");
-	        printWriter.println("SELECTED="+name);
-	        printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.avi");
-
-	        printWriter.close();
-
-	        return tempScript;
-    	}catch (Exception e) {
-    		return null;
-    	}
-    }
     
     public File nameValidScript(String name) {
     	try {
@@ -266,7 +265,7 @@ public class Scripts {
 	
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("NAME="+name);
-	        printWriter.println("if [[ -f \"$NAME.avi\" ]]; then");
+	        printWriter.println("if [[ -f \"./creations/$NAME.mp4\" ]]; then");
 	        printWriter.println("exit 1");
 	        printWriter.println("fi");
 	        printWriter.println("exit 0");
@@ -288,7 +287,7 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
 			printWriter.println("#!/bin/bash");
-			printWriter.println("TEXT=\""+selected+"\"");
+			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > selected");
 			printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
 			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
@@ -311,7 +310,7 @@ public class Scripts {
 
 			printWriter.println("#!/bin/bash");
 			printWriter.println("NAME="+name);
-			printWriter.println("TEXT=\""+selected+"\"");
+			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
 			printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
 
@@ -333,7 +332,7 @@ public class Scripts {
 
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("cat ./images/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./Creations/preview.mp4 &> /dev/null" );
+			printWriter.println("cat ./images/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
 
 			printWriter.close();
 

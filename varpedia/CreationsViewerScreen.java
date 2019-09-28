@@ -64,12 +64,9 @@ public class CreationsViewerScreen extends VBox{
 			
 		});
 		
-		_createButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				CreatorMain c = new CreatorMain();
+		_createButton.setOnAction(e -> {
+				CreatorMain c = new CreatorMain(_creationTable);
 				c.beginCreate();
-			}
 		});
 		
 		HBox buttonsPane = new HBox();

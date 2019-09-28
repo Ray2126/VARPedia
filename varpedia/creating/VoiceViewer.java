@@ -141,8 +141,6 @@ public class VoiceViewer {
             Optional<ButtonType> result = del.showAndWait();
             if (result.get() == ButtonType.YES){
                 scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
-                Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully deleted " + audioSelected.get(0).toString(), ButtonType.OK);
-                success.showAndWait();
                 loadAudio();
             }else {
                 return;

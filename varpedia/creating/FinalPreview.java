@@ -4,10 +4,13 @@ import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import varpedia.Creation;
 import varpedia.CreatorMain;
 import varpedia.VideoPlayer;
@@ -25,8 +28,10 @@ public class FinalPreview {
     TextField nameInput;
     VBox name;
     VBox screen;
+    Scripts scripts;
 
     public FinalPreview(){
+        scripts = new Scripts();
         HBox videoBox = new HBox();
         videoBox.setPadding(new Insets(40,40,40,40));
         videoBox.setMaxSize(500,1000);
@@ -72,10 +77,8 @@ public class FinalPreview {
             int result = task.getValue();
             if(result != 0) {
                 //error
-                System.out.println("error on screen amke");
             }else {
                 //Should be images but not done yet
-                System.out.println("preview made");
                 mainScreen.previewScreenUp();
             }
         });
@@ -97,5 +100,109 @@ public class FinalPreview {
 
     public void playVideo(Creation preview) {
         videoPlayer.playVideo(preview);
+    }
+
+    // Deleting creation when have naming conflict
+    private void deleteButtonClicked(String name){
+        scripts.getScript("name", new String[]{name});
+    }
+    public void checkName() {
+    }
+    //Popup window for user to choose whether to delete or rename an existing file
+    private void deleteOrRename(String name, CreatorMain mainScreen) {
+        Stage window = new Stage();
+
+        //Block events to other windows
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle("Name Taken");
+        window.setMinWidth(250);
+
+        Label label = new Label();
+        label.setText("Creation name "+ name+ " is already taken");
+        Button reButton = new Button("Rename");
+        Button overButton = new Button("Override");
+
+        overButton.setOnAction(e -> {
+            deleteButtonClicked(name);
+            window.close();
+            mainScreen.close();
+        });
+
+        reButton.setOnAction(e -> {
+            window.close();
+        });
+        VBox layout = new VBox(10);
+        HBox buttons = new HBox(10);
+        buttons.setPadding(new Insets(10,10,10,10));
+        layout.setPadding(new Insets(10,10,10,10));
+        buttons.getChildren().addAll(reButton, overButton);
+        layout.getChildren().addAll(label, buttons);
+        buttons.setAlignment(Pos.CENTER);
+        layout.setAlignment(Pos.CENTER);
+
+        //Display window and wait for it to be closed before returning
+        Scene scene = new Scene(layout);
+        window.setScene(scene);
+        window.showAndWait();
+    }
+    public void createNew(CreatorMain mainScreen){
+
+        boolean valid = true;
+
+        char[] a = nameInput.getText().toCharArray();
+
+        for (char c: a)
+        {
+            valid = ((c >= 'a') && (c <= 'z')) ||
+                    ((c >= 'A') && (c <= 'Z')) ||
+                    ((c >= '0') && (c <= '9')) ||
+                    (c == '_') ||
+                    (c == '-');
+
+            if (!valid)
+            {
+                Alert alert = new Alert(Alert.AlertType.WARNING, "Invalid characters in creation name. Please try again . . .", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+        }
+            startTaskCreate( mainScreen);
+    }
+    //Task to have creating a video in a new thread
+    public void startTaskCreate(CreatorMain mainScreen)
+    {
+        String name = nameInput.getText();
+        Task<Integer> task = new Task<Integer>() {
+            @Override protected Integer call() throws Exception {
+                Process nameProcess = scripts.getScript("nameValid", new String[] {name});
+                if(nameProcess.exitValue() == 1) {
+                    return 1;
+                }
+                //rename preview to creation na,e
+                return 0;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            switch(task.getValue()) {
+                case 0:
+                    scripts.getScript("name", new String[] {name});
+//                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
+//                    success.showAndWait();
+                    mainScreen.close();
+                    nameInput.setText("");
+                    //close
+                    break;
+                case 1:
+                    deleteOrRename(name, mainScreen);
+                    break;
+            }
+
+        });
+        // Run the task in a background thread
+        Thread backgroundThread = new Thread(task);
+        // Terminate the running thread if the application exits
+        backgroundThread.setDaemon(true);
+        // Start the thread
+        backgroundThread.start();
     }
 }
