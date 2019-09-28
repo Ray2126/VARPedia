@@ -55,7 +55,7 @@ public class CreatorMain {
 
     private void loadCreateScreen(){
         searchedTerm = search.getInput();
-        if(searchedTerm.isEmpty() || searchedTerm.isBlank()){
+        if(searchedTerm.isEmpty()){
             invalidSearch();
             return;
         }

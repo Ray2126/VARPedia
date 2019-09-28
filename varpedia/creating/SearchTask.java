@@ -1,6 +1,7 @@
 package varpedia.creating;
 
-public class SearchTask {
+
+public class SearchTask{
 	//GUI Concurrency of searching wikit
 
 }
