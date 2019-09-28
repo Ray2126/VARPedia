@@ -31,7 +31,7 @@ public class ChunkEditorScreen {
         Scripts scripts = new Scripts();
         Task<Integer> task = new Task<Integer>() {
             @Override protected Integer call() throws Exception {
-                Process process = scripts.getScript("search", new String[]{});
+                Process process = scripts.getScript("mergeAudio", new String[]{});
                 return process.exitValue();
             }
         };
@@ -41,7 +41,7 @@ public class ChunkEditorScreen {
                //error
             }else {
                 //Should be images but not done yet
-                mainScreen.createScreenUp();
+                mainScreen.getPreview().audioAndImageCombine(mainScreen, mainScreen.getImageAmount());
             }
         });
         // Run the task in a background thread

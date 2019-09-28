@@ -8,6 +8,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import varpedia.creating.ChunkEditorScreen;
+import varpedia.creating.FinalPreview;
+import varpedia.creating.GetImageTask;
 import varpedia.creating.SearchSelector;
 
 public class CreatorMain {
@@ -18,11 +20,13 @@ public class CreatorMain {
     String searchedTerm;
     String creationName;
     int imageAmount;
+    Button next;
     String currentScreen;
     BorderPane screenAndButtons;
     Scene screen;
     HBox nav;
     ChunkEditorScreen editor;
+    FinalPreview preview;
     Stage creationWindow;
     SearchSelector search;
 
@@ -32,6 +36,7 @@ public class CreatorMain {
         screenAndButtons = new BorderPane();
         creationWindow = new Stage();
         currentScreen = "search";
+        preview = new FinalPreview();
     }
 
     public void beginCreate() {
@@ -54,7 +59,6 @@ public class CreatorMain {
             invalidSearch();
             return;
         }
-        System.out.println("searched: "+searchedTerm.length());
         editor.getTextSection().setSearched(searchedTerm, this);
     }
 
@@ -65,6 +69,31 @@ public class CreatorMain {
     public void createScreenUp(){
         screenAndButtons.setCenter(editor.getScreen());
         currentScreen="chunk";
+        GetImageTask task = new GetImageTask(searchedTerm);
+        task.run();
+
+    }
+
+    private void loadPreviewScreen(){
+        //create audio file
+        editor.combineTheAudio(this);
+        //get audio length
+        //create image file
+
+    }
+
+    public int getImageAmount() {
+        //imageSelector get image amount
+        return imageAmount;
+    }
+
+    public FinalPreview getPreview() {
+        return preview;
+    }
+
+    public void previewScreenUp(){
+        preview.playVideo(new Creation("preview", 0));
+        screenAndButtons.setCenter(preview.getScreen());
     }
 
     private void addButtons(){
@@ -73,7 +102,7 @@ public class CreatorMain {
 
         Button back = new Button("Back");
 
-        Button next = new Button("Next");
+        next = new Button("Next");
         next.setOnAction(e -> {
             nextButtonClicked();
         });
@@ -93,6 +122,7 @@ public class CreatorMain {
         }else if(currentScreen == "chunk"){
             //Should be image select
             //Right now make audio combined
+            loadPreviewScreen();
         }
     }
 

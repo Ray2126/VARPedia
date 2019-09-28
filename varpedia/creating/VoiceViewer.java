@@ -127,6 +127,7 @@ public class VoiceViewer {
         ObservableList<Audio> audioSelected;
         audioSelected = audioTable.getSelectionModel().getSelectedItems();
         if(audioSelected.size() != 0) {
+            System.out.println(audioSelected.get(0).getNumber());
             scripts.getScript("playAudio", new String[]{audioSelected.get(0).getNumber()});
         }
     }

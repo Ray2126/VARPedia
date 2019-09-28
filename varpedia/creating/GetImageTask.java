@@ -72,12 +72,13 @@ private String _wordToSearch;
 	        params.setText(query);
 	        
 	        PhotoList<Photo> results = photos.search(params, resultsPerPage, page);
-	        
+
+	        int i = 0;
 	        for (Photo photo: results) {
 	        	try {
 	        		BufferedImage image = photos.getImage(photo,Size.LARGE);
 	        		
-		        	String fileName = query.trim().replace(' ', '-')+"-"+System.currentTimeMillis()+"-"+photo.getId()+".jpg";
+		        	String fileName = (++i)+".jpg";
 		        	
 		        	File outputFile = new File("images",fileName);
 		        	outputFile.createNewFile();

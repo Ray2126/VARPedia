@@ -78,7 +78,8 @@ public class VideoPlayer extends VBox{
 	}
 	
 	public void playVideo(Creation creation) {
-		File creationToPlay = new File("creations/"+creation.getName()+".mp4");
+		System.out.println(creation.getName());
+		File creationToPlay = new File("Creations/"+creation.getName()+".mp4");
 		
 		Media video = new Media(creationToPlay.toURI().toString());
 		

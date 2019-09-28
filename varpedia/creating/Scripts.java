@@ -11,6 +11,9 @@ public class Scripts {
         File tempScript = null;
 		try {
 			switch(request) {
+				case "preview":
+					tempScript = createPreviewScript(params[0]);
+					break;
 				case "cleanup":
 					tempScript = cleanupScript();
 					break;
@@ -49,9 +52,6 @@ public class Scripts {
 					break;
 				case "nameValid":
 					tempScript = nameValidScript(params[0]);
-					break;
-				case "lineValid":
-					tempScript = lineValidScript(params[0], params[1]);
 					break;
 			}
 	        try {
@@ -278,33 +278,6 @@ public class Scripts {
     		return null;
     	}
     }
-    
-    public File lineValidScript(String term ,String lines) {
-    	try {
-	        File tempScript = File.createTempFile("script", null);
-	
-	        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-	                tempScript));
-	        PrintWriter printWriter = new PrintWriter(streamWriter);
-	
-	        printWriter.println("#!/bin/bash");
-	        printWriter.println("TERM="+term);
-	        printWriter.println("filename=${TERM}.text");
-	        printWriter.println("lineCount=$(wc -l $filename)");
-	        printWriter.println("lineCount=`echo $lineCount | grep -P -o \"[[:digit:]]+\" | head -1`");
-	        printWriter.println("AMOUNT="+lines);
-	        printWriter.println("if [[ ! \"$AMOUNT\" =~ ^[0-9]+$ ]] || [[ $AMOUNT -gt $lineCount ]] || [[ $AMOUNT -lt 1 ]]; then\n");
-	        printWriter.println("exit 1");
-	        printWriter.println("fi");
-	        printWriter.println("exit 0");
-	        
-	        printWriter.close();
-	
-	        return tempScript;
-    	}catch (Exception e) {
-    		return null;
-    	}
-    }
 
     public File playSelected(String selected){
 		try {
@@ -340,7 +313,27 @@ public class Scripts {
 			printWriter.println("NAME="+name);
 			printWriter.println("TEXT=\""+selected+"\"");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
-			printWriter.println("cat selected | text2wave -o ./audio/${NAME}.wav &>/dev/null");
+			printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File createPreviewScript(String framerate) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("length=$(soxi -D output.wav)");
+			printWriter.println("framerate="+framerate);
+			printWriter.println("cat ./images/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./Creations/preview.mp4 &> /dev/null" );
 
 			printWriter.close();
 
