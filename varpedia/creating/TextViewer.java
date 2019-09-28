@@ -10,6 +10,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import varpedia.CreatorMain;
 
@@ -27,12 +28,15 @@ public class TextViewer {
     VoiceViewer voiceDisp;
 	int saved;
 	Scripts scripts;
+	VBox settingsBox;
+
 	public TextViewer(VoiceViewer voiceDisp){
 		scripts = new Scripts();
 		scripts.getScript("cleanup", new String[]{});
 		saved = 0;
 	    textArea = new TextArea();
 	    settings = new BorderPane();
+		settingsBox = new VBox();
 	    bottomOptions = new BorderPane();
 	    shell = new BorderPane();
 	    this.voiceDisp = voiceDisp;
@@ -44,6 +48,7 @@ public class TextViewer {
 
     private void createShell(){
 		loadOptions();
+		BorderPane.setAlignment(settings, Pos.TOP_CENTER);
 		shell.setTop(settings);
 		addPlaySave();
 	}
@@ -71,6 +76,11 @@ public class TextViewer {
 		options.setPadding(new Insets(10,10,10,10));
 		options.setSpacing(10);
 		settings.setRight(options);
+		settings.setMaxWidth(1400);
+//		settingsBox = new VBox();
+//		settingsBox.getChildren().addAll(settings);
+//		settingsBox.setAlignment(Pos.CENTER);
+//		settingsBox.setMaxWidth(1400);
 	}
 
     public void setSearched(String searched, CreatorMain mainScreen){
@@ -105,7 +115,7 @@ public class TextViewer {
 					int index=0;
 					while ((strLine = br.readLine()) != null)   {
 						// Print the content on the console
-						dummy.appendText(strLine+ "\n");
+						dummy.appendText(strLine.trim()+ "\n");
 					}
 
 					//Close the input stream
@@ -123,6 +133,8 @@ public class TextViewer {
 				mainScreen.invalidSearch();
 			}else {
 				textArea=dummy;
+				textArea.setMinHeight(600);
+				textArea.setMaxWidth(1400);
 				shell.setCenter(textArea);
 				mainScreen.createScreenUp();
 			}
@@ -166,28 +178,44 @@ public class TextViewer {
 		play.setOnAction(e -> playClicked());
 		Button save = new Button("Save Selected");
 		save.setOnAction(e -> saveClicked());
-		playSave.setAlignment(Pos.BASELINE_RIGHT);
+		playSave.setAlignment(Pos.BOTTOM_RIGHT);
 		playSave.getChildren().addAll(play, save);
-		bottomOptions.setRight(playSave);
+		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
-		shell.setBottom(bottomOptions);
+		playSave.setMaxWidth(1400);
+		shell.setMaxWidth(1400);
+		shell.setBottom(playSave);
 	}
 
 	private void playClicked(){
-		String selected = textArea.getSelectedText();
+        String selected = textArea.getSelectedText();
+        if (selected == null || selected.isEmpty()) {
+            return;
+        }
+
+        String[] words = selected.split("\\s+");
+        if(words.length > 30){
+            return;
+        }
 		selected.replaceAll("\n"," ");
-		System.out.println(selected);
 		Scripts scripts = new Scripts();
 		scripts.getScript("selectPlay", new String[]{selected});
 	}
 
 	private void saveClicked(){
+	    String selected = textArea.getSelectedText();
+        if (selected == null || selected.isEmpty()) {
+            return;
+        }
+
+        String[] words = selected.split("\\s+");
+        if(words.length > 30){
+            return;
+        }
 		saved++;
 		String name = Integer.toString(saved);
-		String selected = textArea.getSelectedText();
 		selected.replaceAll("\n"," ");
-		System.out.println(selected);
 		scripts.getScript("selectSave", new String[]{selected, name});
 		voiceDisp.loadAudio();
 	}

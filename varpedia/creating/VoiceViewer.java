@@ -3,6 +3,7 @@ package varpedia.creating;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -27,6 +28,7 @@ public class VoiceViewer {
             setUp();
             vBox = new VBox();
             audioTable.setMaxHeight(200);
+            vBox.setAlignment(Pos.CENTER);
             vBox.getChildren().addAll(audioTable, hBox);
         }
         return vBox;
@@ -37,13 +39,14 @@ public class VoiceViewer {
         scripts = new Scripts();
         //Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(620);
+        nameColumn.setMinWidth(1400);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         audioTable = new TableView<Audio>();
         audioTable.setPlaceholder(new Label("You currently have no creations"));
         loadAudio();
         audioTable.getColumns().addAll(nameColumn);
+        audioTable.setMaxWidth(1400);
 
         Button playButton = new Button("play");
         playButton.setOnAction(e -> startTask());

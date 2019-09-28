@@ -64,6 +64,7 @@ public class CreatorMain {
 
     public void createScreenUp(){
         screenAndButtons.setCenter(editor.getScreen());
+        currentScreen="chunk";
     }
 
     private void addButtons(){
@@ -74,7 +75,7 @@ public class CreatorMain {
 
         Button next = new Button("Next");
         next.setOnAction(e -> {
-            loadCreateScreen();
+            nextButtonClicked();
         });
 
         Button cancel = new Button("Cancel");
@@ -85,5 +86,14 @@ public class CreatorMain {
         screenAndButtons.setBottom(nav);
     }
 
+    private void nextButtonClicked(){
+        if(currentScreen == "search"){
+            loadCreateScreen();
+            return;
+        }else if(currentScreen == "chunk"){
+            //Should be image select
+            //Right now make audio combined
+        }
+    }
 
 }

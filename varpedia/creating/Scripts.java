@@ -14,6 +14,9 @@ public class Scripts {
 				case "cleanup":
 					tempScript = cleanupScript();
 					break;
+				case "mergeAudio":
+					tempScript = mergeAudioScript();
+					break;
 				case "deleteAudio":
 					tempScript = deleteAudioScript(params[0]);
 					break;
@@ -65,6 +68,24 @@ public class Scripts {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public File mergeAudioScript() {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			printWriter.println("sox ./audio/*.wav output.wav");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	public File cleanupScript() {
@@ -294,7 +315,7 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
 			printWriter.println("#!/bin/bash");
-			printWriter.println("TEXT='"+selected+"'");
+			printWriter.println("TEXT=\""+selected+"\"");
 			printWriter.println("echo $TEXT > selected");
 			printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
 			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
@@ -317,7 +338,7 @@ public class Scripts {
 
 			printWriter.println("#!/bin/bash");
 			printWriter.println("NAME="+name);
-			printWriter.println("TEXT='"+selected+"'");
+			printWriter.println("TEXT=\""+selected+"\"");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
 			printWriter.println("cat selected | text2wave -o ./audio/${NAME}.wav &>/dev/null");
 
