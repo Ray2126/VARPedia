@@ -14,14 +14,14 @@ public class CreationTable extends TableView<Creation>{
 	
 	public CreationTable() {
 		//Number column
-		TableColumn<Creation, Integer> numberColumn = new TableColumn<>("Number");
-        numberColumn.setMinWidth(100);
-        numberColumn.setStyle("-fx-alignment: CENTER-RIGHT");
+		TableColumn<Creation, Integer> numberColumn = new TableColumn<>("#");
+        numberColumn.setMinWidth(50);
+        numberColumn.setStyle("-fx-alignment: CENTER");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
 
         //Name Column
         TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(898);
+        nameColumn.setMinWidth(927);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         this.setPlaceholder(new Label("You currently have no creations"));

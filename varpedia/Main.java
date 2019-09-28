@@ -24,7 +24,7 @@ public class Main extends Application{
     
 		CreationsViewerScreen a = new CreationsViewerScreen();
 		
-		Scene scene = new Scene(layout, 1000, 900);
+		Scene scene = new Scene(layout, 1100, 1000);
 		
 		layout.setCenter(a);
 		

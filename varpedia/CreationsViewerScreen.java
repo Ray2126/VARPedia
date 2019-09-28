@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -26,7 +28,16 @@ public class CreationsViewerScreen extends VBox{
 		super(10);
 		
 		_videoPlayer = new VideoPlayer();
+		HBox videoBox = new HBox();
+		videoBox.setPadding(new Insets(10,10,10,10));
+		videoBox.setAlignment(Pos.CENTER);
+		videoBox.getChildren().addAll(_videoPlayer);
 		_creationTable = new CreationTable();
+		_creationTable.setMaxWidth(980);
+		VBox tableBox = new VBox();
+		tableBox.getChildren().addAll(_creationTable);
+		tableBox.setAlignment(Pos.CENTER);
+		tableBox.setPadding(new Insets(10,10,10,10));
 		
 		_playButton = new Button("Play");
 		_deleteButton = new Button("Delete");
@@ -69,7 +80,10 @@ public class CreationsViewerScreen extends VBox{
 				c.beginCreate();
 		});
 		
-		HBox buttonsPane = new HBox();
+		HBox buttonsPane = new HBox(10);
+		buttonsPane.setPadding(new Insets(10,10,10,10));
+		buttonsPane.setMaxWidth(980);
+		this.setAlignment(Pos.CENTER);
 		
 		//Anchor create button to right side of HBox
 		Region region = new Region();
@@ -77,8 +91,8 @@ public class CreationsViewerScreen extends VBox{
 		buttonsPane.getChildren().addAll(_playButton, _deleteButton, region, _createButton);
 		
 		this.setHeight(900);
-		this.setWidth(1000);
+		this.setWidth(1200);
 		
-		this.getChildren().addAll(_videoPlayer,_creationTable, buttonsPane);
+		this.getChildren().addAll(videoBox,tableBox, buttonsPane);
 	}
 }
