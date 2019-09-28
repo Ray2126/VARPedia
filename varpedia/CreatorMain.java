@@ -29,6 +29,7 @@ public class CreatorMain {
     FinalPreview preview;
     Stage creationWindow;
     SearchSelector search;
+    Button back;
 
     public CreatorMain(){
         search = new SearchSelector();
@@ -51,6 +52,7 @@ public class CreatorMain {
 
     private void searchScreenUp(){
         screenAndButtons.setCenter(search.getScene());
+        back.setDisable(true);
     }
 
     private void loadCreateScreen(){
@@ -67,10 +69,12 @@ public class CreatorMain {
     }
 
     public void createScreenUp(){
+        back.setDisable(false);
         screenAndButtons.setCenter(editor.getScreen());
-        currentScreen="chunk";
+        currentScreen="create";
         GetImageTask task = new GetImageTask(searchedTerm);
         task.run();
+        next.setText("Next");
 
     }
 
@@ -94,13 +98,16 @@ public class CreatorMain {
     public void previewScreenUp(){
         preview.playVideo(new Creation("preview", 0));
         screenAndButtons.setCenter(preview.getScreen());
+        next.setText("Finish");
+        currentScreen="preview";
     }
 
     private void addButtons(){
         nav = new HBox();
         nav.setAlignment(Pos.BASELINE_RIGHT);
 
-        Button back = new Button("Back");
+        back = new Button("Back");
+        back.setOnAction(e -> backButtonClicked());
 
         next = new Button("Next");
         next.setOnAction(e -> {
@@ -115,14 +122,33 @@ public class CreatorMain {
         screenAndButtons.setBottom(nav);
     }
 
+    private void close(){
+
+    }
+
+    private void backButtonClicked(){
+        if(currentScreen == "preview"){
+            screenAndButtons.setCenter(editor.getScreen());
+            currentScreen="create";
+            next.setText("Next");
+            next.setDisable(false);
+        }else if(currentScreen == "create"){
+            searchScreenUp();
+            currentScreen="search";
+        }
+    }
+
     private void nextButtonClicked(){
         if(currentScreen == "search"){
             loadCreateScreen();
             return;
-        }else if(currentScreen == "chunk"){
+        }else if(currentScreen == "create"){
             //Should be image select
             //Right now make audio combined
             loadPreviewScreen();
+        }else if(currentScreen == "preview"){
+            //clean up files
+            close();
         }
     }
 
