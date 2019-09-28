@@ -26,7 +26,7 @@ public class Main extends Application{
 		
 		Scene scene = new Scene(layout, 1000, 900);
 		
-		layout.setTop(a);
+		layout.setCenter(a);
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();
