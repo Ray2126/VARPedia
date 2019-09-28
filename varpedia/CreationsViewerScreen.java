@@ -28,16 +28,21 @@ public class CreationsViewerScreen extends VBox{
 		super(10);
 		
 		_videoPlayer = new VideoPlayer();
+		
 		HBox videoBox = new HBox();
 		videoBox.setPadding(new Insets(10,10,10,10));
 		videoBox.setAlignment(Pos.CENTER);
 		videoBox.getChildren().addAll(_videoPlayer);
+		
+		
 		_creationTable = new CreationTable();
 		_creationTable.setMaxWidth(980);
+		
 		VBox tableBox = new VBox();
 		tableBox.getChildren().addAll(_creationTable);
 		tableBox.setAlignment(Pos.CENTER);
 		tableBox.setPadding(new Insets(10,10,10,10));
+		
 		
 		_playButton = new Button("Play");
 		_deleteButton = new Button("Delete");

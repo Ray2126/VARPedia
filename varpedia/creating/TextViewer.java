@@ -29,6 +29,8 @@ public class TextViewer {
 	int saved;
 	Scripts scripts;
 	VBox settingsBox;
+	ComboBox<String> voices;
+	ComboBox<String> syns;
 
 	public TextViewer(VoiceViewer voiceDisp){
 		scripts = new Scripts();
@@ -56,22 +58,34 @@ public class TextViewer {
     private void loadOptions(){
 		ObservableList<String> voiceOptions =
 				FXCollections.observableArrayList(
-						"Option 1",
-						"Option 2",
-						"Option 3"
+						"kal_diphone",
+						"akl_nz_jdt_diphone",
+						"akl_nz_cw_cg_cg"
 				);
-		final ComboBox voices = new ComboBox(voiceOptions);
+		this.voices = new ComboBox<String>(voiceOptions);
 
 		ObservableList<String> synOptions =
 				FXCollections.observableArrayList(
-						"Option 1",
-						"Option 2",
-						"Option 3"
+						"festival",
+						"espeak"
 				);
-		final ComboBox syns = new ComboBox(synOptions);
+		this.syns = new ComboBox<String>(synOptions);
+		
+		syns.getSelectionModel().selectFirst();
+		voices.getSelectionModel().selectFirst();
+		
+		//Disable voices if they choose espeak
+		syns.setOnAction(e -> {
+			if(syns.getSelectionModel().getSelectedItem().equals("espeak")) {
+				voices.setDisable(true);
+			}
+			else {
+				voices.setDisable(false);
+			}
+		});
 
 		HBox options = new HBox();
-		options.getChildren().addAll(voices, syns);
+		options.getChildren().addAll(syns, voices);
 		options.setAlignment(Pos.CENTER);
 		options.setPadding(new Insets(10,10,10,10));
 		options.setSpacing(10);
@@ -201,7 +215,7 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		scripts.getScript("selectPlay", new String[]{selected});
+		scripts.getScript("selectPlay", new String[]{selected, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
 	}
 
 	private void saveClicked(){
@@ -219,7 +233,7 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		scripts.getScript("selectSave", new String[]{selected, name});
+		scripts.getScript("selectSave", new String[]{selected, name, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
 		voiceDisp.loadAudio();
 	}
 }

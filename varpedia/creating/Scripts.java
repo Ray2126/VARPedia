@@ -30,13 +30,13 @@ public class Scripts {
 					tempScript = playAudioScript(params[0]);
 					break;
 				case "selectSave":
-					tempScript = saveSelected(params[0], params[1]);
+					tempScript = saveSelected(params[0], params[1], params[2], params[3]);
 					break;
 				case "listAudio":
 					tempScript = audioListFileScript();
 					break;
 				case "selectPlay":
-					tempScript = playSelected(params[0]);
+					tempScript = playSelected(params[0], params[1], params[2]);
 					break;
 				case "search":
 					tempScript = searchScript(params[0]);
@@ -278,7 +278,7 @@ public class Scripts {
     	}
     }
 
-    public File playSelected(String selected){
+    public File playSelected(String selected, String synth, String voice){
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -289,7 +289,12 @@ public class Scripts {
 			printWriter.println("#!/bin/bash");
 			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > selected");
-			printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
+			if(synth.equals("espeak")) {
+				printWriter.println("espeak -f selected -w selected.wav");
+			}
+			else {
+				printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
+			}
 			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
 
 			printWriter.close();
@@ -300,7 +305,7 @@ public class Scripts {
 		}
 	}
 
-	public File saveSelected(String selected, String name){
+	public File saveSelected(String selected, String name, String synth, String voice){
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -312,7 +317,13 @@ public class Scripts {
 			printWriter.println("NAME="+name);
 			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
-			printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
+			if(synth.equals("espeak")) {
+				printWriter.println("espeak -f ./audio/$NAME.txt -w ./audio/${NAME}.wav");
+			}
+			else {
+				printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
+			}
+			
 
 			printWriter.close();
 
