@@ -444,8 +444,7 @@ public class Scripts {
 		try {
 			File tempScript = File.createTempFile("script", null);
 
-			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-					tempScript));
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			
 			File[] files = new File(".").listFiles( new FilenameFilter() {
@@ -456,12 +455,11 @@ public class Scripts {
 			});
 			
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
-
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/output.mp4 &> /dev/null" );
-			printWriter.println("ffmpeg -i ./creations/output.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
-			printWriter.println("rm -f ./creations/output.mp4");
+			printWriter.println("TERM="+name);
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y pre.mp4 &> /dev/null" );
+			printWriter.println("ffmpeg -y -i pre.mp4 -vf drawtext=\"fontfile=OpenSans-Bold.ttf: text='$TERM': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
 			printWriter.close();
 
 			return tempScript;
