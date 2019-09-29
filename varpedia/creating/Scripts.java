@@ -3,6 +3,7 @@ package varpedia.creating;
 import java.io.*;
 import java.nio.file.Files;
 
+
 public class Scripts {
 	//Have made all Bash command chunks to do with a certain topic create their own script file
 	//Which is then executed and deleted.
@@ -329,8 +330,7 @@ public class Scripts {
 			printWriter.println("#!/bin/bash");
 			printWriter.println("SELECTED="+name);
 			printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.wav");
-
-			printWriter.close();
+	
 
 			return tempScript;
 		}catch (Exception e) {

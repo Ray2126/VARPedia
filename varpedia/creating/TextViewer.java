@@ -230,11 +230,13 @@ public class TextViewer {
 		error.setText("");
         String selected = textArea.getSelectedText();
         if (selected == null || selected.isEmpty()) {
+        	error.setText("Please select a chunk of text");
             return;
         }
 
         String[] words = selected.split("\\s+");
         if(words.length > 30){
+        	error.setText("Please select a shorter text chunk");
             return;
         }
 		selected = selected.replaceAll("\n"," ");
@@ -252,11 +254,13 @@ public class TextViewer {
 		error.setText("");
 	    String selected = textArea.getSelectedText();
         if (selected == null || selected.isEmpty()) {
+        	error.setText("Please select a chunk of text");
             return;
         }
 
         String[] words = selected.split("\\s+");
         if(words.length > 30){
+        	error.setText("Please select a shorter text chunk");
             return;
         }
 		saved++;
