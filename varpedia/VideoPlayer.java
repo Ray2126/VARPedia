@@ -86,9 +86,7 @@ public class VideoPlayer extends VBox{
 		Media video = new Media(creationToPlay.toURI().toString());
 		
 		//Stop the previous video playing
-		if(_mediaPlayer != null) {
-			_mediaPlayer.stop();
-		}
+		this.stop();
 		
 		_mediaPlayer = new MediaPlayer(video);
 		_mediaPlayer.setAutoPlay(true);
@@ -182,6 +180,12 @@ public class VideoPlayer extends VBox{
 				_mediaPlayer.seek(_mediaPlayer.getCurrentTime().add(Duration.seconds(-5)));
 			}
 		});
+	}
+
+	public void stop() {
+		if(_mediaPlayer != null) {
+			_mediaPlayer.stop();
+		}
 	}
 	
 }

@@ -215,4 +215,9 @@ public class FinalPreview {
         // Start the thread
         backgroundThread.start();
     }
+
+	public void stop() {
+		// TODO Auto-generated method stub
+		videoPlayer.stop();
+	}
 }

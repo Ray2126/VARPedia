@@ -81,6 +81,8 @@ public class CreationsViewerScreen extends VBox{
 				}
 				
 				_creationTable.loadCreations();
+				_videoPlayer.stop();
+
 			}
 			
 		});

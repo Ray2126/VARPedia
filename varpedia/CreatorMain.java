@@ -218,6 +218,7 @@ public class CreatorMain {
         scripts.getScript("cleanup", new String[]{});
         creationWindow.close();
         tableParent.loadCreations();
+        preview.stop();
     }
 
     private void backButtonClicked(){

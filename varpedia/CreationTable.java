@@ -1,6 +1,9 @@
 package varpedia;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import varpedia.creating.Scripts;
 
 /**
  * The table of creations seen on the main screen
@@ -28,28 +32,38 @@ public class CreationTable extends TableView<Creation>{
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         this.setPlaceholder(new Label("You currently have no creations"));
-        loadCreations();
         this.getColumns().addAll(numberColumn, nameColumn);
-
+        loadCreations();
 	}
 	
     /**
      * Refreshes the view of the table
      */
     public void loadCreations(){
-        //Get all the creations in the creations folder
-    	File creationsFolder = new File("creations");
-    	File[] creations = creationsFolder.listFiles();
-    	
-		ObservableList<Creation> creationFileNames = FXCollections.observableArrayList();
-		if(creations != null){
-            for(int i = 0; i < creations.length; i++) {
-                //Remove extension from file name
-                String creationNameWithoutExtension = creations[i].getName().substring(0, creations[i].getName().lastIndexOf('.'));
-                creationFileNames.add(new Creation(creationNameWithoutExtension, i+1));
-            }
-            this.setItems(creationFileNames);
-        }
+        ObservableList<Creation> creations = FXCollections.observableArrayList();
+        Scripts scripts =new Scripts();
+        scripts.getScript("listCreations", new String[]{});
+		try {
+			// Open the file
+			FileInputStream fstream = new FileInputStream("listing");
+			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+	
+			String strLine;
+			//Read File Line By Line
+			int index=0;
+			while ((strLine = br.readLine()) != null)   {
+			  // Print the content on the console
+				strLine=strLine.replace("./creations/", "");
+				strLine = strLine.replace(".mp4", "");
+				creations.add(new Creation(strLine, ++index));
+			}
+	
+			//Close the input stream
+			fstream.close();
+		}catch(Exception e) {
+			
+		}
+		this.setItems(creations);
     	
     }
 	

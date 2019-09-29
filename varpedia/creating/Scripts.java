@@ -192,7 +192,8 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
-			printWriter.println("rm -f *./creations/preview.mp4");
+			printWriter.println("rm -f pre.mp4");
+			printWriter.println("rm -f ./creations/preview.mp4");
 			printWriter.println("rm -f *.text");
 			printWriter.println("rm -f ./images/*");
 			printWriter.println("rm -f ./audio/*");
@@ -201,6 +202,7 @@ public class Scripts {
 			printWriter.println("rm -f output.wav");
 			printWriter.println("rm -f selected.wav");
 			printWriter.println("rm -f selected");
+			printWriter.println("rm -f audios");
 
 			printWriter.close();
 
@@ -247,8 +249,9 @@ public class Scripts {
 	        PrintWriter printWriter = new PrintWriter(streamWriter);
 	
 	        printWriter.println("#!/bin/bash");
-	        printWriter.println("ls *.avi >creations 2> /dev/null");
-	        printWriter.println("sed -i 's/\\..*$//' creations");
+	        printWriter.println("touch listing");
+	        printWriter.println("ls ./creations/*.mp4 >listing 2> /dev/null");
+	        printWriter.println("cat listing | sed 's/\\..*$//'");
 	        
 	        printWriter.close();
 	
