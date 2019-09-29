@@ -40,7 +40,7 @@ public class CreatorMain {
     private SearchSelector search;
     private Button back;
     private Scripts scripts;
-    priavte HBox loadingNav;
+    private HBox loadingNav;
     private ProgressIndicator prog;
     private Button cancel;
     private Text load;
