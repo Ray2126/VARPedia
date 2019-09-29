@@ -26,7 +26,8 @@ public class Main extends Application{
 		f.mkdir();
 		f = new File("selectedImages");
 		f.mkdir();
-		
+		f = new File("resampledAudio");
+		f.mkdir();
 		Scripts scripts = new Scripts();
         scripts.getScript("cleanup", new String[]{});
 		
