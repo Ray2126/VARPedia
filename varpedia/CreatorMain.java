@@ -18,30 +18,32 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import varpedia.creating.*;
 
+/**
+ * Manages the screens for creating a new creation
+ *
+ */
 public class CreatorMain {
-    // manages the screens for creating a new creation
-	// Begins when create button clicked
-	// beginCreate()      pop up this dialog
-    CreationTable tableParent;
-    String searchedTerm;
-    String creationName;
-    int imageAmount;
-    Button next;
-    String currentScreen;
-    BorderPane screenAndButtons;
-    Scene screen;
-    HBox nav;
-    ChunkEditorScreen editor;
-    ImageSelector images;
-    FinalPreview preview;
-    Stage creationWindow;
-    SearchSelector search;
-    Button back;
-    Scripts scripts;
-    HBox loadingNav;
-    ProgressIndicator prog;
-    Button cancel;
-    Text load;
+
+    private CreationTable tableParent;
+    private String searchedTerm;
+    private String creationName;
+    private int imageAmount;
+    private Button next;
+    private String currentScreen;
+    private BorderPane screenAndButtons;
+    private Scene screen;
+    private HBox nav;
+    private ChunkEditorScreen editor;
+    private ImageSelector images;
+    private FinalPreview preview;
+    private Stage creationWindow;
+    private SearchSelector search;
+    private Button back;
+    private Scripts scripts;
+    priavte HBox loadingNav;
+    private ProgressIndicator prog;
+    private Button cancel;
+    private Text load;
 
     public CreatorMain(CreationTable parent){
         scripts = new Scripts();
@@ -125,6 +127,7 @@ public class CreatorMain {
     private void loadPreviewScreen(){
         loadingButtons();
         //create audio file
+
         //make sure images selected
         if(images.isSelected()) {
             editor.combineTheAudio(this);

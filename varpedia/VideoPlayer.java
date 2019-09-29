@@ -31,6 +31,9 @@ public class VideoPlayer extends VBox{
 	private MediaPlayer _mediaPlayer;
 	private MediaView _mediaView;
 	
+	/**
+	 * Video player seen on the main screen and preview screen
+	 */
 	public VideoPlayer() {
 		_playPauseButton = new Button("Play");
 		_skipForwardButton = new Button(">>|");
@@ -62,7 +65,7 @@ public class VideoPlayer extends VBox{
 		_mediaPlayerPane.setMaxWidth(1000);
 		_mediaPlayerPane.setPrefWidth(1000);
 		
-		
+		//Pane for the buttons and volume sliders
 		HBox bottomPane = new HBox();
 		
 		//To layout the buttons in the middle and volume slider to the right
@@ -78,7 +81,6 @@ public class VideoPlayer extends VBox{
 	}
 	
 	public void playVideo(Creation creation) {
-		System.out.println(creation.getName());
 		File creationToPlay = new File("creations/"+creation.getName()+".mp4");
 		
 		Media video = new Media(creationToPlay.toURI().toString());
@@ -90,6 +92,7 @@ public class VideoPlayer extends VBox{
 		
 		_mediaPlayer = new MediaPlayer(video);
 		_mediaPlayer.setAutoPlay(true);
+		
 		_mediaView = new MediaView(_mediaPlayer);
 		
 		//Size video to pane
@@ -104,6 +107,10 @@ public class VideoPlayer extends VBox{
 		changeGUIVideoHasBeenPlayed();
 	}
 	
+	/**
+	 * Video has been played so replace rectangle with MediaView, enable and add functionality for
+	 *  all the buttons and sliders
+	 */
 	private void changeGUIVideoHasBeenPlayed() {
 		//Re-enable buttons and sliders as video is now played
 		_playPauseButton.setDisable(false);

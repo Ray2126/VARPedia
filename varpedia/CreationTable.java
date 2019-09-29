@@ -9,8 +9,11 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * The table of creations seen on the main screen
+ *
+ */
 public class CreationTable extends TableView<Creation>{
-	//List of all creations will have play and delete buttons
 	
 	public CreationTable() {
 		//Number column
@@ -30,11 +33,14 @@ public class CreationTable extends TableView<Creation>{
 
 	}
 	
-    //Loads all current creations and displays in table
+    /**
+     * Refreshes the view of the table
+     */
     public void loadCreations(){
-        
+        //Get all the creations in the creations folder
     	File creationsFolder = new File("creations");
     	File[] creations = creationsFolder.listFiles();
+    	
 		ObservableList<Creation> creationFileNames = FXCollections.observableArrayList();
 		if(creations != null){
             for(int i = 0; i < creations.length; i++) {

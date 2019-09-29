@@ -15,8 +15,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+/**
+ * The main screen containing the video player, creation table and buttons to play, delete and create creations.
+ *
+ */
 public class CreationsViewerScreen extends VBox{
-	// Has video player and creation table and a new button
 	
 	private VideoPlayer _videoPlayer;
 	private CreationTable _creationTable;
@@ -29,6 +32,7 @@ public class CreationsViewerScreen extends VBox{
 		
 		_videoPlayer = new VideoPlayer();
 		
+		//Pane for the video to sit in
 		HBox videoBox = new HBox();
 		videoBox.setPadding(new Insets(10,10,10,10));
 		videoBox.setAlignment(Pos.CENTER);
@@ -38,6 +42,7 @@ public class CreationsViewerScreen extends VBox{
 		_creationTable = new CreationTable();
 		_creationTable.setMaxWidth(980);
 		
+		//Pane for table of creations
 		VBox tableBox = new VBox();
 		tableBox.getChildren().addAll(_creationTable);
 		tableBox.setAlignment(Pos.CENTER);
@@ -85,6 +90,7 @@ public class CreationsViewerScreen extends VBox{
 				c.beginCreate();
 		});
 		
+		//Pane for the buttons
 		HBox buttonsPane = new HBox(10);
 		buttonsPane.setPadding(new Insets(10,10,10,10));
 		buttonsPane.setMaxWidth(980);

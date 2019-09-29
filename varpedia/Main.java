@@ -16,6 +16,8 @@ public class Main extends Application{
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+	
+		//Make file for the creations if it doesnt exist
 		File f = new File("creations");
 		f.mkdir();
 		f = new File("audio");

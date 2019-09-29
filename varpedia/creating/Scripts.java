@@ -1,6 +1,7 @@
 package varpedia.creating;
 
 import java.io.*;
+import java.nio.file.Files;
 
 public class Scripts {
 	//Have made all Bash command chunks to do with a certain topic create their own script file
@@ -84,7 +85,21 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
-			printWriter.println("rm -f output.wav");
+
+			//get all .wav files in ./audio
+			File[] files = new File("./audio").listFiles( new FilenameFilter() {
+				@Override
+				public boolean accept(File dir, String filename) {
+					return filename.endsWith(".wav");
+				}
+			});
+			
+			//Resample the bitrate of all the chunks
+			for(int i = 1; i < files.length+1; i++) {
+				printWriter.println("ffmpeg -i ./audio/"+i+".wav -ar 25600 ./resampledAudio/"+i+".wav &> /dev/null");
+			}
+      
+			printWriter.println("sox ./resampledAudio/*.wav output.wav");
 			//printWriter.println("ffmpeg -q -f concat -safe 0 -i <( for f in ./audio/*.wav; do echo \"file '$(pwd)/$f'\";done ) output.wav &> /dev/null");
 //			  File dir = new File("audio");
 //			  File[] directoryListing = dir.listFiles();
@@ -103,7 +118,6 @@ public class Scripts {
 //			    // directories.
 //			  }
 //			printWriter.println("ffmpeg -y -i ./audio/*.wav -ar 48000 &> /dev/null");
-			printWriter.println("sox ./audio/*.wav output.wav");
 
 			printWriter.close();
 
