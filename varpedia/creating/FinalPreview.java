@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -29,6 +31,7 @@ public class FinalPreview {
     VBox name;
     VBox screen;
     Scripts scripts;
+    Text bad;
 
     public FinalPreview(){
         scripts = new Scripts();
@@ -40,19 +43,27 @@ public class FinalPreview {
         videoBox.getChildren().addAll(videoPlayer);
         nameInput = new TextField();
         Text prompt = new Text("What would you like to name your creation");
+        bad = new Text("");
+        bad.setFill(Color.RED);
+        bad.setFont(Font.font(Font.getDefault().getName(),0));
         nameInput.setMaxWidth(250);
         name = new VBox();
         name.setAlignment(Pos.CENTER);
         name.setSpacing(10);
-        name.getChildren().addAll(prompt, nameInput);
+        name.getChildren().addAll(prompt, bad, nameInput);
         screen = new VBox();
         screen.setAlignment(Pos.CENTER);
         screen.setSpacing(10);
         screen.getChildren().addAll(videoBox, name);
     }
+    
+    public void removeErr() {
+    	
+    }
 
     public void audioAndImageCombine(CreatorMain mainScreen, int imgCount) {
         File file = new File("output.wav");
+        bad.setFont(Font.font(Font.getDefault().getName(),0));
         AudioInputStream audioInputStream = null;
         try {
             audioInputStream = AudioSystem.getAudioInputStream(file);
@@ -106,7 +117,7 @@ public class FinalPreview {
     //Popup window for user to choose whether to delete or rename an existing file
     private void deleteOrRename(String name, CreatorMain mainScreen) {
         Stage window = new Stage();
-
+        bad.setFont(Font.font(Font.getDefault().getName(),0));
         //Block events to other windows
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Name Taken");
@@ -141,9 +152,11 @@ public class FinalPreview {
         window.showAndWait();
     }
     public void createNew(CreatorMain mainScreen){
-
+    	bad.setFont(Font.font(Font.getDefault().getName(),0));
         boolean valid = true;
-        if(nameInput.getText().isBlank()){
+        if(nameInput.getText().isEmpty()){
+            bad.setFont(Font.getDefault());
+        	bad.setText("Invalid creation name, please try again");
             return;
         }
         char[] a = nameInput.getText().toCharArray();
@@ -158,13 +171,14 @@ public class FinalPreview {
 
             if (!valid)
             {
-                Alert alert = new Alert(Alert.AlertType.WARNING, "Invalid characters in creation name. Please try again . . .", ButtonType.OK);
-                alert.showAndWait();
+                bad.setFont(Font.getDefault());
+            	bad.setText("Invalid creation name, please try again");
                 return;
             }
         }
         startTaskCreate( mainScreen);
     }
+
     //Task to have creating a video in a new thread
     public void startTaskCreate(CreatorMain mainScreen)
     {
@@ -186,7 +200,6 @@ public class FinalPreview {
 //                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
 //                    success.showAndWait();
                     mainScreen.close();
-                    nameInput.setText("");
                     //close
                     break;
                 case 1:

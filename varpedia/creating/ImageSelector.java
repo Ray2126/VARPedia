@@ -17,6 +17,8 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -24,7 +26,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 public class ImageSelector extends BorderPane{
 	// User selects how many images to create
@@ -42,13 +47,19 @@ public class ImageSelector extends BorderPane{
 
 	
 	public ImageSelector() {
-		_title = new Text("Choose the images you would like in the creation: ");
-		_topToBottomText = new Text("The images in the final creation will be displayed in order from top to bottom of this list: ");
-	
+		_title = new Text("Choose the images you would like in your creation: ");
+		_title.setTextAlignment(TextAlignment.CENTER);
+		_topToBottomText = new Text("Order of images in creation: ");
+		_topToBottomText.setTextAlignment(TextAlignment.CENTER);
 		_listOfImages = new ArrayList<ImageDisplayBox>();
 		
 		_observableListOfSelectedImages = FXCollections.observableArrayList();
 		_listOfSelectedImages = new ListView<String>(_observableListOfSelectedImages);
+		_listOfSelectedImages.setMaxWidth(250);
+		_listOfSelectedImages.setMaxHeight(245);
+		_listOfSelectedImages.setMinHeight(100);
+		_listOfSelectedImages.setStyle("-fx-alignment: CENTER-RIGHT;");
+		_listOfSelectedImages.setPlaceholder(new Text("Please select some images"));
 		
 		//Read the images from the directory
 		File imagesDir = new File("images");
@@ -69,8 +80,13 @@ public class ImageSelector extends BorderPane{
 		}
 		
 		HBox row1 = new HBox(10);
+		row1.setSpacing(20);
+		row1.setAlignment(Pos.CENTER);
+		row1.setPadding(new Insets(0,20,20,20));
 		HBox row2 = new HBox(10);
-		
+		row2.setSpacing(20);
+		row2.setAlignment(Pos.CENTER);
+		row2.setPadding(new Insets(20,20,20,20));
 		//Add images to the rows panes
 		for(int i = 0; i < 5; i++) {
 			row1.getChildren().addAll(_listOfImages.get(i));
@@ -81,11 +97,23 @@ public class ImageSelector extends BorderPane{
 		}
 		
 		VBox rowsPane = new VBox();
-		rowsPane.getChildren().addAll(row1, row2, _topToBottomText);
+		rowsPane.setSpacing(20);
+		rowsPane.setAlignment(Pos.CENTER);
+		rowsPane.setPadding(new Insets(10,20,10,20));
 		
-		this.setTop(_title);
+
+		HBox title = new HBox();
+		title.setSpacing(20);
+		title.setAlignment(Pos.CENTER);
+		title.setPadding(new Insets(0,20,30,20));
+		title.getChildren().addAll(_title);
+		_title.setFont(Font.font(Font.getDefault().getName(),20));
+		_topToBottomText.setFont(Font.font(Font.getDefault().getName(),15));
+		rowsPane.getChildren().addAll(title, row1, row2);
+		//this.setTop(title);
 		this.setCenter(rowsPane);
-		this.setBottom(_listOfSelectedImages);
+		BorderPane.setAlignment(_listOfSelectedImages,Pos.BOTTOM_CENTER);
+		//this.setBottom(_listOfSelectedImages);
 	}
 
 	public int getAmountSelected(){
@@ -95,6 +123,7 @@ public class ImageSelector extends BorderPane{
 	//Get the images that have been selected by the user(images in the table)
 	public void saveSelectedImages() {
 		List<BufferedImage> outputList = new ArrayList<BufferedImage>();
+		selected.clear();
 		for(int i = 0; i < _observableListOfSelectedImages.size(); i++) {
 			for(int j = 0; j < _listOfImages.size(); j++) {
 				if(_observableListOfSelectedImages.get(i).equals(_listOfImages.get(j).getName())) {
@@ -109,30 +138,25 @@ public class ImageSelector extends BorderPane{
 		while(iter.hasNext()){
 			String name = iter.next();
 			//cp script
+			System.out.println(name);
 			scripts.getScript("copyImg", new String[]{name});
 		}
 
 		amount = outputList.size();
-
-//		File newFolder = new File("selectedImages");
-//		newFolder.mkdir();
-//
-//		File file;
-//		for(int i = 1 ; i <= outputList.size(); i++) {
-//			file = new File("selectedImages/" + i );
-//			try {
-//				file.createNewFile();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			try {
-//				ImageIO.write(outputList.get(i-1), "jpg", file);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
 	}
-	
+
+	public boolean isSelected() {
+		if(_listOfSelectedImages.getItems().isEmpty()){
+			Text place = new Text("You must have at least one image selected to continue");
+			place.setFont(Font.font(Font.getDefault().getName(),15));
+			place.setFill(Color.RED);
+			_listOfSelectedImages.setPlaceholder(place);
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 	//Inner class for each image display box (10 of these)
 	private class ImageDisplayBox extends VBox{
 		
@@ -143,6 +167,7 @@ public class ImageSelector extends BorderPane{
 		private ImageDisplayBox(BufferedImage image, int index) {
 			_image = image;
 			_imageNumber = new Label("Image #" + index);
+			_imageNumber.setFont(Font.font(Font.getDefault().getName(),15));
 			_checkBox = new CheckBox();
 			_checkBox.setIndeterminate(false);
 			
@@ -166,6 +191,8 @@ public class ImageSelector extends BorderPane{
 			
 			
 			this.getChildren().addAll(_imageNumber, imageBox, _checkBox);
+			this.setSpacing(10);
+			this.setAlignment(Pos.CENTER);
 		}
 		
 		private BufferedImage getImage() {

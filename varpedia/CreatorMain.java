@@ -1,11 +1,20 @@
 package varpedia;
 
+import java.util.Optional;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import varpedia.creating.*;
 
@@ -13,7 +22,6 @@ public class CreatorMain {
     // manages the screens for creating a new creation
 	// Begins when create button clicked
 	// beginCreate()      pop up this dialog
-	// hi
     CreationTable tableParent;
     String searchedTerm;
     String creationName;
@@ -30,6 +38,10 @@ public class CreatorMain {
     SearchSelector search;
     Button back;
     Scripts scripts;
+    HBox loadingNav;
+    ProgressIndicator prog;
+    Button cancel;
+    Text load;
 
     public CreatorMain(CreationTable parent){
         scripts = new Scripts();
@@ -41,6 +53,9 @@ public class CreatorMain {
         creationWindow = new Stage();
         currentScreen = "search";
         preview = new FinalPreview();
+        prog = new ProgressIndicator();
+        prog.isIndeterminate();
+        loadingNav = new HBox();
     }
 
     public void beginCreate() {
@@ -50,7 +65,30 @@ public class CreatorMain {
         creationWindow.setTitle("Creation Maker");
         screen = new Scene(screenAndButtons, 1500, 1000);
         creationWindow.setScene(screen);
+        creationWindow.setOnCloseRequest(e -> {
+        	closeRequest();
+        	e.consume();
+        });
         creationWindow.show();
+    }
+    
+    private void closeRequest() {
+    	Alert alert = new Alert(AlertType.CONFIRMATION);
+    	alert.setTitle("Are you sure?");
+    	alert.setHeaderText("Are you sure you want to cancel this creation?");
+    	alert.setContentText("You will lose all saved data.");
+
+    	ButtonType buttonTypeTwo = new ButtonType("Continue Creating");
+    	ButtonType buttonTypeOne = new ButtonType("Exit");
+
+    	alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+    	Optional<ButtonType> result = alert.showAndWait();
+    	if (result.get() == buttonTypeOne){
+    	    close();
+    	} else{
+    	    return;
+    	}
     }
 
     private void searchScreenUp(){
@@ -59,12 +97,16 @@ public class CreatorMain {
     }
 
     private void loadCreateScreen(){
+    	loadingButtons();
+        screenAndButtons.setCenter(search.getScene());
         searchedTerm = search.getInput();
         if(searchedTerm.isEmpty()){
             invalidSearch();
+            normalButtons();
             return;
         }
         editor.getTextSection().setSearched(searchedTerm, this);
+        normalButtons();
     }
 
     public void invalidSearch(){
@@ -81,11 +123,15 @@ public class CreatorMain {
     }
 
     private void loadPreviewScreen(){
+        loadingButtons();
         //create audio file
-        editor.combineTheAudio(this);
+        //make sure images selected
+        if(images.isSelected()) {
+            editor.combineTheAudio(this);
+        }
         //get audio length
         //create image file
-
+        normalButtons();
     }
 
     public int getImageAmount() {
@@ -96,11 +142,17 @@ public class CreatorMain {
     }
 
     private void loadImageScreen(){
+        this.loadingButtons();
+        if(! editor.anySelected()){
+            normalButtons();
+            return;
+        }
         GetImageTask task = new GetImageTask(searchedTerm);
         task.run();
         task.setOnSucceeded(e -> {
             imageScreenUp();
         });
+        normalButtons();
     }
 
     public void imageScreenUp(){
@@ -132,12 +184,28 @@ public class CreatorMain {
             nextButtonClicked();
         });
 
-        Button cancel = new Button("Cancel");
+        cancel = new Button("Cancel");
+        cancel.setOnAction(e -> {
+        	closeRequest();
+        });
 
         nav.setPadding(new Insets(10,10,10,10));
         nav.setSpacing(10);
+        //Loading . . .
+        load = new Text("");
+        load.setFill(Color.RED);
+        prog.setOpacity(0);
+        prog.setMaxWidth(20);
         nav.getChildren().addAll(back, next, cancel);
         screenAndButtons.setBottom(nav);
+    }
+
+    private void loadingButtons(){
+    	prog.setOpacity(100);
+    }
+
+    private void normalButtons(){
+    	prog.setOpacity(0);
     }
 
     public void close(){
@@ -167,7 +235,6 @@ public class CreatorMain {
     private void nextButtonClicked(){
         if(currentScreen == "search"){
             loadCreateScreen();
-            return;
         }else if(currentScreen == "create") {
             //Should be image select
             //Right now make audio combined

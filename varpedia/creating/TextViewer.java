@@ -3,14 +3,18 @@ package varpedia.creating;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import varpedia.CreatorMain;
 
@@ -31,12 +35,14 @@ public class TextViewer {
 	VBox settingsBox;
 	ComboBox<String> voices;
 	ComboBox<String> syns;
+	Text error;
 
 	public TextViewer(VoiceViewer voiceDisp){
 		scripts = new Scripts();
 		scripts.getScript("cleanup", new String[]{});
 		saved = 0;
 	    textArea = new TextArea();
+	    textArea.setOnMousePressed(e -> {error.setText("");});
 	    settings = new BorderPane();
 		settingsBox = new VBox();
 	    bottomOptions = new BorderPane();
@@ -56,13 +62,17 @@ public class TextViewer {
 	}
 
     private void loadOptions(){
+		//kal_diphone
+		//akl_nz_jdt_diphone
+		//"akl_nz_cw_cg_cg"
 		ObservableList<String> voiceOptions =
 				FXCollections.observableArrayList(
-						"kal_diphone",
-						"akl_nz_jdt_diphone",
-						"akl_nz_cw_cg_cg"
+						"kal",
+						"nz"
 				);
 		this.voices = new ComboBox<String>(voiceOptions);
+		Text voiceText = new Text("Voice: ");
+		Text synsText = new Text("Synthesiser: ");
 
 		ObservableList<String> synOptions =
 				FXCollections.observableArrayList(
@@ -85,22 +95,27 @@ public class TextViewer {
 		});
 
 		HBox options = new HBox();
-		options.getChildren().addAll(syns, voices);
+		HBox synBox = new HBox();
+		synBox.getChildren().addAll(synsText, syns);
+		synBox.setSpacing(5);
+		synBox.setAlignment(Pos.CENTER);
+		HBox txtBox = new HBox();
+		txtBox.getChildren().addAll(voiceText, voices);
+		txtBox.setSpacing(5);
+		txtBox.setAlignment(Pos.CENTER);
+		options.getChildren().addAll(synBox ,txtBox);
 		options.setAlignment(Pos.CENTER);
 		options.setPadding(new Insets(10,10,10,10));
-		options.setSpacing(10);
+		options.setSpacing(20);
 		settings.setRight(options);
 		settings.setMaxWidth(1400);
-//		settingsBox = new VBox();
-//		settingsBox.getChildren().addAll(settings);
-//		settingsBox.setAlignment(Pos.CENTER);
-//		settingsBox.setMaxWidth(1400);
 	}
 
     public void setSearched(String searched, CreatorMain mainScreen){
 	    searchTerm = searched;
         Text searchTermScreen = new Text(searchTerm);
         HBox text = new HBox();
+		searchTermScreen.setFont(Font.font(Font.getDefault().getName(),20));
 		text.setAlignment(Pos.CENTER);
 		text.setPadding(new Insets(10,10,10,10));
 		text.getChildren().add(searchTermScreen);
@@ -148,6 +163,12 @@ public class TextViewer {
 			}else {
 				textArea=dummy;
 				textArea.setMinHeight(600);
+				textArea.setOnMouseClicked(new EventHandler<MouseEvent>() {
+					@Override
+					public void handle(MouseEvent mouseEvent) {
+						error.setText("");
+					}
+				});
 				textArea.setMaxWidth(1400);
 				shell.setCenter(textArea);
 				mainScreen.createScreenUp();
@@ -187,13 +208,16 @@ public class TextViewer {
     }
 
     private void addPlaySave(){
+		//Can't play selected text: Please change settings or a new chunk
+		error = new Text("");
+		error.setFill(Color.RED);
 		HBox playSave = new HBox();
 		Button play = new Button("Play Selected");
 		play.setOnAction(e -> playClicked());
 		Button save = new Button("Save Selected");
 		save.setOnAction(e -> saveClicked());
 		playSave.setAlignment(Pos.BOTTOM_RIGHT);
-		playSave.getChildren().addAll(play, save);
+		playSave.getChildren().addAll(error, play, save);
 		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
@@ -203,6 +227,7 @@ public class TextViewer {
 	}
 
 	private void playClicked(){
+		error.setText("");
         String selected = textArea.getSelectedText();
         if (selected == null || selected.isEmpty()) {
             return;
@@ -215,10 +240,16 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		scripts.getScript("selectPlay", new String[]{selected, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		Process process = scripts.getScript("selectPlay", new String[]{selected, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		if (process.exitValue() == 1){
+			error.setText("Can't play selected text: Please change settings or a new chunk");
+		}else{
+			voiceDisp.loadAudio();
+		}
 	}
 
 	private void saveClicked(){
+		error.setText("");
 	    String selected = textArea.getSelectedText();
         if (selected == null || selected.isEmpty()) {
             return;
@@ -233,7 +264,11 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		scripts.getScript("selectSave", new String[]{selected, name, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
-		voiceDisp.loadAudio();
+		Process process = scripts.getScript("selectSave", new String[]{selected, name, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		if (process.exitValue() == 1){
+			error.setText("Can't play selected text: Please change settings or a new chunk");
+		}else{
+			voiceDisp.loadAudio();
+		}
 	}
 }

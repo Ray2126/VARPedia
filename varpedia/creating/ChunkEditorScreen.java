@@ -27,6 +27,10 @@ public class ChunkEditorScreen {
         return textSection;
     }
 
+    public boolean anySelected(){
+        return voiceSection.anySelected();
+    }
+
     public void combineTheAudio(CreatorMain mainScreen) {
         Scripts scripts = new Scripts();
         Task<Integer> task = new Task<Integer>() {

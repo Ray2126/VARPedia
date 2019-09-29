@@ -8,6 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -145,6 +148,18 @@ public class VoiceViewer {
             }else {
                 return;
             }
+        }
+    }
+
+    public boolean anySelected() {
+        if(audioTable.getItems().isEmpty()){
+            Text place = new Text("You must have at least one chunk of audio saved to continue");
+            place.setFont(Font.font(Font.getDefault().getName(),15));
+            place.setFill(Color.RED);
+            audioTable.setPlaceholder(place);
+            return false;
+        }else{
+            return true;
         }
     }
 }

@@ -84,6 +84,25 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -f output.wav");
+			//printWriter.println("ffmpeg -q -f concat -safe 0 -i <( for f in ./audio/*.wav; do echo \"file '$(pwd)/$f'\";done ) output.wav &> /dev/null");
+//			  File dir = new File("audio");
+//			  File[] directoryListing = dir.listFiles();
+//			  if (directoryListing != null) {
+//			    for (File child : directoryListing) {
+//			      // Do something with child
+//			    	System.out.println(child.getName());
+//			    	if(child.getName().contains(".wav")) {
+//			    		printWriter.println("ffmpeg -y -i ./audio/"+child.getName()+" -ar 41000 ./audio/"+child.getName()+" &> /dev/null");
+//			    	}
+//			    }
+//			  } else {
+//			    // Handle the case where dir is not really a directory.
+//			    // Checking dir.isDirectory() above would not be sufficient
+//			    // to avoid race conditions with another process that deletes
+//			    // directories.
+//			  }
+//			printWriter.println("ffmpeg -y -i ./audio/*.wav -ar 48000 &> /dev/null");
 			printWriter.println("sox ./audio/*.wav output.wav");
 
 			printWriter.close();
@@ -158,6 +177,7 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -f *./creations/preview.mp4");
 			printWriter.println("rm -f *.text");
 			printWriter.println("rm -f ./images/*");
 			printWriter.println("rm -f ./audio/*");
@@ -338,8 +358,19 @@ public class Scripts {
 				printWriter.println("espeak -f selected -w selected.wav");
 			}
 			else {
-				printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
+			    if(voice.equals("nz")){
+                    printWriter.println("cat selected | text2wave -o selected.wav -eval nz.scm &>/dev/null");
+                }else if(voice.equals("cg")){
+                    printWriter.println("cat selected | text2wave -o selected.wav -eval cg.scm &>/dev/null");
+                }else{
+                    printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
+                }
 			}
+			printWriter.println("length=$(wc -w < selected.wav)");
+			printWriter.println("if [ $length -eq 0 ]");
+			printWriter.println("then");
+			printWriter.println("exit 1");
+			printWriter.println("fi");
 			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
 
 			printWriter.close();
@@ -366,9 +397,21 @@ public class Scripts {
 				printWriter.println("espeak -f ./audio/$NAME.txt -w ./audio/${NAME}.wav");
 			}
 			else {
+				if(voice.equals("nz")){
+					printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav -eval nz.scm &>/dev/null");
+				}else if(voice.equals("cg")) {
+					printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav -eval cg.scm &>/dev/null");
+				}else {
 				printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
+				}
 			}
-			
+			printWriter.println("length=$(wc -w < ./audio/${NAME}.wav)");
+			printWriter.println("if [ $length -eq 0 ]");
+			printWriter.println("then");
+			printWriter.println("rm -f ./audio/$NAME.txt");
+			printWriter.println("rm -f ./audio/${NAME}.wav");
+			printWriter.println("exit 1");
+			printWriter.println("fi");
 
 			printWriter.close();
 

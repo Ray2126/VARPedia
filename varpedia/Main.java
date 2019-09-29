@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import varpedia.creating.Scripts;
 
 public class Main extends Application{
 
@@ -17,6 +18,15 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		File f = new File("creations");
 		f.mkdir();
+		f = new File("audio");
+		f.mkdir();
+		f = new File("images");
+		f.mkdir();
+		f = new File("selectedImages");
+		f.mkdir();
+		
+		Scripts scripts = new Scripts();
+        scripts.getScript("cleanup", new String[]{});
 		
 		primaryStage.setTitle("VARpedia");
     

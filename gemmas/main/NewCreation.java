@@ -28,7 +28,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class NewCreation {
-	//Handles the new creation tab
+    //Handles the new creation tab
     BorderPane creationTab;
     HBox search;
     HBox options;
@@ -37,12 +37,12 @@ public class NewCreation {
     String searchTerm;
     boolean rename;
     boolean hasTerm;
-    TextField nameInput;  
+    TextField nameInput;
     TextField searchInput;
     TextField lineInput;
     ObservableList<Line> lineList;
 
-    
+
     //Returns the new creation tab
     public BorderPane getCreationList(){
         if(creationTab == null){
@@ -57,7 +57,7 @@ public class NewCreation {
 
     //Handles set up of each area
     public void setUp(){
-    	scripts = new Scripts();
+        scripts = new Scripts();
         searchSetup();
         lineViewSetup();
         optionsSetup();
@@ -93,7 +93,7 @@ public class NewCreation {
         lineTable.setPlaceholder(new Label("Please search for a term above"));
         lineTable.getColumns().addAll(numberColumn, textColumn);
     }
-    
+
     //Allows the text column to automatically adjust so width fits the content
     public static void autoResizeColumns( TableView<Line> table )
     {
@@ -122,7 +122,7 @@ public class NewCreation {
             column.setPrefWidth( max + 10.0d );
         } );
     }
-    
+
     //Set up the line, name inputs and create button
     public void optionsSetup(){
         options = new HBox();
@@ -138,7 +138,7 @@ public class NewCreation {
 
         Button createButton = new Button("Create");
         createButton.setOnAction(e -> createNew());
-        
+
         //createButton.setOnAction(e -> create());
 
         options.setPadding(new Insets(10,10,10,10));
@@ -147,39 +147,39 @@ public class NewCreation {
 
         options.getChildren().addAll(linePrompt, lineInput, namePrompt, nameInput, createButton);
     }
-    
+
     //Start creation and send of to the task method
     private void createNew(){
-    	
-    	boolean valid = true;
 
-    	char[] a = nameInput.getText().toCharArray();
+        boolean valid = true;
 
-    	for (char c: a)
-    	{
-    	    valid = ((c >= 'a') && (c <= 'z')) || 
-    	            ((c >= 'A') && (c <= 'Z')) || 
-    	            ((c >= '0') && (c <= '9')) ||
-    	            (c == '_') ||
-    	            (c == '-');
+        char[] a = nameInput.getText().toCharArray();
 
-    	    if (!valid)
-    	    {
-        		Alert alert = new Alert(AlertType.WARNING, "Invalid characters in creation name. Please try again . . .", ButtonType.OK);
-            	alert.showAndWait();
-            	return;
-    	    }
-    	}
-    	if(hasTerm) {
-        	startTaskCreate();
-    	}
+        for (char c: a)
+        {
+            valid = ((c >= 'a') && (c <= 'z')) ||
+                    ((c >= 'A') && (c <= 'Z')) ||
+                    ((c >= '0') && (c <= '9')) ||
+                    (c == '_') ||
+                    (c == '-');
+
+            if (!valid)
+            {
+                Alert alert = new Alert(AlertType.WARNING, "Invalid characters in creation name. Please try again . . .", ButtonType.OK);
+                alert.showAndWait();
+                return;
+            }
+        }
+        if(hasTerm) {
+            startTaskCreate();
+        }
     }
-    
+
     // Deleting creation when have naming conflict
     private void deleteButtonClicked(String name){
         scripts.getScript("delete", new String[]{name});
     }
-    
+
     //Popup window for user to choose whether to delete or rename an existing file
     private void deleteOrRename(String name) {
         Stage window = new Stage();
@@ -193,16 +193,16 @@ public class NewCreation {
         label.setText("Creation name "+ name+ " is already taken");
         Button reButton = new Button("Rename");
         Button overButton = new Button("Override");
-        
+
         overButton.setOnAction(e -> {
-        	deleteButtonClicked(name);
-        	window.close();
-        	createNew();
+            deleteButtonClicked(name);
+            window.close();
+            createNew();
         });
-        
+
         reButton.setOnAction(e -> {
-        	window.close();
-        	});
+            window.close();
+        });
 
         VBox layout = new VBox(10);
         layout.getChildren().addAll(label, reButton, overButton);
@@ -213,17 +213,17 @@ public class NewCreation {
         window.setScene(scene);
         window.showAndWait();
     }
-    
+
     //Loads the lines for a searched items
     private void loadLines(){
-    	lineTable.getItems().clear();
-    	searchTerm = searchInput.getText();
-    	hasTerm = false;
-    	if(searchTerm.length() > 0) {
-	    	startTaskSearch();
-    	}
+        lineTable.getItems().clear();
+        searchTerm = searchInput.getText();
+        hasTerm = false;
+        if(searchTerm.length() > 0) {
+            startTaskSearch();
+        }
     }
-    
+
     //Popup for when the search didn't have results
     private void invalidSearch() {
         Stage window = new Stage();
@@ -236,9 +236,9 @@ public class NewCreation {
         Label label = new Label();
         label.setText("Invalid search term. Please try again.");
         Button okButton = new Button("Okay");
-        
+
         okButton.setOnAction(e -> {
-        	window.close();
+            window.close();
         });
 
         VBox layout = new VBox(10);
@@ -250,103 +250,103 @@ public class NewCreation {
         window.setScene(scene);
         window.showAndWait();
     }
-    
+
     //Task to have creating a video in a new thread
-    public void startTaskCreate() 
+    public void startTaskCreate()
     {
-    	String name = nameInput.getText();
-    	String lines = lineInput.getText();
-    	Task<Integer> task = new Task<Integer>() {
-    	    @Override protected Integer call() throws Exception {
-            	Process nameProcess = scripts.getScript("nameValid", new String[] {name});
-            	Process lineProcess = scripts.getScript("lineValid", new String[] {searchTerm, lines});
-            	if(nameProcess.exitValue() == 1) {
-                	return 1;
-            	}
-            	if(lineProcess.exitValue() == 1) {
-            		return 2;	
-            	}
-            	scripts.getScript("new", new String[] {searchTerm, lineInput.getText(), nameInput.getText()});
-				return 0;
-    	    }
-    	};
-    	task.setOnSucceeded(e -> {
-    		switch(task.getValue()) {
-    		case 0:
-    			Alert success = new Alert(AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
-    			success.showAndWait();
-    			nameInput.setText("");
-    			lineInput.setText("");
-    			searchInput.setText("");
-    		    rename = false;
-    		    hasTerm = false;
-    			lineTable.getItems().clear();
-    			break;
-    		case 1: 
-    			deleteOrRename(name);
-    			break;
-    		case 2: 
-    			Alert lineWrong = new Alert(AlertType.WARNING, "You entered an invalid line number ("+lines+") please try again.", ButtonType.OK);
-    			lineWrong.showAndWait();
-    			break;
-    		}
-    		
-    	});
+        String name = nameInput.getText();
+        String lines = lineInput.getText();
+        Task<Integer> task = new Task<Integer>() {
+            @Override protected Integer call() throws Exception {
+                Process nameProcess = scripts.getScript("nameValid", new String[] {name});
+                Process lineProcess = scripts.getScript("lineValid", new String[] {searchTerm, lines});
+                if(nameProcess.exitValue() == 1) {
+                    return 1;
+                }
+                if(lineProcess.exitValue() == 1) {
+                    return 2;
+                }
+                scripts.getScript("new", new String[] {searchTerm, lineInput.getText(), nameInput.getText()});
+                return 0;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            switch(task.getValue()) {
+                case 0:
+                    Alert success = new Alert(AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
+                    success.showAndWait();
+                    nameInput.setText("");
+                    lineInput.setText("");
+                    searchInput.setText("");
+                    rename = false;
+                    hasTerm = false;
+                    lineTable.getItems().clear();
+                    break;
+                case 1:
+                    deleteOrRename(name);
+                    break;
+                case 2:
+                    Alert lineWrong = new Alert(AlertType.WARNING, "You entered an invalid line number ("+lines+") please try again.", ButtonType.OK);
+                    lineWrong.showAndWait();
+                    break;
+            }
+
+        });
         // Run the task in a background thread
         Thread backgroundThread = new Thread(task);
         // Terminate the running thread if the application exits
         backgroundThread.setDaemon(true);
         // Start the thread
         backgroundThread.start();
-    }  
-    
+    }
+
     //Task for having wikit search in own thread
-    public void startTaskSearch() 
+    public void startTaskSearch()
     {
-    	Task<ObservableList<Line>> task = new Task<ObservableList<Line>>() {
-    	    @Override protected ObservableList<Line> call() throws Exception {
-    	    	Process process = scripts.getScript("search", new String[] {searchTerm});
-    	    	if(process.exitValue() == 1) {
-    	    		return null;
-    	    	}
-    	    	hasTerm = true;
-    			ObservableList<Line> lineList = FXCollections.observableArrayList();
-    			try {
-    				// Open the file
-    				FileInputStream fstream = new FileInputStream(searchTerm+".text");
-    				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-    		
-    				String strLine;
-    				//Read File Line By Line
-    				int index=0;
-    				while ((strLine = br.readLine()) != null)   {
-    				  // Print the content on the console
-    					lineList.add(new Line(strLine, ++index));
-    				}
-    		
-    				//Close the input stream
-    				fstream.close();
-    				
-    			}catch(Exception e) {
-    					
-    			}
-    			return lineList;
-    	    }
-    	};
-    	task.setOnSucceeded(e -> {
-    		lineList = task.getValue();
-    		if(lineList == null) {
-    			invalidSearch();
-    		}else {
-    	        lineTable.setItems(lineList);
-    			autoResizeColumns(lineTable);	
-    		}
-    	});
+        Task<ObservableList<Line>> task = new Task<ObservableList<Line>>() {
+            @Override protected ObservableList<Line> call() throws Exception {
+                Process process = scripts.getScript("search", new String[] {searchTerm});
+                if(process.exitValue() == 1) {
+                    return null;
+                }
+                hasTerm = true;
+                ObservableList<Line> lineList = FXCollections.observableArrayList();
+                try {
+                    // Open the file
+                    FileInputStream fstream = new FileInputStream(searchTerm+".text");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+                    String strLine;
+                    //Read File Line By Line
+                    int index=0;
+                    while ((strLine = br.readLine()) != null)   {
+                        // Print the content on the console
+                        lineList.add(new Line(strLine, ++index));
+                    }
+
+                    //Close the input stream
+                    fstream.close();
+
+                }catch(Exception e) {
+
+                }
+                return lineList;
+            }
+        };
+        task.setOnSucceeded(e -> {
+            lineList = task.getValue();
+            if(lineList == null) {
+                invalidSearch();
+            }else {
+                lineTable.setItems(lineList);
+                autoResizeColumns(lineTable);
+            }
+        });
         // Run the task in a background thread
         Thread backgroundThread = new Thread(task);
         // Terminate the running thread if the application exits
         backgroundThread.setDaemon(true);
         // Start the thread
         backgroundThread.start();
-    }  
+    }
 }
