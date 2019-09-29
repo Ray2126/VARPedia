@@ -1,5 +1,6 @@
 package varpedia;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import javafx.geometry.Insets;
@@ -102,6 +103,7 @@ public class CreatorMain {
     	loadingButtons();
         screenAndButtons.setCenter(search.getScene());
         searchedTerm = search.getInput();
+        
         if(searchedTerm.isEmpty()){
             invalidSearch();
             normalButtons();
