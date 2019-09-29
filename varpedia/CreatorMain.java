@@ -29,8 +29,11 @@ public class CreatorMain {
     Stage creationWindow;
     SearchSelector search;
     Button back;
+    Scripts scripts;
 
     public CreatorMain(CreationTable parent){
+        scripts = new Scripts();
+        scripts.getScript("cleanup", new String[]{});
         this.tableParent = parent;
         search = new SearchSelector();
         editor = new ChunkEditorScreen();
@@ -38,7 +41,6 @@ public class CreatorMain {
         creationWindow = new Stage();
         currentScreen = "search";
         preview = new FinalPreview();
-        images = new ImageSelector();
     }
 
     public void beginCreate() {
@@ -74,8 +76,6 @@ public class CreatorMain {
         back.setDisable(false);
         screenAndButtons.setCenter(editor.getScreen());
         currentScreen="create";
-        GetImageTask task = new GetImageTask(searchedTerm);
-        task.run();
         next.setText("Next");
 
     }
@@ -90,11 +90,23 @@ public class CreatorMain {
 
     public int getImageAmount() {
         //imageSelector get image amount
+        images.saveSelectedImages();
+        imageAmount = images.getAmountSelected();
         return imageAmount;
     }
 
-    public void imageScreenUp(){
+    private void loadImageScreen(){
+        GetImageTask task = new GetImageTask(searchedTerm);
+        task.run();
+        task.setOnSucceeded(e -> {
+            imageScreenUp();
+        });
+    }
 
+    public void imageScreenUp(){
+        currentScreen="image";
+        images = new ImageSelector();
+        screenAndButtons.setCenter(images);
     }
 
     public FinalPreview getPreview() {
@@ -130,19 +142,25 @@ public class CreatorMain {
 
     public void close(){
         //cleanup files
+        scripts.getScript("cleanup", new String[]{});
         creationWindow.close();
         tableParent.loadCreations();
     }
 
     private void backButtonClicked(){
         if(currentScreen == "preview"){
-            screenAndButtons.setCenter(editor.getScreen());
-            currentScreen="create";
+            screenAndButtons.setCenter(images);
+            currentScreen="image";
             next.setText("Next");
             next.setDisable(false);
         }else if(currentScreen == "create"){
             searchScreenUp();
             currentScreen="search";
+        }else if(currentScreen=="image"){
+            screenAndButtons.setCenter(editor.getScreen());
+            currentScreen="create";
+            next.setText("Next");
+            next.setDisable(false);
         }
     }
 
@@ -150,9 +168,11 @@ public class CreatorMain {
         if(currentScreen == "search"){
             loadCreateScreen();
             return;
-        }else if(currentScreen == "create"){
+        }else if(currentScreen == "create") {
             //Should be image select
             //Right now make audio combined
+            loadImageScreen();
+        }else if(currentScreen == "image"){
             loadPreviewScreen();
         }else if(currentScreen == "preview"){
             preview.createNew(this);

@@ -11,6 +11,12 @@ public class Scripts {
         File tempScript = null;
 		try {
 			switch(request) {
+				case "clearSelImg":
+					tempScript = clearSelectedImg();
+					break;
+				case "copyImg":
+					tempScript = copySelectedImg(params[0]);
+					break;
 				case "name":
 					tempScript = renamePreview(params[0]);
 					break;
@@ -88,6 +94,44 @@ public class Scripts {
 		}
 	}
 
+	public File clearSelectedImg() {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -r selectedImages");
+			printWriter.println("mkdir selectedImages");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File copySelectedImg(String name) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			printWriter.println("NAME="+name);
+			printWriter.println("cp ./images/${NAME} ./selectedImages/${NAME}");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
 	public File renamePreview(String name) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -115,6 +159,7 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
 			printWriter.println("rm -f *.text");
+			printWriter.println("rm -f ./images/*");
 			printWriter.println("rm -f ./audio/*");
 
 			printWriter.close();
@@ -343,7 +388,26 @@ public class Scripts {
 
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("cat ./images/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
+	}
+
+	public File makeImageFiles(String amount) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+
+			printWriter.println("amount="+amount);
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
 
 			printWriter.close();
 

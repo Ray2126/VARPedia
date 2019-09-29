@@ -64,7 +64,7 @@ public class FinalPreview {
         AudioFormat format = audioInputStream.getFormat();
         long frames = audioInputStream.getFrameLength();
         double durationInSeconds = (frames+0.0) / format.getFrameRate();
-        double imgLength=durationInSeconds/10;
+        double imgLength=durationInSeconds/imgCount;
         double framerate=1/imgLength;
         Scripts scripts = new Scripts();
         Task<Integer> task = new Task<Integer>() {
@@ -90,10 +90,6 @@ public class FinalPreview {
         backgroundThread.start();
     }
 
-    public void setVideoPlayer(){
-        //videoPlayer.playVideo();
-    }
-
     public Node getScreen() {
         return screen;
     }
@@ -106,8 +102,7 @@ public class FinalPreview {
     private void deleteButtonClicked(String name){
         scripts.getScript("name", new String[]{name});
     }
-    public void checkName() {
-    }
+
     //Popup window for user to choose whether to delete or rename an existing file
     private void deleteOrRename(String name, CreatorMain mainScreen) {
         Stage window = new Stage();
@@ -148,7 +143,9 @@ public class FinalPreview {
     public void createNew(CreatorMain mainScreen){
 
         boolean valid = true;
-
+        if(nameInput.getText().isBlank()){
+            return;
+        }
         char[] a = nameInput.getText().toCharArray();
 
         for (char c: a)
@@ -166,7 +163,7 @@ public class FinalPreview {
                 return;
             }
         }
-            startTaskCreate( mainScreen);
+        startTaskCreate( mainScreen);
     }
     //Task to have creating a video in a new thread
     public void startTaskCreate(CreatorMain mainScreen)

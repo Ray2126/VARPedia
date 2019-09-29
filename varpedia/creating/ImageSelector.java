@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -34,7 +35,11 @@ public class ImageSelector extends BorderPane{
 	private List<ImageDisplayBox> _listOfImages;
 	private ListView<String> _listOfSelectedImages;
 	private ObservableList<String> _observableListOfSelectedImages;
-	
+	private int amount;
+	ArrayList<String> names;
+	ArrayList<String> selected;
+	Scripts scripts;
+
 	
 	public ImageSelector() {
 		_title = new Text("Choose the images you would like in the creation: ");
@@ -49,9 +54,13 @@ public class ImageSelector extends BorderPane{
 		File imagesDir = new File("images");
 		File[] images = imagesDir.listFiles();
 		BufferedImage image;
+		names = new ArrayList<>();
+		selected = new ArrayList<>();
+		scripts = new Scripts();
 		int index = 0;
 		for(File i: images) {
 			try {
+				names.add(i.getName());
 				image = ImageIO.read(i);
 				_listOfImages.add(new ImageDisplayBox(image, ++index));
 			} catch (IOException e) {
@@ -80,8 +89,8 @@ public class ImageSelector extends BorderPane{
 	}
 
 	public int getAmountSelected(){
-		return(getSelectedImages().size());
-	}
+		return(amount);
+	};
 	
 	//Get the images that have been selected by the user(images in the table)
 	public void saveSelectedImages() {
@@ -90,22 +99,38 @@ public class ImageSelector extends BorderPane{
 			for(int j = 0; j < _listOfImages.size(); j++) {
 				if(_observableListOfSelectedImages.get(i).equals(_listOfImages.get(j).getName())) {
 					outputList.add(_listOfImages.get(j).getImage());
+					selected.add(names.get(j));
 				}
 			}
 		}
-		
-		File newFolder = new File("selectedImages");
-		newFolder.mkdir();
-		
-		File file;
-		for(int i = 0 ; i < outputList.size(); i++) {
-			file = new File("selectedImages/" + i + ".jpg");
-			try {
-				ImageIO.write(outputList.get(i), "jpg", file);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+
+		Iterator<String> iter= selected.iterator();
+		scripts.getScript("clearSelImg", new String[]{});
+		while(iter.hasNext()){
+			String name = iter.next();
+			//cp script
+			scripts.getScript("copyImg", new String[]{name});
 		}
+
+		amount = outputList.size();
+
+//		File newFolder = new File("selectedImages");
+//		newFolder.mkdir();
+//
+//		File file;
+//		for(int i = 1 ; i <= outputList.size(); i++) {
+//			file = new File("selectedImages/" + i );
+//			try {
+//				file.createNewFile();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			try {
+//				ImageIO.write(outputList.get(i-1), "jpg", file);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
 	}
 	
 	//Inner class for each image display box (10 of these)
