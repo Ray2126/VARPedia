@@ -205,6 +205,8 @@ public class Scripts {
 			printWriter.println("rm -f selected.wav");
 			printWriter.println("rm -f selected");
 			printWriter.println("rm -f audios");
+			printWriter.println("rm -f listing");
+
 
 			printWriter.close();
 
@@ -224,6 +226,7 @@ public class Scripts {
 	
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("TERM="+searchTerm);
+	        printWriter.println("rm -f *.text");
 	        printWriter.println("filename=${TERM}.text");
 	        printWriter.println("wikit $TERM >${TERM}.text");
 	        printWriter.println("if grep -q \"not found :^(\" \"$filename\"; then");
@@ -462,7 +465,6 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-
 			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/output.mp4  &> /dev/null" );
 			printWriter.println("ffmpeg -y -i ./creations/output.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
 			printWriter.println("rm -f ./creations/output.mp4");
