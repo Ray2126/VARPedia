@@ -2,6 +2,8 @@ package varpedia;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -106,7 +108,7 @@ public class CreatorMain {
         
         if(searchedTerm.isEmpty()){
             invalidSearch();
-            normalButtons();
+            loadingButtons();
             return;
         }
         editor.getTextSection().setSearched(searchedTerm, this);
@@ -115,10 +117,12 @@ public class CreatorMain {
 
     public void invalidSearch(){
         screenAndButtons.setCenter(search.invalidSearch());
+        loadingButtons();
     }
 
 
     public void createScreenUp(){
+    	loadingButtons();
         back.setDisable(false);
         screenAndButtons.setCenter(editor.getScreen());
         currentScreen="create";
@@ -127,16 +131,16 @@ public class CreatorMain {
     }
 
     private void loadPreviewScreen(){
-        loadingButtons();
+    	
         //create audio file
 
         //make sure images selected
         if(images.isSelected()) {
+        	normalButtons();
             editor.combineTheAudio(this);
         }
         //get audio length
         //create image file
-        normalButtons();
     }
 
     public int getImageAmount() {
@@ -147,13 +151,13 @@ public class CreatorMain {
     }
 
     private void loadImageScreen(){
-        this.loadingButtons();
         if(! editor.anySelected()){
-            normalButtons();
+        	loadingButtons();
             return;
         }
         GetImageTask task = new GetImageTask(searchedTerm);
-        task.run();
+        ExecutorService ex = Executors.newSingleThreadExecutor();
+        ex.submit(task);
         task.setOnSucceeded(e -> {
             imageScreenUp();
         });
@@ -161,12 +165,14 @@ public class CreatorMain {
     }
 
     public void imageScreenUp(){
+    	loadingButtons();
         currentScreen="image";
         images = new ImageSelector();
         screenAndButtons.setCenter(images);
     }
 
     public FinalPreview getPreview() {
+    	preview = new FinalPreview();
         return preview;
     }
 
@@ -175,6 +181,7 @@ public class CreatorMain {
         screenAndButtons.setCenter(preview.getScreen());
         next.setText("Finish");
         currentScreen="preview";
+        loadingButtons();
     }
 
     private void addButtons(){
@@ -194,23 +201,25 @@ public class CreatorMain {
         	closeRequest();
         });
 
-        nav.setPadding(new Insets(10,10,10,10));
+        nav.setPadding(new Insets(10,10,0,10));
         nav.setSpacing(10);
+        nav.setAlignment(Pos.CENTER_RIGHT);
         //Loading . . .
         load = new Text("");
         load.setFill(Color.RED);
         prog.setOpacity(0);
         prog.setMaxWidth(20);
-        nav.getChildren().addAll(back, next, cancel);
+        nav.getChildren().addAll(prog, back, next, cancel);
         screenAndButtons.setBottom(nav);
     }
 
     private void loadingButtons(){
-    	prog.setOpacity(100);
+    	prog.setOpacity(0);
     }
 
     private void normalButtons(){
-    	prog.setOpacity(0);
+    	//prog.setOpacity(0);
+    	prog.setOpacity(100);
     }
 
     public void close(){
@@ -222,11 +231,13 @@ public class CreatorMain {
     }
 
     private void backButtonClicked(){
+    	loadingButtons();
         if(currentScreen == "preview"){
             screenAndButtons.setCenter(images);
             currentScreen="image";
             next.setText("Next");
             next.setDisable(false);
+            preview.stop();
         }else if(currentScreen == "create"){
             searchScreenUp();
             currentScreen="search";

@@ -162,7 +162,7 @@ public class TextViewer {
 				mainScreen.invalidSearch();
 			}else {
 				textArea=dummy;
-				textArea.setMinHeight(600);
+				textArea.setMinHeight(550);
 				textArea.setOnMouseClicked(new EventHandler<MouseEvent>() {
 					@Override
 					public void handle(MouseEvent mouseEvent) {

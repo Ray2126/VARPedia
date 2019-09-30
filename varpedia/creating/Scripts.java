@@ -96,8 +96,10 @@ public class Scripts {
 			});
 			
 			//Resample the bitrate of all the chunks
+			printWriter.println("rm -f -r ./resampledAudio");
+			printWriter.println("mkdir resampledAudio");
 			for(int i = 1; i < files.length+1; i++) {
-				printWriter.println("ffmpeg -i ./audio/"+i+".wav -ar 25600 ./resampledAudio/"+i+".wav &> /dev/null");
+				printWriter.println("ffmpeg -y -i ./audio/"+i+".wav -ar 25600 ./resampledAudio/"+i+".wav &> /dev/null");
 			}
       
 			printWriter.println("sox ./resampledAudio/*.wav output.wav");
@@ -460,9 +462,11 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("TERM="+name);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y pre.mp4 &> /dev/null" );
-			printWriter.println("ffmpeg -y -i pre.mp4 -vf drawtext=\"fontfile=OpenSans-Bold.ttf: text='$TERM': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
+
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/output.mp4  &> /dev/null" );
+			printWriter.println("ffmpeg -y -i ./creations/output.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
+			printWriter.println("rm -f ./creations/output.mp4");
+
 			printWriter.close();
 
 			return tempScript;
@@ -480,7 +484,7 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
 			printWriter.println("amount="+amount);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
 
 			printWriter.close();
 

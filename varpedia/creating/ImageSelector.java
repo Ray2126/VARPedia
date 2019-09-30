@@ -44,6 +44,8 @@ public class ImageSelector extends BorderPane{
 	ArrayList<String> names;
 	ArrayList<String> selected;
 	Scripts scripts;
+	private VBox _rowsPane;
+	private Text _place;
 
 	
 	public ImageSelector() {
@@ -60,6 +62,10 @@ public class ImageSelector extends BorderPane{
 		_listOfSelectedImages.setMinHeight(100);
 		_listOfSelectedImages.setStyle("-fx-alignment: CENTER-RIGHT;");
 		_listOfSelectedImages.setPlaceholder(new Text("Please select some images"));
+		//You must have at least one image selected to continue
+		_place = new Text("");
+		_place.setFont(Font.font(Font.getDefault().getName(),15));
+		_place.setFill(Color.RED);
 		
 		//Read the images from the directory
 		File imagesDir = new File("images");
@@ -96,10 +102,10 @@ public class ImageSelector extends BorderPane{
 			row2.getChildren().addAll(_listOfImages.get(i));
 		}
 		
-		VBox rowsPane = new VBox();
-		rowsPane.setSpacing(20);
-		rowsPane.setAlignment(Pos.CENTER);
-		rowsPane.setPadding(new Insets(10,20,10,20));
+		_rowsPane = new VBox();
+		_rowsPane.setSpacing(20);
+		_rowsPane.setAlignment(Pos.CENTER);
+		_rowsPane.setPadding(new Insets(10,20,10,20));
 		
 
 		HBox title = new HBox();
@@ -109,9 +115,9 @@ public class ImageSelector extends BorderPane{
 		title.getChildren().addAll(_title);
 		_title.setFont(Font.font(Font.getDefault().getName(),20));
 		_topToBottomText.setFont(Font.font(Font.getDefault().getName(),15));
-		rowsPane.getChildren().addAll(title, row1, row2);
+		_rowsPane.getChildren().addAll(title, row1, row2, _place);
 		//this.setTop(title);
-		this.setCenter(rowsPane);
+		this.setCenter(_rowsPane);
 		BorderPane.setAlignment(_listOfSelectedImages,Pos.BOTTOM_CENTER);
 		//this.setBottom(_listOfSelectedImages);
 	}
@@ -137,8 +143,6 @@ public class ImageSelector extends BorderPane{
 		scripts.getScript("clearSelImg", new String[]{});
 		while(iter.hasNext()){
 			String name = iter.next();
-			//cp script
-			System.out.println(name);
 			scripts.getScript("copyImg", new String[]{name});
 		}
 
@@ -147,12 +151,10 @@ public class ImageSelector extends BorderPane{
 
 	public boolean isSelected() {
 		if(_listOfSelectedImages.getItems().isEmpty()){
-			Text place = new Text("You must have at least one image selected to continue");
-			place.setFont(Font.font(Font.getDefault().getName(),15));
-			place.setFill(Color.RED);
-			_listOfSelectedImages.setPlaceholder(place);
+			_place.setText("You must have at least one image selected to continue");
 			return false;
 		}else{
+			_place.setText("");
 			return true;
 		}
 	}
