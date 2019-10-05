@@ -140,7 +140,7 @@ public class VoiceViewer {
         ObservableList<Audio> audioSelected;
         audioSelected = audioTable.getSelectionModel().getSelectedItems();
         if(audioSelected.size() != 0) {
-            Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete " + audioSelected.get(0).toString(), ButtonType.YES, ButtonType.NO);
+            Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = del.showAndWait();
             if (result.get() == ButtonType.YES){
                 scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});

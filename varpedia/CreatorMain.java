@@ -1,6 +1,5 @@
 package varpedia;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,13 +10,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import varpedia.creating.*;
 
@@ -29,7 +25,6 @@ public class CreatorMain {
 
     private CreationTable tableParent;
     private String searchedTerm;
-    private String creationName;
     private int imageAmount;
     private Button next;
     private String currentScreen;
@@ -46,11 +41,11 @@ public class CreatorMain {
     private HBox loadingNav;
     private ProgressIndicator prog;
     private Button cancel;
-    private Text load;
 
     public CreatorMain(CreationTable parent){
         scripts = new Scripts();
         scripts.getScript("cleanup", new String[]{});
+        //Need to reload listed creations on exit
         this.tableParent = parent;
         search = new SearchSelector();
         editor = new ChunkEditorScreen();
@@ -63,6 +58,9 @@ public class CreatorMain {
         loadingNav = new HBox();
     }
 
+    /**
+     * Initial screen up when entering create mode
+     */
     public void beginCreate() {
         addButtons();
         searchScreenUp();
@@ -70,13 +68,25 @@ public class CreatorMain {
         creationWindow.setTitle("Creation Maker");
         screen = new Scene(screenAndButtons, 1500, 1000);
         creationWindow.setScene(screen);
+        //When top right exit pressed does this
         creationWindow.setOnCloseRequest(e -> {
         	closeRequest();
         	e.consume();
         });
         creationWindow.show();
     }
-    
+
+    /**
+     * Set screen center to the search screen
+     */
+    private void searchScreenUp(){
+        screenAndButtons.setCenter(search.getScene());
+        back.setDisable(true);
+    }
+
+    /**
+     * Confirm closing with popup
+     */
     private void closeRequest() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	alert.setTitle("Are you sure?");
@@ -96,14 +106,21 @@ public class CreatorMain {
     	}
     }
 
-    private void searchScreenUp(){
-        screenAndButtons.setCenter(search.getScene());
-        back.setDisable(true);
+    /**
+     * Close creation window
+     * Have to clean up all temp created files
+     */
+    public void close(){
+        //cleanup files
+        scripts.getScript("cleanup", new String[]{});
+        creationWindow.close();
+        tableParent.loadCreations();
+        preview.stop();
     }
 
     private void loadCreateScreen(){
     	loadingButtons();
-        screenAndButtons.setCenter(search.getScene());
+        //screenAndButtons.setCenter(search.getScene());
         searchedTerm = search.getInput();
         
         if(searchedTerm.isEmpty()){
@@ -204,9 +221,6 @@ public class CreatorMain {
         nav.setPadding(new Insets(10,10,0,10));
         nav.setSpacing(10);
         nav.setAlignment(Pos.CENTER_RIGHT);
-        //Loading . . .
-        load = new Text("");
-        load.setFill(Color.RED);
         prog.setOpacity(0);
         prog.setMaxWidth(20);
         nav.getChildren().addAll(prog, back, next, cancel);
@@ -218,16 +232,7 @@ public class CreatorMain {
     }
 
     private void normalButtons(){
-    	//prog.setOpacity(0);
     	prog.setOpacity(100);
-    }
-
-    public void close(){
-        //cleanup files
-        scripts.getScript("cleanup", new String[]{});
-        creationWindow.close();
-        tableParent.loadCreations();
-        preview.stop();
     }
 
     private void backButtonClicked(){

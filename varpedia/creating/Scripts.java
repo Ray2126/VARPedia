@@ -99,7 +99,9 @@ public class Scripts {
 			printWriter.println("rm -f -r ./resampledAudio");
 			printWriter.println("mkdir resampledAudio");
 			for(int i = 1; i < files.length+1; i++) {
+			    printWriter.println("if [ -f ./audio/"+i+".wav  ]");
 				printWriter.println("ffmpeg -y -i ./audio/"+i+".wav -ar 25600 ./resampledAudio/"+i+".wav &> /dev/null");
+                printWriter.println("fi");
 			}
       
 			printWriter.println("sox ./resampledAudio/*.wav output.wav");
