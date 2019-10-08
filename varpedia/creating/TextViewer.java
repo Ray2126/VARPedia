@@ -12,52 +12,64 @@ import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import varpedia.CreatorMain;
+import varpedia.videoPlayer.PauseButton;
+import varpedia.videoPlayer.TimeSlider;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 //area to select options and edit text and play selected text chunks
 public class TextViewer {
-    BorderPane shell;
-	TextArea textArea;
-	BorderPane settings;
-	BorderPane bottomOptions;
-	String searchTerm;
-    VoiceViewer voiceDisp;
-	int saved;
-	Scripts scripts;
-	VBox settingsBox;
-	ComboBox<String> voices;
-	ComboBox<String> syns;
-	Text error;
+	
+    private BorderPane _mainPane;
+    private BorderPane _changeVoicesPane;
+	private TextArea textArea;
+	
+	private String searchTerm;
+	private VoiceViewer voiceDisp;
+	private int saved;
+	private Scripts scripts;
+	private VBox settingsBox;
+	private ComboBox<String> voices;
+	private ComboBox<String> syns;
+	private Text error;
+	private MediaPlayer _mediaPlayer;
+	private TimeSlider _timeSlider;
+	private PauseButton _pauseButton;
 
 	public TextViewer(VoiceViewer voiceDisp){
 		scripts = new Scripts();
-		scripts.getScript("cleanup", new String[]{});
 		saved = 0;
 	    textArea = new TextArea();
 	    textArea.setOnMousePressed(e -> {error.setText("");});
-	    settings = new BorderPane();
+	    _changeVoicesPane = new BorderPane();
 		settingsBox = new VBox();
-	    bottomOptions = new BorderPane();
-	    shell = new BorderPane();
+	    _mainPane = new BorderPane();
 	    this.voiceDisp = voiceDisp;
+	    _timeSlider = new TimeSlider();
+	    _pauseButton = new PauseButton();
     }
 
     public BorderPane getView(){
-		return shell;
+		return _mainPane;
 	}
 
     private void createShell(){
 		loadOptions();
-		BorderPane.setAlignment(settings, Pos.TOP_CENTER);
-		shell.setTop(settings);
+		BorderPane.setAlignment(_changeVoicesPane, Pos.TOP_CENTER);
+		_mainPane.setTop(_changeVoicesPane);
 		addPlaySave();
 	}
 
@@ -107,8 +119,8 @@ public class TextViewer {
 		options.setAlignment(Pos.CENTER);
 		options.setPadding(new Insets(10,10,10,10));
 		options.setSpacing(20);
-		settings.setRight(options);
-		settings.setMaxWidth(1400);
+		_changeVoicesPane.setRight(options);
+		_changeVoicesPane.setMaxWidth(1400);
 	}
 
     public void setSearched(String searched, CreatorMain mainScreen){
@@ -120,7 +132,7 @@ public class TextViewer {
 		text.setPadding(new Insets(10,10,10,10));
 		text.getChildren().add(searchTermScreen);
         text.setAlignment(Pos.CENTER_LEFT);
-        settings.setLeft(text);
+        _changeVoicesPane.setLeft(text);
         startTaskSearch(mainScreen);
 		createShell();
     }
@@ -170,7 +182,7 @@ public class TextViewer {
 					}
 				});
 				textArea.setMaxWidth(1400);
-				shell.setCenter(textArea);
+				_mainPane.setCenter(textArea);
 				mainScreen.createScreenUp();
 			}
 		});
@@ -204,7 +216,7 @@ public class TextViewer {
 
 			}
 		}
-		shell.setCenter(textArea);
+		_mainPane.setCenter(textArea);
     }
 
     private void addPlaySave(){
@@ -217,13 +229,20 @@ public class TextViewer {
 		Button save = new Button("Save Selected");
 		save.setOnAction(e -> saveClicked());
 		playSave.setAlignment(Pos.BOTTOM_RIGHT);
-		playSave.getChildren().addAll(error, play, save);
+		
+		Region region = new Region();
+		HBox.setHgrow(region, Priority.ALWAYS);
+		Region region2 = new Region();
+		region2.setMinWidth(230);
+		HBox.setHgrow(region2, Priority.ALWAYS);
+		
+		playSave.getChildren().addAll(region2, error, play, save, region, _timeSlider, _pauseButton);
 		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
 		playSave.setMaxWidth(1400);
-		shell.setMaxWidth(1400);
-		shell.setBottom(playSave);
+		_mainPane.setMaxWidth(1400);
+		_mainPane.setBottom(playSave);
 	}
 
 	private void playClicked(){
@@ -242,11 +261,39 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		Process process = scripts.getScript("selectPlay", new String[]{selected, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
-		if (process.exitValue() == 1){
-			error.setText("Can't play selected text: Please change settings or a new chunk");
-		}else{
-			voiceDisp.loadAudio();
+		
+		String name = Integer.toString(saved);
+		scripts.getScript("selectSave", new String[]{selected, "temp", syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		
+		Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
+    	
+    	//Stop previous audio playing
+    	if(_mediaPlayer != null) {
+    		_mediaPlayer.stop();
+    	}
+    	
+    	_mediaPlayer = new MediaPlayer(audio);
+    	_mediaPlayer.play();
+    	
+    	_timeSlider.videoPlayed(_mediaPlayer);
+		_pauseButton.videoPlayed(_mediaPlayer);
+		
+		String cmd = "rm -f ./audio/temp.wav";
+		ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
+		try {
+			pb.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String cmd2 = "rm -f ./audio/temp.txt";
+		ProcessBuilder pb2 = new ProcessBuilder("bash", "-c", cmd2);
+		try {
+			pb2.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -272,7 +319,7 @@ public class TextViewer {
 		if (process.exitValue() == 1){
 			error.setText("Can't play selected text: Please change settings or a new chunk");
 		}else{
-			voiceDisp.loadAudio();
+			voiceDisp.refreshTable();
 		}
 	}
 }

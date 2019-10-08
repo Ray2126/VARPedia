@@ -7,67 +7,89 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import varpedia.videoPlayer.PauseButton;
+import varpedia.videoPlayer.TimeSlider;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+/**
+ * The bottom section of the creating chunks screen. Contains the table of audio as well
+ * the play and delete buttons
+ *
+ */
 public class VoiceViewer {
-	//Area to see created audio files for each chunk for the current creation being created
 
     private TableView<Audio> audioTable;
-    private VBox vBox;
-    private HBox hBox;
+    private VBox mainPane;
+    private HBox bottomPane;
     private Scripts scripts;
+	private MediaPlayer _mediaPlayer;
+	private TimeSlider _timeSlider;
+	private Button _playButton;
+	private Button _deleteButton;
+	private PauseButton _pauseButton;
 
-    //Returns layout of creations and functions
-    public VBox getAudioList(){
-        if(vBox == null){
-            setUp();
-            vBox = new VBox();
-            audioTable.setMaxHeight(200);
-            vBox.setAlignment(Pos.CENTER);
-            vBox.getChildren().addAll(audioTable, hBox);
-        }
-        return vBox;
-    }
-
-    //Set up of the layout
-    private void setUp(){
+    public VoiceViewer() {
         scripts = new Scripts();
+        
         //Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
         nameColumn.setMinWidth(1400);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
+        //Audio Table
         audioTable = new TableView<Audio>();
         audioTable.setPlaceholder(new Label("You currently have no creations"));
-        loadAudio();
+        refreshTable();
         audioTable.getColumns().addAll(nameColumn);
         audioTable.setMaxWidth(1400);
+        audioTable.setMaxHeight(200);
 
-        Button playButton = new Button("play");
-        playButton.setOnAction(e -> startTask());
-        Button deleteButton = new Button("delete");
-        deleteButton.setOnAction(e -> deleteButtonClicked());
+        //Play, delete and pause buttons
+        _playButton = new Button("Play");
+        _playButton.setOnAction(e -> playButtonClicked());
+        _deleteButton = new Button("Delete");
+        _deleteButton.setOnAction(e -> deleteButtonClicked());
+        _pauseButton = new PauseButton();
 
-        hBox = new HBox();
-        hBox.setPadding(new Insets(10,10,10,10));
-        hBox.setSpacing(10);
-        hBox.setStyle("-fx-alignment: CENTER");
-        hBox.getChildren().addAll(playButton, deleteButton);
+        _timeSlider = new TimeSlider();
+        
+        Region region = new Region();
+		HBox.setHgrow(region, Priority.ALWAYS);
+		Region region2 = new Region();
+		region2.setMinWidth(230);
+		HBox.setHgrow(region2, Priority.ALWAYS);
+        
+        //HBox for the buttons
+        bottomPane = new HBox();
+        bottomPane.setPadding(new Insets(10,10,10,10));
+        bottomPane.setSpacing(10);
+        bottomPane.setStyle("-fx-alignment: CENTER");
+        bottomPane.setMaxWidth(1400);
+        bottomPane.getChildren().addAll(region2, _playButton, _deleteButton, region, _timeSlider, _pauseButton);
+        
+        //Set up vbox for table and buttons
+        mainPane = new VBox();
+        mainPane.setAlignment(Pos.CENTER);
+        mainPane.getChildren().addAll(audioTable, bottomPane);
     }
 
-
-    //Loads all current creations and displays in table
-    public void loadAudio(){
+	//Loads all current chunks and displays in table
+    public void refreshTable(){
         ObservableList<Audio> audios = FXCollections.observableArrayList();
-        Scripts scripts = new Scripts();
+        
         scripts.getScript("listAudio", null);
         try {
             // Open the file
@@ -93,64 +115,60 @@ public class VoiceViewer {
                     //Close the input stream
                     fstream2.close();
                 }catch(Exception e) {
-
+                	
                 }
             }
 
             //Close the input stream
             fstream.close();
         }catch(Exception e) {
-
+        	
         }
+        
         audioTable.setItems(audios);
     }
-
-    //Make video play in own thread so can do other things whilst it is playing
-    public void startTask()
-    {
-        // Create a Runnable
-        Runnable task = new Runnable()
-        {
-            public void run()
-            {
-                playButtonClicked();
-            }
-        };
-
-        // Run the task in a background thread
-        Thread backgroundThread = new Thread(task);
-        // Terminate the running thread if the application exits
-        backgroundThread.setDaemon(true);
-        // Start the thread
-        backgroundThread.start();
-    }
-
+     
     //Play selected creation
     private void playButtonClicked(){
-        ObservableList<Audio> audioSelected;
-        audioSelected = audioTable.getSelectionModel().getSelectedItems();
+    	ObservableList<Audio> audioSelected = getSelected();
         if(audioSelected.size() != 0) {
-            System.out.println(audioSelected.get(0).getNumber());
-            scripts.getScript("playAudio", new String[]{audioSelected.get(0).getNumber()});
+        	Media audio = new Media(new File(audioSelected.get(0).getNumber()+".wav").toURI().toString());
+        	
+        	//Stop previous audio playing
+        	if(_mediaPlayer != null) {
+        		_mediaPlayer.stop();
+        	}
+        	
+        	_mediaPlayer = new MediaPlayer(audio);
+        	_mediaPlayer.play();
+        	
+        	_timeSlider.videoPlayed(_mediaPlayer);
+    		_pauseButton.videoPlayed(_mediaPlayer);
         }
     }
 
-    //Delete selected creation
+	//Delete selected creation
     private void deleteButtonClicked(){
-        ObservableList<Audio> audioSelected;
-        audioSelected = audioTable.getSelectionModel().getSelectedItems();
+        ObservableList<Audio> audioSelected = getSelected();
         if(audioSelected.size() != 0) {
+        	//Get confirmation of delete
             Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = del.showAndWait();
             if (result.get() == ButtonType.YES){
                 scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
-                loadAudio();
-            }else {
+                refreshTable();
+            } else {
                 return;
             }
         }
     }
-
+    
+    //Get the currently selected items in table
+    public ObservableList<Audio> getSelected() {
+    	return audioTable.getSelectionModel().getSelectedItems();
+    }
+   
+    //Check if anything in the table is selected
     public boolean anySelected() {
         if(audioTable.getItems().isEmpty()){
             Text place = new Text("You must have at least one chunk of audio saved to continue");
@@ -162,4 +180,10 @@ public class VoiceViewer {
             return true;
         }
     }
+    
+    //Returns the pane containing the table and buttons
+    public VBox getMainPane(){
+        return mainPane;
+    }
+
 }

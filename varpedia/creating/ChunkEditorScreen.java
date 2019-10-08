@@ -17,7 +17,7 @@ public class ChunkEditorScreen {
         screen = new BorderPane();
         BorderPane.setAlignment(textSection.getView(), Pos.TOP_CENTER);
         screen.setTop(textSection.getView());
-        screen.setBottom(voiceSection.getAudioList());
+        screen.setBottom(voiceSection.getMainPane());
     }
     public BorderPane getScreen(){
         return screen;

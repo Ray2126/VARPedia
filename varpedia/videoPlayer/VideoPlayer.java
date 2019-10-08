@@ -1,8 +1,7 @@
-package varpedia;
+package varpedia.videoPlayer;
 
 import java.io.File;
 
-import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
@@ -15,41 +14,37 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import varpedia.Creation;
 
+/**
+ * Video player seen on the main screen and preview screen
+ */
 public class VideoPlayer extends VBox{
 
-	private Button _playPauseButton;
+	private PauseButton _playPauseButton;
 	private Button _skipForwardButton;
 	private Button _skipBackwardButton;
 	private Slider _volumeSlider;
-	private Slider _timeSlider;
+	private TimeSlider _timeSlider;
 	private VBox _mediaPlayerPane;
 	private MediaPlayer _mediaPlayer;
 	private MediaView _mediaView;
 	
-	/**
-	 * Video player seen on the main screen and preview screen
-	 */
+	
 	public VideoPlayer() {
-		_playPauseButton = new Button("Play");
+		_playPauseButton = new PauseButton();
 		_skipForwardButton = new Button(">>|");
 		_skipBackwardButton = new Button("|<<");
-		_timeSlider = new Slider(0,100,0);
+		_timeSlider = new TimeSlider();
 		_volumeSlider = new Slider(0,100,100);
 		
-		//Set play pause button to have set width as Play and Pause labels have different sizes
-		_playPauseButton.setPrefWidth(60);
-		
 		//Disable buttons when video is not played yet
-		_playPauseButton.setDisable(true);
 		_skipForwardButton.setDisable(true);
 		_skipBackwardButton.setDisable(true);
 		_volumeSlider.setDisable(true);
-		_timeSlider.setDisable(true);
 		
 		_mediaPlayerPane = new VBox();
 		
@@ -111,36 +106,16 @@ public class VideoPlayer extends VBox{
 	 */
 	private void changeGUIVideoHasBeenPlayed() {
 		//Re-enable buttons and sliders as video is now played
-		_playPauseButton.setDisable(false);
+		_playPauseButton.videoPlayed(_mediaPlayer);
 		_skipForwardButton.setDisable(false);
 		_skipBackwardButton.setDisable(false);
 		_volumeSlider.setDisable(false);
-		_timeSlider.setDisable(false);
 		
-		_playPauseButton.setText("Pause");
+		_timeSlider.videoPlayed(_mediaPlayer);
 		
-		//Makes the slider move as the video plays
-		_mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable arg0) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						_timeSlider.setValue((_mediaPlayer.getCurrentTime().toMillis() / _mediaPlayer.getTotalDuration().toMillis()) * 100);
-					}
-			});
-			}
-		});
+
 		
-		//Functionality to jump to certain parts of video by dragging slider
-		_timeSlider.valueProperty().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable arg0) {
-				if (_timeSlider.isPressed()) {
-					_mediaPlayer.seek(_mediaPlayer.getMedia().getDuration().multiply(_timeSlider.getValue()/100));
-				} 
-			}
-		});
+
 		
 		//Functionality for volume slider
 		_volumeSlider.valueProperty().addListener(new InvalidationListener() {
@@ -150,20 +125,20 @@ public class VideoPlayer extends VBox{
 			}
 		});
 		
-		//Add functionality of Play/pause button
-		_playPauseButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				if(_mediaPlayer.getStatus() == Status.PLAYING) {
-					_mediaPlayer.pause();
-					_playPauseButton.setText("Play");
-				}
-				else {
-					_mediaPlayer.play();
-					_playPauseButton.setText("Pause");
-				}
-			}
-		});
+//		//Add functionality of Play/pause button
+//		_playPauseButton.setOnAction(new EventHandler<ActionEvent>() {
+//			@Override
+//			public void handle(ActionEvent arg0) {
+//				if(_mediaPlayer.getStatus() == Status.PLAYING) {
+//					_mediaPlayer.pause();
+//					_playPauseButton.setText("Play");
+//				}
+//				else {
+//					_mediaPlayer.play();
+//					_playPauseButton.setText("Pause");
+//				}
+//			}
+//		});
 		
 		//Functionality of skip forward button
 		_skipForwardButton.setOnAction(new EventHandler<ActionEvent>() {

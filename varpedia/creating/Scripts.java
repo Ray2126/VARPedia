@@ -98,9 +98,10 @@ public class Scripts {
 			//Resample the bitrate of all the chunks
 			printWriter.println("rm -f -r ./resampledAudio");
 			printWriter.println("mkdir resampledAudio");
-			for(int i = 1; i < files.length+1; i++) {
-			    printWriter.println("if [ -f ./audio/"+i+".wav  ]");
-				printWriter.println("ffmpeg -y -i ./audio/"+i+".wav -ar 25600 ./resampledAudio/"+i+".wav &> /dev/null");
+			for(int i = 0; i < files.length; i++) {
+				String name = files[i].getName();
+			    printWriter.println("if [ -f ./audio/"+name+"  ]; then");
+				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+" &> /dev/null");
                 printWriter.println("fi");
 			}
       
@@ -337,10 +338,12 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
-			printWriter.println("#!/bin/bash");
-			printWriter.println("SELECTED="+name);
-			printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.wav");
-	
+//			printWriter.println("#!/bin/bash");
+//			printWriter.println("SELECTED="+name);
+//			printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.wav");
+			String cmd = "ffplay -loglevel quiet -autoexit "+name+".wav";
+			ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
+			pb.start();
 
 			return tempScript;
 		}catch (Exception e) {

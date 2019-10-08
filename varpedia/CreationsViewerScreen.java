@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import varpedia.videoPlayer.VideoPlayer;
 
 /**
  * The main screen containing the video player, creation table and buttons to play, delete and create creations.
