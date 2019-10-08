@@ -23,7 +23,7 @@ import varpedia.creating.*;
  */
 public class CreatorMain {
 
-    private CreationTable tableParent;
+	private Home home;
     private String searchedTerm;
     private int imageAmount;
     private Button next;
@@ -42,11 +42,11 @@ public class CreatorMain {
     private ProgressIndicator prog;
     private Button cancel;
 
-    public CreatorMain(CreationTable parent){
+    public CreatorMain(Home home){
+    	this.home = home;
         scripts = new Scripts();
         scripts.getScript("cleanup", new String[]{});
         //Need to reload listed creations on exit
-        this.tableParent = parent;
         search = new SearchSelector();
         editor = new ChunkEditorScreen();
         screenAndButtons = new BorderPane();
@@ -114,7 +114,7 @@ public class CreatorMain {
         //cleanup files
         scripts.getScript("cleanup", new String[]{});
         creationWindow.close();
-        tableParent.loadCreations();
+        home.showHome();
         preview.stop();
     }
 

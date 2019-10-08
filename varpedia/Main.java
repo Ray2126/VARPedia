@@ -31,15 +31,10 @@ public class Main extends Application{
 		Scripts scripts = new Scripts();
         scripts.getScript("cleanup", new String[]{});
 		
-		primaryStage.setTitle("VARpedia");
-    
-		BorderPane layout = new BorderPane();
-    
-		CreationsViewerScreen a = new CreationsViewerScreen();
+		primaryStage.setTitle("VARpedia Home");
 		
-		Scene scene = new Scene(layout, 1100, 1000);
+		Scene scene = new Scene(new Home(primaryStage), 1000, 550);
 		
-		layout.setCenter(a);
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();

@@ -25,10 +25,13 @@ public class CreationsViewerScreen extends VBox{
 	private CreationTable _creationTable;
 	private Button _playButton;
 	private Button _deleteButton;
-	private Button _createButton;
+	private Button homeButton;
+	private Home home;
 	
-	public CreationsViewerScreen() {
+	public CreationsViewerScreen(Home home) {
 		super(10);
+		
+		this.home = home;
 		
 		_videoPlayer = new VideoPlayer();
 		
@@ -51,7 +54,7 @@ public class CreationsViewerScreen extends VBox{
 		
 		_playButton = new Button("Play");
 		_deleteButton = new Button("Delete");
-		_createButton = new Button("Create");
+		homeButton = new Button("Home");
 		
 		_playButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
@@ -87,9 +90,8 @@ public class CreationsViewerScreen extends VBox{
 			
 		});
 		
-		_createButton.setOnAction(e -> {
-				CreatorMain c = new CreatorMain(_creationTable);
-				c.beginCreate();
+		homeButton.setOnAction(e -> {
+				home.showHome();
 		});
 		
 		//Pane for the buttons
@@ -101,7 +103,7 @@ public class CreationsViewerScreen extends VBox{
 		//Anchor create button to right side of HBox
 		Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
-		buttonsPane.getChildren().addAll(_playButton, _deleteButton, region, _createButton);
+		buttonsPane.getChildren().addAll(_playButton, _deleteButton, region, homeButton);
 		
 		this.setHeight(900);
 		this.setWidth(1200);
