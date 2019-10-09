@@ -17,7 +17,8 @@ import javafx.scene.layout.VBox;
 import varpedia.videoPlayer.VideoPlayer;
 
 /**
- * The main screen containing the video player, creation table and buttons to play, delete and create creations.
+ * The view creations screen containing the video player, creation table and buttons to play, 
+ * delete and return home.
  *
  */
 public class CreationsViewerScreen extends VBox{
@@ -64,31 +65,8 @@ public class CreationsViewerScreen extends VBox{
 			}
 		});
 		
-		_deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent arg0) {
-				Creation selectedItem = _creationTable.getSelectionModel().getSelectedItem();
-				
-				if(selectedItem != null) {
-					//Create a dialog for user to confirm their delete selection
-					Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-					((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
-					confirmAlert.setTitle("Confirmation");
-					confirmAlert.setHeaderText(null);
-					confirmAlert.setContentText("You are about to delete " + selectedItem.getName() + ". Are you sure?");
-					Optional<ButtonType> result = confirmAlert.showAndWait();
-					if(result.get() == ButtonType.OK) {
-						File file = new File("creations/" + selectedItem.getName() + ".mp4");
-						file.delete();
-					}
-				}
-				
-				_creationTable.loadCreations();
-				_videoPlayer.stop();
-
-			}
-			
+		_deleteButton.setOnAction(e -> {
+			deleteButtonClicked();
 		});
 		
 		homeButton.setOnAction(e -> {
@@ -101,7 +79,7 @@ public class CreationsViewerScreen extends VBox{
 		buttonsPane.setMaxWidth(980);
 		this.setAlignment(Pos.CENTER);
 		
-		//Anchor create button to right side of HBox
+		//Anchor home button to right side of HBox
 		Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
 		buttonsPane.getChildren().addAll(_playButton, _deleteButton, region, homeButton);
@@ -110,5 +88,35 @@ public class CreationsViewerScreen extends VBox{
 		this.setWidth(1200);
 		
 		this.getChildren().addAll(videoBox,tableBox, buttonsPane);
+	}
+
+	private void deleteButtonClicked() {
+		Creation selectedItem = _creationTable.getSelectionModel().getSelectedItem();
+		
+		if(selectedItem != null) {
+			
+			//Create a dialog for user to confirm their delete selection
+			Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+			((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
+			confirmAlert.setTitle("Confirmation");
+			confirmAlert.setHeaderText(null);
+			confirmAlert.setContentText("You are about to delete " + selectedItem.getName() + ". Are you sure?");
+			Optional<ButtonType> result = confirmAlert.showAndWait();
+			
+			if(result.get() == ButtonType.OK) {
+				File file = new File("creations/" + selectedItem.getName() + ".mp4");
+				file.delete();
+			}
+		}
+		
+		_creationTable.refreshTable();
+		
+		//If deleted creation is same as creation playing currently, stop the creation
+		File videoPlaying = new File(_videoPlayer.getMediaPlayer().getMedia().getSource());
+		if(videoPlaying.getName().equals(selectedItem.getName()+".mp4")) {
+			_videoPlayer.stop();
+			_videoPlayer.disposeMedia();
+		} 
+		
 	}
 }

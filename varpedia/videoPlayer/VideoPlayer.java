@@ -114,9 +114,6 @@ public class VideoPlayer extends VBox{
 		_timeSlider.videoPlayed(_mediaPlayer);
 		
 
-		
-
-		
 		//Functionality for volume slider
 		_volumeSlider.valueProperty().addListener(new InvalidationListener() {
 			@Override
@@ -124,21 +121,6 @@ public class VideoPlayer extends VBox{
 				_mediaPlayer.setVolume(_volumeSlider.getValue()/100);
 			}
 		});
-		
-//		//Add functionality of Play/pause button
-//		_playPauseButton.setOnAction(new EventHandler<ActionEvent>() {
-//			@Override
-//			public void handle(ActionEvent arg0) {
-//				if(_mediaPlayer.getStatus() == Status.PLAYING) {
-//					_mediaPlayer.pause();
-//					_playPauseButton.setText("Play");
-//				}
-//				else {
-//					_mediaPlayer.play();
-//					_playPauseButton.setText("Pause");
-//				}
-//			}
-//		});
 		
 		//Functionality of skip forward button
 		_skipForwardButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -161,6 +143,27 @@ public class VideoPlayer extends VBox{
 		if(_mediaPlayer != null) {
 			_mediaPlayer.stop();
 		}
+	}
+	
+	public MediaPlayer getMediaPlayer() {
+		return _mediaPlayer;
+	}
+	
+	/**
+	 * Reverts video player back to default state(not playing video)
+	 */
+	public void disposeMedia() {
+		_mediaPlayerPane.getChildren().remove(_mediaView);
+		
+		//Set a black box as a placeholder for the video
+		Rectangle r = new Rectangle(1000,500);
+		_mediaPlayerPane.getChildren().addAll(r);
+		
+		_playPauseButton.setDisable(true);
+		_skipForwardButton.setDisable(true);
+		_skipBackwardButton.setDisable(true);
+		_volumeSlider.setDisable(true);
+		_timeSlider.setDisable(true);
 	}
 	
 }

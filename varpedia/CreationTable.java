@@ -14,7 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import varpedia.creating.Scripts;
 
 /**
- * The table of creations seen on the main screen
+ * The table of creations seen on the view creations screen
  *
  */
 public class CreationTable extends TableView<Creation>{
@@ -31,15 +31,16 @@ public class CreationTable extends TableView<Creation>{
         nameColumn.setMinWidth(927);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
+        //When they have no creations
         this.setPlaceholder(new Label("You currently have no creations"));
         this.getColumns().addAll(numberColumn, nameColumn);
-        loadCreations();
+        refreshTable();
 	}
 	
     /**
      * Refreshes the view of the table
      */
-    public void loadCreations(){
+    public void refreshTable(){
         ObservableList<Creation> creations = FXCollections.observableArrayList();
         Scripts scripts =new Scripts();
         scripts.getScript("listCreations", new String[]{});
