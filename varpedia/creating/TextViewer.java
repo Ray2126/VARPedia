@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 //area to select options and edit text and play selected text chunks
 public class TextViewer {
@@ -53,7 +55,6 @@ public class TextViewer {
 		scripts = new Scripts();
 		saved = 0;
 	    textArea = new TextArea();
-	    textArea.setOnMousePressed(e -> {error.setText("");});
 	    _changeVoicesPane = new BorderPane();
 		settingsBox = new VBox();
 	    _mainPane = new BorderPane();
@@ -123,7 +124,7 @@ public class TextViewer {
 		_changeVoicesPane.setMaxWidth(1400);
 	}
 
-    public void setSearched(String searched, CreatorMain mainScreen){
+    public void setSearched(String searched){
 	    searchTerm = searched;
         Text searchTermScreen = new Text(searchTerm);
         HBox text = new HBox();
@@ -133,92 +134,24 @@ public class TextViewer {
 		text.getChildren().add(searchTermScreen);
         text.setAlignment(Pos.CENTER_LEFT);
         _changeVoicesPane.setLeft(text);
-        startTaskSearch(mainScreen);
 		createShell();
+
     }
 
-	//Task for having wikit search in own thread
-	public void startTaskSearch(CreatorMain mainScreen) {
-		Task<TextArea> task = new Task<TextArea>() {
-			@Override protected TextArea call() throws Exception {
-				Process process = scripts.getScript("search", new String[] {searchTerm});
-				if(process.exitValue() == 1) {
-					return null;
-				}
-				TextArea dummy = new TextArea();
-				try {
-					// Open the file
-					FileInputStream fstream = new FileInputStream(searchTerm+".text");
-					BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-
-					String strLine;
-					//Read File Line By Line
-					int index=0;
-					while ((strLine = br.readLine()) != null)   {
-						// Print the content on the console
-						dummy.appendText(strLine.trim()+ "\n");
-					}
-
-					//Close the input stream
-					fstream.close();
-
-				}catch(Exception e) {
-
-				}
-				return dummy;
-			}
-		};
-		task.setOnSucceeded(e -> {
-			TextArea dummy = task.getValue();
-			if(dummy == null) {
-				mainScreen.invalidSearch();
-			}else {
-				textArea=dummy;
-				textArea.setMinHeight(550);
-				textArea.setOnMouseClicked(new EventHandler<MouseEvent>() {
-					@Override
-					public void handle(MouseEvent mouseEvent) {
-						error.setText("");
-					}
-				});
-				textArea.setMaxWidth(1400);
-				_mainPane.setCenter(textArea);
-				mainScreen.createScreenUp();
+    public void setTextArea(TextArea textArea) {
+    	textArea.setMinHeight(550);
+    	textArea.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent mouseEvent) {
+				error.setText("");
 			}
 		});
-		// Run the task in a background thread
-		Thread backgroundThread = new Thread(task);
-		// Terminate the running thread if the application exits
-		backgroundThread.setDaemon(true);
-		// Start the thread
-		backgroundThread.start();
-	}
-
-	public void setText(){
-		if(searchTerm != null){
-			try {
-				// Open the file
-				FileInputStream fstream = new FileInputStream("dummy.text");
-				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-
-				String strLine;
-				//Read File Line By Line
-				int index=0;
-				while ((strLine = br.readLine()) != null)   {
-					// Print the content on the console
-					textArea.appendText(strLine+ "\n");
-				}
-
-				//Close the input stream
-				fstream.close();
-
-			}catch(Exception e) {
-
-			}
-		}
-		_mainPane.setCenter(textArea);
+    	textArea.setMaxWidth(1400);
+    	textArea.setOnMousePressed(e -> {error.setText("");});
+    	this.textArea=textArea;
+    	_mainPane.setCenter(this.textArea);
     }
-
+    
     private void addPlaySave(){
 		//Can't play selected text: Please change settings or a new chunk
 		error = new Text("");

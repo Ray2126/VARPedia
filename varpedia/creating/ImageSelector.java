@@ -36,10 +36,9 @@ public class ImageSelector extends BorderPane{
 	// getImages() method; wgets amount of images
 	
 	private Text _title;
-	private Text _topToBottomText;
 	private List<ImageDisplayBox> _listOfImages;
-	private ListView<String> _listOfSelectedImages;
-	private ObservableList<String> _observableListOfSelectedImages;
+
+	private List<String> _listOfSelectedImages;
 	private int amount;
 	ArrayList<String> names;
 	ArrayList<String> selected;
@@ -51,23 +50,22 @@ public class ImageSelector extends BorderPane{
 	public ImageSelector() {
 		_title = new Text("Choose the images you would like in your creation: ");
 		_title.setTextAlignment(TextAlignment.CENTER);
-		_topToBottomText = new Text("Order of images in creation: ");
-		_topToBottomText.setTextAlignment(TextAlignment.CENTER);
+
 		_listOfImages = new ArrayList<ImageDisplayBox>();
 		
-		_observableListOfSelectedImages = FXCollections.observableArrayList();
-		_listOfSelectedImages = new ListView<String>(_observableListOfSelectedImages);
-		_listOfSelectedImages.setMaxWidth(250);
-		_listOfSelectedImages.setMaxHeight(245);
-		_listOfSelectedImages.setMinHeight(100);
-		_listOfSelectedImages.setStyle("-fx-alignment: CENTER-RIGHT;");
-		_listOfSelectedImages.setPlaceholder(new Text("Please select some images"));
+		_listOfSelectedImages = FXCollections.observableArrayList();
+
 		//You must have at least one image selected to continue
 		_place = new Text("");
 		_place.setFont(Font.font(Font.getDefault().getName(),15));
 		_place.setFill(Color.RED);
 		
-		//Read the images from the directory
+
+	}
+
+	public void loadImages() {
+		_listOfImages.clear();
+		_listOfSelectedImages.clear();
 		File imagesDir = new File("images");
 		File[] images = imagesDir.listFiles();
 		BufferedImage image;
@@ -114,12 +112,10 @@ public class ImageSelector extends BorderPane{
 		title.setPadding(new Insets(0,20,30,20));
 		title.getChildren().addAll(_title);
 		_title.setFont(Font.font(Font.getDefault().getName(),20));
-		_topToBottomText.setFont(Font.font(Font.getDefault().getName(),15));
+		
 		_rowsPane.getChildren().addAll(title, row1, row2, _place);
-		//this.setTop(title);
 		this.setCenter(_rowsPane);
-		BorderPane.setAlignment(_listOfSelectedImages,Pos.BOTTOM_CENTER);
-		//this.setBottom(_listOfSelectedImages);
+		
 	}
 
 	public int getAmountSelected(){
@@ -130,9 +126,9 @@ public class ImageSelector extends BorderPane{
 	public void saveSelectedImages() {
 		List<BufferedImage> outputList = new ArrayList<BufferedImage>();
 		selected.clear();
-		for(int i = 0; i < _observableListOfSelectedImages.size(); i++) {
+		for(int i = 0; i < _listOfSelectedImages.size(); i++) {
 			for(int j = 0; j < _listOfImages.size(); j++) {
-				if(_observableListOfSelectedImages.get(i).equals(_listOfImages.get(j).getName())) {
+				if(_listOfSelectedImages.get(i).equals(_listOfImages.get(j).getName())) {
 					outputList.add(_listOfImages.get(j).getImage());
 					selected.add(names.get(j));
 				}
@@ -150,7 +146,7 @@ public class ImageSelector extends BorderPane{
 	}
 
 	public boolean isSelected() {
-		if(_listOfSelectedImages.getItems().isEmpty()){
+		if(_listOfSelectedImages.size() == 0){
 			_place.setText("You must have at least one image selected to continue");
 			return false;
 		}else{
@@ -183,10 +179,10 @@ public class ImageSelector extends BorderPane{
 				@Override
 				public void handle(ActionEvent arg0) {
 					if(_checkBox.isSelected()) {
-						_observableListOfSelectedImages.add(_imageNumber.getText());
+						_listOfSelectedImages.add(_imageNumber.getText());
 					}
 					else if((!_checkBox.isSelected())) {
-						_observableListOfSelectedImages.remove(_imageNumber.getText());
+						_listOfSelectedImages.remove(_imageNumber.getText());
 					}
 				}
 			});

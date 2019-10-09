@@ -33,7 +33,6 @@ public class VideoPlayer extends VBox{
 	private MediaPlayer _mediaPlayer;
 	private MediaView _mediaView;
 	
-	
 	public VideoPlayer() {
 		_playPauseButton = new PauseButton();
 		_skipForwardButton = new Button(">>|");
@@ -75,6 +74,10 @@ public class VideoPlayer extends VBox{
 		this.getChildren().addAll(_mediaPlayerPane, _timeSlider, bottomPane);
 	}
 	
+	/**
+	 * Play a creation
+	 * @param creation   the creation to be played
+	 */
 	public void playVideo(Creation creation) {
 		File creationToPlay = new File("creations/"+creation.getName()+".mp4");
 		
@@ -106,14 +109,12 @@ public class VideoPlayer extends VBox{
 	 */
 	private void changeGUIVideoHasBeenPlayed() {
 		//Re-enable buttons and sliders as video is now played
-		_playPauseButton.videoPlayed(_mediaPlayer);
 		_skipForwardButton.setDisable(false);
 		_skipBackwardButton.setDisable(false);
 		_volumeSlider.setDisable(false);
-		
 		_timeSlider.videoPlayed(_mediaPlayer);
+		_playPauseButton.videoPlayed(_mediaPlayer);
 		
-
 		//Functionality for volume slider
 		_volumeSlider.valueProperty().addListener(new InvalidationListener() {
 			@Override
@@ -139,6 +140,9 @@ public class VideoPlayer extends VBox{
 		});
 	}
 
+	/**
+	 * Stop the media player
+	 */
 	public void stop() {
 		if(_mediaPlayer != null) {
 			_mediaPlayer.stop();

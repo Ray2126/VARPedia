@@ -6,6 +6,10 @@ import javafx.beans.Observable;
 import javafx.scene.control.Slider;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * The time slider in the video player
+ *
+ */
 public class TimeSlider extends Slider{
 
 	public TimeSlider() {
@@ -13,17 +17,21 @@ public class TimeSlider extends Slider{
 		this.setDisable(true);
 	}
 	
-	public void videoPlayed(MediaPlayer mp) {
+	/**
+	 * Enable and add functionality to slider
+	 * @param mediaPlayer   mediaPlayer this slider is binded to
+	 */
+	public void videoPlayed(MediaPlayer mediaPlayer) {
 		this.setDisable(false);
 		
 		//Makes the slider move as the video plays
-		mp.currentTimeProperty().addListener(new InvalidationListener() {
+		mediaPlayer.currentTimeProperty().addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable arg0) {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						setValue((mp.getCurrentTime().toMillis() / mp.getTotalDuration().toMillis()) * 100);
+						setValue((mediaPlayer.getCurrentTime().toMillis() / mediaPlayer.getTotalDuration().toMillis()) * 100);
 					}
 				});
 			}
@@ -34,7 +42,7 @@ public class TimeSlider extends Slider{
 			@Override
 			public void invalidated(Observable arg0) {
 				if (isPressed()) {
-					mp.seek(mp.getMedia().getDuration().multiply(getValue()/100));
+					mediaPlayer.seek(mediaPlayer.getMedia().getDuration().multiply(getValue()/100));
 				} 
 			}
 		});

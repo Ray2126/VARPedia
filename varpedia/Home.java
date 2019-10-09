@@ -11,25 +11,30 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Home extends VBox{
+	
 	private Label title;
-	private Button play, creations, newCreation, help, exit;
-	Stage primaryStage;
-	Stage creationsStage;
+	private Button play, viewCreations, newCreation, help, exit;
+	private Stage primaryStage;
+	private Stage creationsStage;
 	
 	public Home(Stage primaryStage) {
 		title = new Label("VARpedia");
 		title.setFont(new Font("Arial", 30));
 		
 		play = new Button("Play Learning Game");
-		creations = new Button("View My Creations");
-		setCreations();
+		
+		viewCreations = new Button("View My Creations");
+		setViewCreations();
+		
 		newCreation = new Button("Create New");
 		setNewCreation();
+		
 		help = new Button("Get help");
+		
 		exit = new Button("Quit");
 		setExit();
 		
-		this.getChildren().addAll(title, play, creations, newCreation, help, exit);
+		this.getChildren().addAll(title, play, viewCreations, newCreation, help, exit);
 		
 		this.primaryStage = primaryStage;
 		creationsStage = new Stage();
@@ -39,6 +44,9 @@ public class Home extends VBox{
 		this.setAlignment(Pos.CENTER_LEFT);
 	}
 	
+	/**
+	 * Show the home screen
+	 */
 	public void showHome() {
 		if(creationsStage.isShowing()) {
 			creationsStage.close();
@@ -46,8 +54,11 @@ public class Home extends VBox{
 		primaryStage.show();
 	}
 	
-	private void setCreations() {
-		creations.setOnAction(e ->{
+	/**
+	 * Add functionality to viewCreations button
+	 */
+	private void setViewCreations() {
+		viewCreations.setOnAction(e ->{
 			creationsStage.sizeToScene();
 			BorderPane layout = new BorderPane();
 		    
@@ -61,6 +72,9 @@ public class Home extends VBox{
 		});
 	}
 	
+	/**
+	 * Add functionality to newCreation button
+	 */
 	private void setNewCreation() {
 		newCreation.setOnAction(e ->{
 			CreatorMain creator = new CreatorMain(this);
@@ -69,6 +83,9 @@ public class Home extends VBox{
 		});
 	}
 	
+	/**
+	 * Add functionality to exit button
+	 */
 	private void setExit() {
 		exit.setOnAction(e ->{
 			primaryStage.close();

@@ -23,6 +23,7 @@ public class Main extends Application {
 	private File _selectedImagesFolder;
 	private File _resampledAudioFolder;
 
+	
 	public static void main(String args[]) {
 		launch(args);
 	}
