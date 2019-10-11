@@ -176,7 +176,8 @@ public class Scripts {
 			printWriter.println("mkdir ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name+"/quiz");
 			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+"/"+name+".mp4");
-			printWriter.println("mv noText.mp4 ./creations/"+name+"/quiz/"+searched+".mp4");
+      //Create text file for searched
+			printWriter.println("mv ./creations/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
 
 			printWriter.close();
 
@@ -448,8 +449,9 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./noText.mp4  &> /dev/null" );
-			printWriter.println("ffmpeg -y -i ./noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/noText.mp4  &> /dev/null" );
+			printWriter.println("ffmpeg -y -i ./creations/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
+			//printWriter.println("rm -f ./creations/output.mp4");
 
 			printWriter.close();
 
