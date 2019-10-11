@@ -130,6 +130,7 @@ public class MusicSelectorScreen extends VBox{
 		    	public void handle(ActionEvent actionEvent) {
 		    		_musicTable.getSelectionModel().select(getTableRow().getIndex());
 		    		_selectedMusic = _musicTable.getSelectionModel().getSelectedItem();
+		    		System.out.println(_selectedMusic);
 		    	}
 		    });
 
