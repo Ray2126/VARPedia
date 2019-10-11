@@ -31,11 +31,11 @@ public class ChunkEditorScreen {
         return voiceSection.anySelected();
     }
 
-    public void combineTheAudio(CreatorMain mainScreen) {
+    public void combineTheAudio(CreatorMain mainScreen, String music) {
         Scripts scripts = new Scripts();
         Task<Integer> task = new Task<Integer>() {
             @Override protected Integer call() throws Exception {
-                Process process = scripts.getScript("mergeAudio", new String[]{});
+                Process process = scripts.getScript("mergeAudio", new String[]{music});
                 return process.exitValue();
             }
         };

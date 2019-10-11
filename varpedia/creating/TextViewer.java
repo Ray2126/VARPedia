@@ -195,7 +195,6 @@ public class TextViewer {
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
 		
-		String name = Integer.toString(saved);
 		scripts.getScript("selectSave", new String[]{selected, "temp", syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
 		
 		Media audio = new Media(new File("./audio/temp.wav").toURI().toString());

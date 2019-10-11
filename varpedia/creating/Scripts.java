@@ -29,7 +29,7 @@ public class Scripts {
 					tempScript = cleanupScript();
 					break;
 				case "mergeAudio":
-					tempScript = mergeAudioScript();
+					tempScript = mergeAudioScript(params[0]);
 					break;
 				case "deleteAudio":
 					tempScript = deleteAudioScript(params[0]);
@@ -72,7 +72,7 @@ public class Scripts {
 		return null;
 	}
 
-	public File mergeAudioScript() {
+	public File mergeAudioScript(String music) {
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -99,25 +99,23 @@ public class Scripts {
                 printWriter.println("fi");
 			}
       
-			printWriter.println("sox ./resampledAudio/*.wav output.wav");
-			//printWriter.println("ffmpeg -q -f concat -safe 0 -i <( for f in ./audio/*.wav; do echo \"file '$(pwd)/$f'\";done ) output.wav &> /dev/null");
-//			  File dir = new File("audio");
-//			  File[] directoryListing = dir.listFiles();
-//			  if (directoryListing != null) {
-//			    for (File child : directoryListing) {
-//			      // Do something with child
-//			    	System.out.println(child.getName());
-//			    	if(child.getName().contains(".wav")) {
-//			    		printWriter.println("ffmpeg -y -i ./audio/"+child.getName()+" -ar 41000 ./audio/"+child.getName()+" &> /dev/null");
-//			    	}
-//			    }
-//			  } else {
-//			    // Handle the case where dir is not really a directory.
-//			    // Checking dir.isDirectory() above would not be sufficient
-//			    // to avoid race conditions with another process that deletes
-//			    // directories.
-//			  }
-//			printWriter.println("ffmpeg -y -i ./audio/*.wav -ar 48000 &> /dev/null");
+			printWriter.println("sox ./resampledAudio/*.wav voice.wav");
+			
+			if(!music.equals("No music")) {
+				printWriter.println("sox -v 0.2 ../music/"+music+".wav quiet.wav");
+				printWriter.println("ffmpeg -y -stream_loop 20 -i quiet.wav -codec copy loop.wav >& /dev/null");
+				printWriter.println("length=$(soxi -D voice.wav)");
+				printWriter.println("ffmpeg -y -i loop.wav -ss 0 -to $length -codec copy cutLoop.wav >& /dev/null");
+				printWriter.println("sox -M voice.wav cutLoop.wav output.wav");
+				
+				printWriter.println("rm -f quiet.wav");
+				printWriter.println("rm -f loop.wav");
+				printWriter.println("rm -f cutLoop.wav");
+				printWriter.println("rm -f voice.wav");
+			}
+			else {
+				printWriter.println("mv voice.wav output.wav");
+			}
 
 			printWriter.close();
 
@@ -309,7 +307,6 @@ public class Scripts {
 	}
 
 	public File playAudioScript(String name) {
-		System.out.println("playing: "+name);
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -449,9 +446,10 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
+
 			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/noText.mp4  &> /dev/null" );
 			printWriter.println("ffmpeg -y -i ./creations/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
-			//printWriter.println("rm -f ./creations/output.mp4");
+			printWriter.println("rm -f ./creations/output.mp4");
 
 			printWriter.close();
 

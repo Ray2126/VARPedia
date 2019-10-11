@@ -31,10 +31,11 @@ public class CreatorMain {
 	private Stage stage;
 	
 	private Home home;
-	private SearchSelector searchScreen;
+	private SearchSelectorScreen searchScreen;
 	private ChunkEditorScreen chunkScreen;
-	private ImageSelector imagesScreen;
-	private FinalPreview previewScreen;
+	private MusicSelectorScreen musicScreen;
+	private ImageSelectorScreen imagesScreen;
+	private FinalPreviewScreen previewScreen;
 	private String currentScreen;
 	
 	private HBox navBar;
@@ -56,9 +57,11 @@ public class CreatorMain {
         stage = new Stage();
         mainPane = new BorderPane();
         
-        searchScreen = new SearchSelector();
+        searchScreen = new SearchSelectorScreen();
         chunkScreen = new ChunkEditorScreen();
-        imagesScreen = new ImageSelector();
+        musicScreen = new MusicSelectorScreen();
+        imagesScreen = new ImageSelectorScreen();
+
         
         //Initialize nav bar
         navBar = new HBox();
@@ -202,6 +205,14 @@ public class CreatorMain {
         mainPane.setCenter(chunkScreen.getScreen());
         currentScreen="create";
     }
+    
+    /**
+     * Set music screen to center
+     */
+    private void musicScreenUp() {
+    	currentScreen = "music";
+    	mainPane.setCenter(musicScreen);
+    }
 
 	/**
 	 * Set up image screen and get images from Flickr
@@ -248,7 +259,7 @@ public class CreatorMain {
         //make sure images selected
         if(imagesScreen.isSelected()) {
         	showProgressIndicator();
-            chunkScreen.combineTheAudio(this);
+            chunkScreen.combineTheAudio(this, musicScreen.getSelectedMusic().getName());
         }
     }
     
@@ -263,8 +274,9 @@ public class CreatorMain {
         hideProgressIndicator();
     }
     
-    public FinalPreview getPreview() {
-    	previewScreen = new FinalPreview(searchScreen.getInput());
+
+    public FinalPreviewScreen getPreview() {
+    	previewScreen = new FinalPreviewScreen(searchScreen.getInput());
         return previewScreen;
     }
 
@@ -277,8 +289,12 @@ public class CreatorMain {
             previewScreen.stop();
         }
         else if(currentScreen=="image"){
-            mainPane.setCenter(chunkScreen.getScreen());
-            currentScreen="create";
+            mainPane.setCenter(musicScreen);
+            currentScreen="music";
+        }
+        else if(currentScreen == "music") {
+        	mainPane.setCenter(chunkScreen.getScreen());
+        	currentScreen = "create";
         }
         else if(currentScreen == "create"){
             searchScreenUp();
@@ -290,7 +306,9 @@ public class CreatorMain {
         if(currentScreen == "search"){
             loadChunkScreen();
         }else if(currentScreen == "create") {
-            loadImageScreen();
+            musicScreenUp();
+        }else if(currentScreen == "music") {
+        	loadImageScreen();
         }else if(currentScreen == "image"){
             loadPreviewScreen();
         }else if(currentScreen == "preview"){

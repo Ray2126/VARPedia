@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 //Name creation and preview video of creation
-public class FinalPreview {
+public class FinalPreviewScreen {
     VideoPlayer videoPlayer;
     TextField nameInput;
     VBox name;
@@ -34,7 +34,7 @@ public class FinalPreview {
     Text bad;
     String searched;
 
-    public FinalPreview(String searched){
+    public FinalPreviewScreen(String searched){
     	this.searched = searched;
         scripts = new Scripts();
         HBox videoBox = new HBox();

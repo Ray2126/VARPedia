@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import varpedia.creating.MusicSelectorScreen;
 import varpedia.creating.Scripts;
 
 public class Main extends Application {
