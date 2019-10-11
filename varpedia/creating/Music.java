@@ -1,19 +1,24 @@
 package varpedia.creating;
 
+import java.io.File;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import varpedia.videoPlayer.PauseButton;
 
 public class Music {
 	
 	private String _name;
 	private RadioButton _radioButton;
-	private Button _button;
 	
 	public Music(String name) {
 		_name = name;
 		_radioButton = new RadioButton();
-		_button = new Button("Play");
 	}
+
+
 
 	public String getName() {
 		return _name;
@@ -31,11 +36,4 @@ public class Music {
 		_radioButton = radioButton;
 	}
 	
-	public Button getButton() {
-		return _button;
-	}
-	
-	public void setButton(Button button) {
-		_button = button;
-	}
 }

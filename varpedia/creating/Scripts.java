@@ -331,7 +331,6 @@ public class Scripts {
 	}
 
 	public File playAudioScript(String name) {
-		System.out.println("playing: "+name);
 		try {
 			File tempScript = File.createTempFile("script", null);
 
