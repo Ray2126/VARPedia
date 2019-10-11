@@ -32,7 +32,7 @@ private String _wordToSearch;
 	private String getAPIKey(String key) throws IOException{
 
 		String apiKeyFile = System.getProperty("user.dir") 
-				+ System.getProperty("file.separator")+ "flickr-api-keys.txt"; 
+				+ System.getProperty("file.separator")+ "resources" + System.getProperty("file.separator") + "flickr-api-keys.txt"; 
 
 		File file = new File(apiKeyFile); 
 		BufferedReader br = new BufferedReader(new FileReader(file)); 
