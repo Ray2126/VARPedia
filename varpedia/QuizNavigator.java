@@ -28,6 +28,7 @@ public class QuizNavigator {
 	private TextField guessInput;
 	private List<String> guesses;
 	private List<String> creations;
+	private List<String> actual;
 	private int currentVidIndex;
 	private Home home;
 	
@@ -43,6 +44,8 @@ public class QuizNavigator {
         videoPlayer = new VideoPlayer();
         videoBox.getChildren().addAll(videoPlayer);
         
+        guesses = new ArrayList<String>();
+        
         currentVidIndex = 0;
         HBox options = new HBox();
         options.setAlignment(Pos.CENTER);
@@ -52,13 +55,11 @@ public class QuizNavigator {
         options.setSpacing(10);
         options.setPadding(new Insets(10,10,10,10));
         next.setOnAction(e -> {
-        	//guesses.add(guessInput.getText());
         	if(currentVidIndex < creations.size()-1) {
             	currentVidIndex++;
-            	System.out.println(currentVidIndex);
             	playNextVid();	
         	}else {
-        		
+        		//Last video is played so show feedback screen
         	}
         });
         
@@ -74,6 +75,8 @@ public class QuizNavigator {
 	}
 	
 	private void playNextVid() {
+		guesses.add(guessInput.getText());
+		guessInput.clear();
 		videoPlayer.stop();
 		videoPlayer.playQuizVideo(creations.get(currentVidIndex));
 	}

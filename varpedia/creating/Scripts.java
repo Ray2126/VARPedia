@@ -175,6 +175,7 @@ public class Scripts {
 			printWriter.println("mkdir ./creations/"+name+"/quiz");
 			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+"/"+name+".mp4");
       //Create text file for searched
+			printWriter.println("cat "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
 			printWriter.println("mv ./creations/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
 
 			printWriter.close();
