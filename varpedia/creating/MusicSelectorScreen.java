@@ -1,6 +1,8 @@
 package varpedia.creating;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,8 +10,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -31,8 +35,8 @@ public class MusicSelectorScreen extends VBox{
 		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		
 		//Checkboxes
-		TableColumn<Music, CheckBox> selectColumn = new TableColumn<Music, CheckBox>("Select:");
-		selectColumn.setCellValueFactory(new PropertyValueFactory<>("checkBox"));
+		TableColumn<Music, RadioButton> selectColumn = new TableColumn<Music, RadioButton>("Select:");
+		selectColumn.setCellValueFactory(new PropertyValueFactory<>("radioButton"));
 		
 		//Buttons
 		TableColumn<Music, Button> buttonColumn = new TableColumn<Music, Button>("Preview:");
@@ -45,7 +49,17 @@ public class MusicSelectorScreen extends VBox{
 		
 		getChildren().addAll(_title, _musicTable);
 		setAlignment(Pos.CENTER);
-	}
+		
+		//Only allow one selection
+		List<RadioButton> buttons = new ArrayList<>();
+		for (Music item : _musicTable.getItems()) {
+			buttons.add(selectColumn.getCellObservableValue(item).getValue());
+		}
+		ToggleGroup group = new ToggleGroup();
+		for(RadioButton button : buttons) {
+			button.setToggleGroup(group);
+		}
+	} 
 	
 	//Get all of the music
 	public ObservableList<Music> getMusic() {

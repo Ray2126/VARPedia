@@ -1,17 +1,17 @@
 package varpedia.creating;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
+import javafx.scene.control.RadioButton;
 
 public class Music {
 	
 	private String _name;
-	private CheckBox _checkBox;
+	private RadioButton _radioButton;
 	private Button _button;
 	
 	public Music(String name) {
 		_name = name;
-		_checkBox = new CheckBox();
+		_radioButton = new RadioButton();
 		_button = new Button("Play");
 	}
 
@@ -23,12 +23,12 @@ public class Music {
 		_name = name;
 	}
 
-	public CheckBox getCheckBox() {
-		return _checkBox;
+	public RadioButton getRadioButton() {
+		return _radioButton;
 	}
 
-	public void setCheckBox(CheckBox checkBox) {
-		_checkBox = checkBox;
+	public void setRadioButton(RadioButton radioButton) {
+		_radioButton = radioButton;
 	}
 	
 	public Button getButton() {
