@@ -95,14 +95,14 @@ public class Scripts {
 			for(int i = 0; i < files.length; i++) {
 				String name = files[i].getName();
 			    printWriter.println("if [ -f ./audio/"+name+"  ]; then");
-				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+" &> /dev/null");
+				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+"");
                 printWriter.println("fi");
 			}
       
 			printWriter.println("sox ./resampledAudio/*.wav voice.wav");
 			
 			if(!music.equals("No music")) {
-				printWriter.println("sox -v 0.2 ./music/"+music+".wav quiet.wav");
+				printWriter.println("sox -v 0.2 ./resources/music/"+music+".wav quiet.wav");
 				printWriter.println("ffmpeg -y -stream_loop 20 -i quiet.wav -codec copy loop.wav >& /dev/null");
 				printWriter.println("length=$(soxi -D voice.wav)");
 				printWriter.println("ffmpeg -y -i loop.wav -ss 0 -to $length -codec copy cutLoop.wav >& /dev/null");

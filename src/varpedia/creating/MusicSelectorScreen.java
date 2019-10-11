@@ -98,7 +98,7 @@ public class MusicSelectorScreen extends VBox{
 	
 	//Get all of the music from music folder
 	private ObservableList<Music> getMusic() {
-		File file = new File("./music");
+		File file = new File("resources/music");
 		File[] files = file.listFiles();
 		
 		ObservableList<Music> musicList = FXCollections.observableArrayList();
@@ -168,7 +168,7 @@ public class MusicSelectorScreen extends VBox{
 			    public void handle(ActionEvent actionEvent) {
 			    	_musicTable.getSelectionModel().select(getTableRow().getIndex());
 
-			    	Media audio = new Media(new File("./music/" + _musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
+			    	Media audio = new Media(new File("resources/music/" + _musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
 		        	
 		        	//Stop previous audio playing
 		        	if(_mediaPlayer != null) {
