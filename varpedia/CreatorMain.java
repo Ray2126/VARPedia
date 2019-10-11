@@ -33,6 +33,7 @@ public class CreatorMain {
 	private Home home;
 	private SearchSelectorScreen searchScreen;
 	private ChunkEditorScreen chunkScreen;
+	private MusicSelectorScreen musicScreen;
 	private ImageSelectorScreen imagesScreen;
 	private FinalPreviewScreen previewScreen;
 	private String currentScreen;
@@ -58,6 +59,7 @@ public class CreatorMain {
         
         searchScreen = new SearchSelectorScreen();
         chunkScreen = new ChunkEditorScreen();
+        musicScreen = new MusicSelectorScreen();
         imagesScreen = new ImageSelectorScreen();
         previewScreen = new FinalPreviewScreen();
         
@@ -203,6 +205,14 @@ public class CreatorMain {
         mainPane.setCenter(chunkScreen.getScreen());
         currentScreen="create";
     }
+    
+    /**
+     * Set music screen to center
+     */
+    private void musicScreenUp() {
+    	currentScreen = "music";
+    	mainPane.setCenter(musicScreen);
+    }
 
 	/**
 	 * Set up image screen and get images from Flickr
@@ -249,7 +259,7 @@ public class CreatorMain {
         //make sure images selected
         if(imagesScreen.isSelected()) {
         	showProgressIndicator();
-            chunkScreen.combineTheAudio(this);
+            chunkScreen.combineTheAudio(this, musicScreen.getSelectedMusic().getName());
         }
     }
     
@@ -278,8 +288,12 @@ public class CreatorMain {
             previewScreen.stop();
         }
         else if(currentScreen=="image"){
-            mainPane.setCenter(chunkScreen.getScreen());
-            currentScreen="create";
+            mainPane.setCenter(musicScreen);
+            currentScreen="music";
+        }
+        else if(currentScreen == "music") {
+        	mainPane.setCenter(chunkScreen.getScreen());
+        	currentScreen = "create";
         }
         else if(currentScreen == "create"){
             searchScreenUp();
@@ -291,7 +305,9 @@ public class CreatorMain {
         if(currentScreen == "search"){
             loadChunkScreen();
         }else if(currentScreen == "create") {
-            loadImageScreen();
+            musicScreenUp();
+        }else if(currentScreen == "music") {
+        	loadImageScreen();
         }else if(currentScreen == "image"){
             loadPreviewScreen();
         }else if(currentScreen == "preview"){

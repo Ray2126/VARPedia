@@ -11,11 +11,9 @@ import varpedia.videoPlayer.PauseButton;
 public class Music {
 	
 	private String _name;
-	private RadioButton _radioButton;
 	
 	public Music(String name) {
 		_name = name;
-		_radioButton = new RadioButton();
 	}
 
 
@@ -28,12 +26,4 @@ public class Music {
 		_name = name;
 	}
 
-	public RadioButton getRadioButton() {
-		return _radioButton;
-	}
-
-	public void setRadioButton(RadioButton radioButton) {
-		_radioButton = radioButton;
-	}
-	
 }

@@ -29,7 +29,7 @@ public class Scripts {
 					tempScript = cleanupScript();
 					break;
 				case "mergeAudio":
-					tempScript = mergeAudioScript();
+					tempScript = mergeAudioScript(params[0]);
 					break;
 				case "deleteAudio":
 					tempScript = deleteAudioScript(params[0]);
@@ -78,8 +78,9 @@ public class Scripts {
 		return null;
 	}
 
-	public File mergeAudioScript() {
+	public File mergeAudioScript(String music) {
 		try {
+			System.out.println(music);
 			File tempScript = File.createTempFile("script", null);
 
 			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
@@ -105,25 +106,14 @@ public class Scripts {
                 printWriter.println("fi");
 			}
       
-			printWriter.println("sox ./resampledAudio/*.wav output.wav");
-			//printWriter.println("ffmpeg -q -f concat -safe 0 -i <( for f in ./audio/*.wav; do echo \"file '$(pwd)/$f'\";done ) output.wav &> /dev/null");
-//			  File dir = new File("audio");
-//			  File[] directoryListing = dir.listFiles();
-//			  if (directoryListing != null) {
-//			    for (File child : directoryListing) {
-//			      // Do something with child
-//			    	System.out.println(child.getName());
-//			    	if(child.getName().contains(".wav")) {
-//			    		printWriter.println("ffmpeg -y -i ./audio/"+child.getName()+" -ar 41000 ./audio/"+child.getName()+" &> /dev/null");
-//			    	}
-//			    }
-//			  } else {
-//			    // Handle the case where dir is not really a directory.
-//			    // Checking dir.isDirectory() above would not be sufficient
-//			    // to avoid race conditions with another process that deletes
-//			    // directories.
-//			  }
-//			printWriter.println("ffmpeg -y -i ./audio/*.wav -ar 48000 &> /dev/null");
+			printWriter.println("sox ./resampledAudio/*.wav out.wav");
+			
+			if(!music.equals("No music")) {
+				printWriter.println("sox -M out.wav ../music/"+music+".wav output.wav");
+			}
+			else {
+				printWriter.println("mv out.wav output.wav");
+			}
 
 			printWriter.close();
 

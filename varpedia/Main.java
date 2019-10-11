@@ -35,8 +35,7 @@ public class Main extends Application {
 		
 		primaryStage.setTitle("VARpedia Home");
 		
-		//Scene scene = new Scene(new Home(primaryStage), 1000, 550);
-		Scene scene = new Scene(new MusicSelectorScreen(), 1000, 800);
+		Scene scene = new Scene(new Home(primaryStage), 1000, 550);
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();
