@@ -59,7 +59,6 @@ public class CreatorMain {
         searchScreen = new SearchSelector();
         chunkScreen = new ChunkEditorScreen();
         imagesScreen = new ImageSelector();
-        previewScreen = new FinalPreview();
         
         //Initialize nav bar
         navBar = new HBox();
@@ -265,7 +264,7 @@ public class CreatorMain {
     }
     
     public FinalPreview getPreview() {
-    	previewScreen = new FinalPreview();
+    	previewScreen = new FinalPreview(searchScreen.getInput());
         return previewScreen;
     }
 

@@ -20,7 +20,7 @@ public class Scripts {
 					tempScript = copySelectedImg(params[0]);
 					break;
 				case "name":
-					tempScript = renamePreview(params[0]);
+					tempScript = renamePreview(params[0], params[1]);
 					break;
 				case "preview":
 					tempScript = createPreviewScript(params[0]);
@@ -49,14 +49,8 @@ public class Scripts {
 				case "search":
 					tempScript = searchScript(params[0]);
 					break;
-				case "new":
-					tempScript = createScript(params[0], params[1], params[2]);
-					break;
 				case "listCreations":
 					tempScript = createListFileScript();
-					break;
-				case "delete":
-					tempScript = deleteScript(params[0]);
 					break;
 				case "nameValid":
 					tempScript = nameValidScript(params[0]);
@@ -171,7 +165,7 @@ public class Scripts {
 		}
 	}
 
-	public File renamePreview(String name) {
+	public File renamePreview(String name, String searched) {
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -179,7 +173,10 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
-			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+".mp4");
+			printWriter.println("mkdir ./creations/"+name);
+			printWriter.println("mkdir ./creations/"+name+"/quiz");
+			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+"/"+name+".mp4");
+			printWriter.println("mv noText.mp4 ./creations/"+name+"/quiz/"+searched+".mp4");
 
 			printWriter.close();
 
@@ -288,26 +285,6 @@ public class Scripts {
 			return null;
 		}
 	}
-    
-    public File deleteScript(String name) {
-    	try {
-	        File tempScript = File.createTempFile("script", null);
-	
-	        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-	                tempScript));
-	        PrintWriter printWriter = new PrintWriter(streamWriter);
-	
-	        printWriter.println("#!/bin/bash");
-	        printWriter.println("SELECTED="+name);
-	        printWriter.println("rm -f ${SELECTED}.avi");
-	        
-	        printWriter.close();
-	
-	        return tempScript;
-    	}catch (Exception e) {
-    		return null;
-    	}
-    }
 
 	public File deleteAudioScript(String name) {
 		try {
@@ -363,7 +340,7 @@ public class Scripts {
 	
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("NAME="+name);
-	        printWriter.println("if [[ -f \"./creations/$NAME.mp4\" ]]; then");
+	        printWriter.println("if [[ -d \"./creations/$NAME\" ]]; then");
 	        printWriter.println("exit 1");
 	        printWriter.println("fi");
 	        printWriter.println("exit 0");
@@ -471,9 +448,8 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/output.mp4  &> /dev/null" );
-			printWriter.println("ffmpeg -y -i ./creations/output.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
-			printWriter.println("rm -f ./creations/output.mp4");
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./noText.mp4  &> /dev/null" );
+			printWriter.println("ffmpeg -y -i ./noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
 
 			printWriter.close();
 
@@ -501,54 +477,5 @@ public class Scripts {
 			return null;
 		}
 	}
-    
-    public File createScript(String term, String amount, String name) {
-    	try {
-	        File tempScript = File.createTempFile("script", null);
-	
-	        Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-	                tempScript));
-	        PrintWriter printWriter = new PrintWriter(streamWriter);
-	
-            printWriter.println("rm -f *.wav");
-            printWriter.println("rm -f *.mp4");
-	        printWriter.println("TERM="+term);
-	        printWriter.println("filename=${TERM}.text");
-	        
-	        printWriter.println("lineCount=$(wc -l $filename)");
-	        printWriter.println("lineCount=`echo $lineCount | grep -P -o \"[[:digit:]]+\" | head -1`");
-
-	        printWriter.println("AMOUNT="+amount);
-	        printWriter.println("let \"DELETE=$lineCount-$AMOUNT\"");
-	        printWriter.println("for (( i=1; i<=$DELETE; i=i+1 )) ; do");
-	        printWriter.println("sed -i '$d' $filename");
-	        printWriter.println("done");
-    		printWriter.println("cat $filename | text2wave -o ${TERM}.wav &>/dev/null");
-    		printWriter.println("if [ $? == 1 ]");
-    		printWriter.println("then ");
-    		printWriter.println("echo \"error encountered\" >&2");
-            printWriter.println("exit 1");
-            printWriter.println("fi");
-            printWriter.println("NAME="+name);
-            printWriter.println("length=$(soxi -D ${TERM}.wav)");
-            printWriter.println("ffmpeg -loglevel quiet -f lavfi -i color=c=blue:s=320x240:d=$length -vf \"drawtext=fontfile=./VideoPhreak.ttf:fontsize=30:fontcolor=white:x=(w-text_w)/2:y=(h-text_h)/2:text='$TERM'\" video.mp4");
-            printWriter.println("ffmpeg -loglevel quiet -i video.mp4 -i ${TERM}.wav -codec copy -shortest ${NAME}.avi");
-            printWriter.println("if [ $? == 1 ]");
-            printWriter.println("then ");
-            printWriter.println("echo \"error encountered\" >&2");
-            printWriter.println("exit 1");
-            printWriter.println("fi");
-            printWriter.println("rm -f ${TERM}.wav");
-            printWriter.println("rm -f $filename");
-            printWriter.println("rm -f video.mp4");
-            printWriter.println("rm -f *.text");
-	
-	        printWriter.close();
-	
-	        return tempScript;
-    	}catch (Exception e) {
-    		return null;
-    	}
-    }
 
 }
