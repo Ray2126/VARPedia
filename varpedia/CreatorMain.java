@@ -31,10 +31,10 @@ public class CreatorMain {
 	private Stage stage;
 	
 	private Home home;
-	private SearchSelector searchScreen;
+	private SearchSelectorScreen searchScreen;
 	private ChunkEditorScreen chunkScreen;
-	private ImageSelector imagesScreen;
-	private FinalPreview previewScreen;
+	private ImageSelectorScreen imagesScreen;
+	private FinalPreviewScreen previewScreen;
 	private String currentScreen;
 	
 	private HBox navBar;
@@ -56,10 +56,10 @@ public class CreatorMain {
         stage = new Stage();
         mainPane = new BorderPane();
         
-        searchScreen = new SearchSelector();
+        searchScreen = new SearchSelectorScreen();
         chunkScreen = new ChunkEditorScreen();
-        imagesScreen = new ImageSelector();
-        previewScreen = new FinalPreview();
+        imagesScreen = new ImageSelectorScreen();
+        previewScreen = new FinalPreviewScreen();
         
         //Initialize nav bar
         navBar = new HBox();
@@ -264,8 +264,8 @@ public class CreatorMain {
         hideProgressIndicator();
     }
     
-    public FinalPreview getPreview() {
-    	previewScreen = new FinalPreview();
+    public FinalPreviewScreen getPreview() {
+    	previewScreen = new FinalPreviewScreen();
         return previewScreen;
     }
 

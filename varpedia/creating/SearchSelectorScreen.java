@@ -13,12 +13,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 //Screen where user enters search term
-public class SearchSelector {
+public class SearchSelectorScreen {
     VBox content;
     TextField searchInput;
     Text errorPrompt;
     Text prompt;
-    public SearchSelector(){
+    public SearchSelectorScreen(){
         content = new VBox();
         //content.setPadding(new Insets(10, 50, 50, 50));
         content.setSpacing(10);

@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import varpedia.creating.MusicSelectorScreen;
 import varpedia.creating.Scripts;
 
 public class Main extends Application {
@@ -34,7 +35,8 @@ public class Main extends Application {
 		
 		primaryStage.setTitle("VARpedia Home");
 		
-		Scene scene = new Scene(new Home(primaryStage), 1000, 550);
+		//Scene scene = new Scene(new Home(primaryStage), 1000, 550);
+		Scene scene = new Scene(new MusicSelectorScreen(), 1000, 800);
 		
 		primaryStage.setScene(scene);
 		primaryStage.show();

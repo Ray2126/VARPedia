@@ -31,7 +31,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-public class ImageSelector extends BorderPane{
+public class ImageSelectorScreen extends BorderPane{
 	// User selects how many images to create
 	// getImages() method; wgets amount of images
 	
@@ -47,9 +47,10 @@ public class ImageSelector extends BorderPane{
 	private Text _place;
 
 	
-	public ImageSelector() {
+	public ImageSelectorScreen() {
 		_title = new Text("Choose the images you would like in your creation: ");
 		_title.setTextAlignment(TextAlignment.CENTER);
+		_title.setFont(Font.font(Font.getDefault().getName(),20));
 
 		_listOfImages = new ArrayList<ImageDisplayBox>();
 		
@@ -111,7 +112,6 @@ public class ImageSelector extends BorderPane{
 		title.setAlignment(Pos.CENTER);
 		title.setPadding(new Insets(0,20,30,20));
 		title.getChildren().addAll(_title);
-		_title.setFont(Font.font(Font.getDefault().getName(),20));
 		
 		_rowsPane.getChildren().addAll(title, row1, row2, _place);
 		this.setCenter(_rowsPane);

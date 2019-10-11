@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 
 //Name creation and preview video of creation
-public class FinalPreview {
+public class FinalPreviewScreen {
     VideoPlayer videoPlayer;
     TextField nameInput;
     VBox name;
@@ -33,7 +33,7 @@ public class FinalPreview {
     Scripts scripts;
     Text bad;
 
-    public FinalPreview(){
+    public FinalPreviewScreen(){
         scripts = new Scripts();
         HBox videoBox = new HBox();
         videoBox.setPadding(new Insets(40,40,40,40));
