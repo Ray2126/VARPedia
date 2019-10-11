@@ -16,12 +16,15 @@ public class Home extends VBox{
 	private Button play, viewCreations, newCreation, help, exit;
 	private Stage primaryStage;
 	private Stage creationsStage;
+	private Stage quizStage;
 	
 	public Home(Stage primaryStage) {
 		title = new Label("VARpedia");
 		title.setFont(new Font("Arial", 30));
 		
 		play = new Button("Play Learning Game");
+		
+		setQuiz();
 		
 		viewCreations = new Button("View My Creations");
 		setViewCreations();
@@ -38,6 +41,7 @@ public class Home extends VBox{
 		
 		this.primaryStage = primaryStage;
 		creationsStage = new Stage();
+		quizStage = new Stage();
 		
 		this.setSpacing(20);
 		this.setPadding(new Insets(20,20,20,20));
@@ -80,6 +84,22 @@ public class Home extends VBox{
 			CreatorMain creator = new CreatorMain(this);
 			primaryStage.close();
 			creator.beginCreate();
+		});
+	}
+	
+	private void setQuiz() {
+		play.setOnAction(e -> {
+			
+			quizStage.sizeToScene();
+			BorderPane layout = new BorderPane();
+		    
+			QuizNavigator quiz = new QuizNavigator(this);
+			
+			layout.setCenter(quiz.getQuiz());
+			Scene quizScene = new Scene(layout);
+			quizStage.setScene(quizScene);
+			primaryStage.close();
+			quizStage.show();
 		});
 	}
 	

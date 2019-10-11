@@ -61,7 +61,7 @@ public class CreatorMain {
         chunkScreen = new ChunkEditorScreen();
         musicScreen = new MusicSelectorScreen();
         imagesScreen = new ImageSelectorScreen();
-        previewScreen = new FinalPreviewScreen();
+
         
         //Initialize nav bar
         navBar = new HBox();
@@ -274,8 +274,9 @@ public class CreatorMain {
         hideProgressIndicator();
     }
     
+
     public FinalPreviewScreen getPreview() {
-    	previewScreen = new FinalPreviewScreen();
+    	previewScreen = new FinalPreviewScreen(searchScreen.getInput());
         return previewScreen;
     }
 

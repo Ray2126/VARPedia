@@ -104,6 +104,35 @@ public class VideoPlayer extends VBox{
 	}
 	
 	/**
+	 * Play a creation
+	 * @param creation   the creation to be played
+	 */
+	public void playQuizVideo(String name) {
+		File creationToPlay = new File("creations/"+name+"/quiz/noText.mp4");
+		
+		Media video = new Media(creationToPlay.toURI().toString());
+		
+		//Stop the previous video playing
+		this.stop();
+		
+		_mediaPlayer = new MediaPlayer(video);
+		_mediaPlayer.setAutoPlay(true);
+		
+		_mediaView = new MediaView(_mediaPlayer);
+		
+		//Size video to pane
+		_mediaView.setPreserveRatio(false);
+		_mediaView.fitWidthProperty().bind(_mediaPlayerPane.maxWidthProperty());
+		_mediaView.fitHeightProperty().bind(_mediaPlayerPane.maxHeightProperty());
+		
+		//Replace black box with media view
+		_mediaPlayerPane.getChildren().remove(0);
+		_mediaPlayerPane.getChildren().addAll(_mediaView);
+		
+		changeGUIVideoHasBeenPlayed();
+	}
+	
+	/**
 	 * Video has been played so replace rectangle with MediaView, enable and add functionality for
 	 *  all the buttons and sliders
 	 */

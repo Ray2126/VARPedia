@@ -32,8 +32,10 @@ public class FinalPreviewScreen {
     VBox screen;
     Scripts scripts;
     Text bad;
+    String searched;
 
-    public FinalPreviewScreen(){
+    public FinalPreviewScreen(String searched){
+    	this.searched = searched;
         scripts = new Scripts();
         HBox videoBox = new HBox();
         videoBox.setPadding(new Insets(40,40,40,40));
@@ -55,10 +57,6 @@ public class FinalPreviewScreen {
         screen.setAlignment(Pos.CENTER);
         screen.setSpacing(10);
         screen.getChildren().addAll(videoBox, name);
-    }
-    
-    public void removeErr() {
-    	
     }
 
     public void audioAndImageCombine(CreatorMain mainScreen, int imgCount) {
@@ -111,7 +109,7 @@ public class FinalPreviewScreen {
 
     // Deleting creation when have naming conflict
     private void deleteButtonClicked(String name){
-        scripts.getScript("name", new String[]{name});
+        scripts.getScript("name", new String[]{name, searched});
     }
 
     //Popup window for user to choose whether to delete or rename an existing file
@@ -196,9 +194,9 @@ public class FinalPreviewScreen {
         task.setOnSucceeded(e -> {
             switch(task.getValue()) {
                 case 0:
-                    scripts.getScript("name", new String[] {name});
-//                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
-//                    success.showAndWait();
+                    scripts.getScript("name", new String[] {name, searched});
+                    Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
+                    success.showAndWait();
                     mainScreen.close();
                     //close
                     break;
