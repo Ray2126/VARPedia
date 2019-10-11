@@ -107,8 +107,8 @@ public class Scripts {
       
 			printWriter.println("sox ./resampledAudio/*.wav voice.wav");
 			
-			printWriter.println("sox -v 0.2 ../music/"+music+".wav quiet.wav");
 			if(!music.equals("No music")) {
+				printWriter.println("sox -v 0.2 ../music/"+music+".wav quiet.wav");
 				printWriter.println("ffmpeg -y -stream_loop 20 -i quiet.wav -codec copy loop.wav >& /dev/null");
 				printWriter.println("length=$(soxi -D voice.wav)");
 				printWriter.println("ffmpeg -y -i loop.wav -ss 0 -to $length -codec copy cutLoop.wav >& /dev/null");

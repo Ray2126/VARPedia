@@ -103,13 +103,13 @@ public class MusicSelectorScreen extends VBox{
 		
 		ObservableList<Music> musicList = FXCollections.observableArrayList();
 		//Add selection for no music
-		musicList.add(new Music("No music"));
+		
 		
 		for(int i = 0; i < files.length; i++) {
 			String name = files[i].getName().substring(0, files[i].getName().lastIndexOf('.'));
 			musicList.add(new Music(name));
 		}
-		
+		musicList.add(new Music("No music"));
 		return musicList;
 	} 
 	
@@ -130,7 +130,6 @@ public class MusicSelectorScreen extends VBox{
 		    	public void handle(ActionEvent actionEvent) {
 		    		_musicTable.getSelectionModel().select(getTableRow().getIndex());
 		    		_selectedMusic = _musicTable.getSelectionModel().getSelectedItem();
-		    		System.out.println(_selectedMusic);
 		    	}
 		    });
 
@@ -145,6 +144,7 @@ public class MusicSelectorScreen extends VBox{
     		if (!empty) {
 	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 	    		setGraphic(paddedButton);
+	    		_selection.setSelected(true);
 	    	}
 	    	else {
 	    		setGraphic(null);
@@ -194,7 +194,7 @@ public class MusicSelectorScreen extends VBox{
 	    protected void updateItem(Boolean item, boolean empty) {
 	    	super.updateItem(item, empty);
 
-	    	if(getTableRow().getIndex() == 0) {
+	    	if(getTableRow().getIndex() == _musicTable.getItems().size()-1) {
 	    		setGraphic(null);
 	    	}	    
 	    	else if (!empty) {
