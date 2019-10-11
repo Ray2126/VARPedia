@@ -22,9 +22,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import varpedia.videoPlayer.PauseButton;
 
 public class MusicSelectorScreen extends VBox{
@@ -45,23 +47,40 @@ public class MusicSelectorScreen extends VBox{
 		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		
 		//Radio buttons
-		TableColumn<Music, RadioButton> selectColumn = new TableColumn<Music, RadioButton>("Select:");
-		selectColumn.setCellValueFactory(new PropertyValueFactory<>("radioButton"));
+		TableColumn<Music, Boolean> selectColumn = new TableColumn<Music, Boolean>("Select:");
+		selectColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Music, Boolean>, ObservableValue<Boolean>>() {
+	        @Override 
+	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> features) {
+		          return new SimpleBooleanProperty(features.getValue() != null);
+	        }
+	    });
+		ToggleGroup group = new ToggleGroup();
+		selectColumn.setCellFactory(new Callback<TableColumn<Music, Boolean>, TableCell<Music, Boolean>>() {
+			@Override 
+			public TableCell<Music, Boolean> call(TableColumn<Music, Boolean> personBooleanTableColumn) {
+				
+				return new RadioButtonCell(group);
+			}
+	    });
+		
+		
 		
 		//Play buttons
 		TableColumn<Music, Boolean> buttonColumn = new TableColumn<Music, Boolean>("Preview:");
 		buttonColumn.setMinWidth(300);
 	    buttonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Music, Boolean>, ObservableValue<Boolean>>() {
-	        @Override public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> features) {
+	        @Override 
+	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> features) {
 	          return new SimpleBooleanProperty(features.getValue() != null);
 	        }
 	    });
 	    
 	    // create a cell value factory with an add button for each row in the table.
 	    buttonColumn.setCellFactory(new Callback<TableColumn<Music, Boolean>, TableCell<Music, Boolean>>() {
-	      @Override public TableCell<Music, Boolean> call(TableColumn<Music, Boolean> personBooleanTableColumn) {
-	        return new PlayButtonCell(_musicTable);
-	      }
+			@Override 
+			public TableCell<Music, Boolean> call(TableColumn<Music, Boolean> personBooleanTableColumn) {
+				return new PlayButtonCell();
+			}
 	    });
 		
 		_musicTable = new TableView<>();
@@ -71,10 +90,6 @@ public class MusicSelectorScreen extends VBox{
 		
 		getChildren().addAll(_title, _musicTable);
 		setAlignment(Pos.CENTER);
-		
-		radioButtonSetUp(selectColumn);
-		
-
 	} 
 	
 	//Get all of the music from music folder
@@ -94,20 +109,38 @@ public class MusicSelectorScreen extends VBox{
 		return musicList;
 	} 
 	
-	private void radioButtonSetUp(TableColumn<Music, RadioButton> radioButtonColumn) {
+	private class RadioButtonCell extends TableCell<Music, Boolean> {
+
+		private RadioButton _selection = new RadioButton();
+		private StackPane paddedButton = new StackPane();
+
+	    public RadioButtonCell(ToggleGroup group) {
+	    	_selection.setToggleGroup(group);
+		    paddedButton.setPadding(new Insets(3));
+		    paddedButton.getChildren().add(_selection);
 		
-		//Only allow one selection
-		List<RadioButton> buttons = new ArrayList<>();
-		for (Music item : _musicTable.getItems()) {
-			buttons.add(radioButtonColumn.getCellObservableValue(item).getValue());
-		}
-		ToggleGroup group = new ToggleGroup();
-		for(RadioButton button : buttons) {
-			button.setToggleGroup(group);
-		}
-		
-		//Set no music as default
-		radioButtonColumn.getCellObservableValue(0).getValue().setSelected(true);
+		    _selection.setOnAction(new EventHandler<ActionEvent>() {
+		    	@Override 
+		    	public void handle(ActionEvent actionEvent) {
+		    		_musicTable.getSelectionModel().select(getTableRow().getIndex());
+		    	}
+		    });
+	    }
+
+	    /** places an add button in the row only if the row is not empty. */
+	    @Override 
+	    protected void updateItem(Boolean item, boolean empty) {
+	    	super.updateItem(item, empty);
+
+	    	if (!empty) {
+	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+	    		setGraphic(paddedButton);
+	    	}
+	    		
+	    	else {
+	    		setGraphic(null);
+	    	}
+	    }
 	}
 	
 	
@@ -116,7 +149,7 @@ public class MusicSelectorScreen extends VBox{
 		private PauseButton _pauseButton = new PauseButton();
 		private StackPane paddedButton = new StackPane();
 
-	    public PlayButtonCell(TableView<Music> table) {
+	    public PlayButtonCell() {
 		    _pauseButton.setDisable(false);
 		    paddedButton.setPadding(new Insets(3));
 		    paddedButton.getChildren().add(_pauseButton);
@@ -124,11 +157,25 @@ public class MusicSelectorScreen extends VBox{
 		    _pauseButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 			    public void handle(ActionEvent actionEvent) {
-			    	table.getSelectionModel().select(getTableRow().getIndex());
-			    	for(int i = 0; i < 1; i++) {
-			    		System.out.println(table.getSelectionModel().getSelectedItems().get(i).getName());
-			    	}
-			    	
+			    	_musicTable.getSelectionModel().select(getTableRow().getIndex());
+
+			    	Media audio = new Media(new File("../music/" + _musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
+		        	
+		        	//Stop previous audio playing
+		        	if(_mediaPlayer != null) {
+		        		_mediaPlayer.stop();
+		        	}
+		        	
+		        	_mediaPlayer = new MediaPlayer(audio);
+		        	_mediaPlayer.play();
+		        	
+		    		_pauseButton.videoPlayed(_mediaPlayer);
+			    	_mediaPlayer.setOnEndOfMedia(new Runnable() {
+						@Override
+						public void run() {
+							_mediaPlayer.seek(Duration.ZERO);
+						}
+			    	});
 			    }
 		    });
 	    }
@@ -137,13 +184,19 @@ public class MusicSelectorScreen extends VBox{
 	    @Override 
 	    protected void updateItem(Boolean item, boolean empty) {
 	    	super.updateItem(item, empty);
-	    	if (!empty) {
+
+	    	if(getTableRow().getIndex() == 0) {
+	    		setGraphic(null);
+	    	}	    
+	    	else if (!empty) {
 	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
 	    		setGraphic(paddedButton);
-	    	} else {
+	    	}
+	    		
+	    	else {
 	    		setGraphic(null);
 	    	}
 	    }
-  }
+	}
 
 }
