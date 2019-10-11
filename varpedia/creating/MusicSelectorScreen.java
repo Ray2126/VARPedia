@@ -34,11 +34,11 @@ public class MusicSelectorScreen extends VBox{
 		musicColumn.setMinWidth(200);
 		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		
-		//Checkboxes
+		//Radio buttons
 		TableColumn<Music, RadioButton> selectColumn = new TableColumn<Music, RadioButton>("Select:");
 		selectColumn.setCellValueFactory(new PropertyValueFactory<>("radioButton"));
 		
-		//Buttons
+		//Play buttons
 		TableColumn<Music, Button> buttonColumn = new TableColumn<Music, Button>("Preview:");
 		buttonColumn.setMinWidth(300);
 		buttonColumn.setCellValueFactory(new PropertyValueFactory<>("button"));
@@ -47,26 +47,26 @@ public class MusicSelectorScreen extends VBox{
 		_musicTable.setItems(getMusic());
 		_musicTable.getColumns().addAll(selectColumn, musicColumn, buttonColumn);
 		
+		
 		getChildren().addAll(_title, _musicTable);
 		setAlignment(Pos.CENTER);
 		
-		//Only allow one selection
-		List<RadioButton> buttons = new ArrayList<>();
-		for (Music item : _musicTable.getItems()) {
-			buttons.add(selectColumn.getCellObservableValue(item).getValue());
-		}
-		ToggleGroup group = new ToggleGroup();
-		for(RadioButton button : buttons) {
-			button.setToggleGroup(group);
-		}
+		radioButtonSetUp(selectColumn);
+		
+		//Remove first 
+		buttonColumn.getCellObservableValue(0).getValue().setOpacity(0);
+		buttonColumn.getCellObservableValue(0).getValue().setDisable(true);
 	} 
 	
-	//Get all of the music
-	public ObservableList<Music> getMusic() {
+	//Get all of the music from music folder
+	private ObservableList<Music> getMusic() {
 		File file = new File("../music");
 		File[] files = file.listFiles();
 		
 		ObservableList<Music> musicList = FXCollections.observableArrayList();
+		//Add selection for no music
+		musicList.add(new Music("No music"));
+		
 		for(int i = 0; i < files.length; i++) {
 			String name = files[i].getName().substring(0, files[i].getName().lastIndexOf('.'));
 			musicList.add(new Music(name));
@@ -74,4 +74,20 @@ public class MusicSelectorScreen extends VBox{
 		
 		return musicList;
 	} 
+	
+	private void radioButtonSetUp(TableColumn<Music, RadioButton> radioButtonColumn) {
+		
+		//Only allow one selection
+		List<RadioButton> buttons = new ArrayList<>();
+		for (Music item : _musicTable.getItems()) {
+			buttons.add(radioButtonColumn.getCellObservableValue(item).getValue());
+		}
+		ToggleGroup group = new ToggleGroup();
+		for(RadioButton button : buttons) {
+			button.setToggleGroup(group);
+		}
+		
+		//Set no music as default
+		radioButtonColumn.getCellObservableValue(0).getValue().setSelected(true);
+	}
 }
