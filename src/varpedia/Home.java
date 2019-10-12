@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -59,6 +60,8 @@ public class Home extends VBox{
 	public void showHome() {
 		if(creationsStage.isShowing()) {
 			creationsStage.close();
+		}else if(quizStage.isShowing()) {
+			quizStage.close();
 		}
 		primaryStage.show();
 	}
@@ -97,6 +100,8 @@ public class Home extends VBox{
 			
 			quizStage.sizeToScene();
 			BorderPane layout = new BorderPane();
+			ScrollPane scroll = new ScrollPane();
+			scroll.setContent(layout);
 		    
 			QuizNavigator quiz = new QuizNavigator(this);
 			if(quiz.getQuiz() == null) {
@@ -114,7 +119,7 @@ public class Home extends VBox{
 				return;
 			}
 			layout.setCenter(quiz.getQuiz());
-			Scene quizScene = new Scene(layout);
+			Scene quizScene = new Scene(scroll);
 			quizStage.setScene(quizScene);
 			primaryStage.close();
 			quizStage.show();

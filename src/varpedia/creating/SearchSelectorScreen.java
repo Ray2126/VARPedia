@@ -23,11 +23,12 @@ public class SearchSelectorScreen {
         //content.setPadding(new Insets(10, 50, 50, 50));
         content.setSpacing(10);
         prompt = new Text("What would you like to search?");
-        prompt.setFont(Font.font(Font.getDefault().getName(),15));
+        prompt.setFont(Font.font ("Verdana", 18));
 
         searchInput = new TextField();
         searchInput.setMaxWidth(250);
         content.getChildren().addAll(prompt, searchInput);
+        searchInput.requestFocus();
         content.setAlignment(Pos.CENTER);
     }
 

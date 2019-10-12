@@ -4,6 +4,8 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +19,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.creating.*;
 
@@ -51,6 +54,7 @@ public class CreatorMain {
     
     
     public CreatorMain(Home home){
+    	
     	this.home = home;
         scripts = new Scripts();
         
@@ -65,12 +69,20 @@ public class CreatorMain {
         
         //Initialize nav bar
         navBar = new HBox();
+        
         backBtn = new Button("Back");
         backBtn.setOnAction(e -> backButtonClicked());
+        backBtn.setFont(Font.font ("Verdana", 15));
+        
         nextBtn = new Button("Next");
+        nextBtn.setFont(Font.font ("Verdana", 15));
         nextBtn.setOnAction(e -> nextButtonClicked());
+        nextBtn.setDefaultButton(true);
+        
         cancelBtn = new Button("Cancel");
+        cancelBtn.setFont(Font.font ("Verdana", 15));
         cancelBtn.setOnAction(e -> closeRequest());
+        
         progressIndicator = new ProgressIndicator();
         progressIndicator.isIndeterminate();
         
@@ -118,7 +130,9 @@ public class CreatorMain {
         home.showHome();
         
         //Stop video player if on preview screen
-        previewScreen.stop();
+        if(currentScreen.equals("preview")) {
+            previewScreen.stop();	
+        }
     }
     
     /**
@@ -128,7 +142,7 @@ public class CreatorMain {
         searchScreenUp();
 
         stage.setTitle("Creation Maker");
-        scene = new Scene(mainPane, 1500, 1000);
+        scene = new Scene(mainPane, 1200, 810);
         stage.setScene(scene);
         
         //When top right exit pressed does this
@@ -267,7 +281,7 @@ public class CreatorMain {
      * Set screen to final preview screen
      */
     public void previewScreenUp(){
-        previewScreen.playVideo(new Creation("preview", 0));
+        previewScreen.playVideo();
         mainPane.setCenter(previewScreen.getScreen());
         nextBtn.setText("Finish");
         currentScreen="preview";

@@ -3,6 +3,7 @@ package varpedia;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 
 import javafx.collections.FXCollections;
@@ -28,12 +29,17 @@ public class CreationTable extends TableView<Creation>{
 
         //Name Column
         TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(927);
+        nameColumn.setMinWidth(100);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        //Search term Column
+        TableColumn<Creation, String> searchColumn = new TableColumn<>("Topic");
+        searchColumn.setMinWidth(100);
+        searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
         
         //When they have no creations
         this.setPlaceholder(new Label("You currently have no creations"));
-        this.getColumns().addAll(numberColumn, nameColumn);
+        this.getColumns().addAll(numberColumn, nameColumn, searchColumn);
         refreshTable();
 	}
 	
@@ -44,19 +50,24 @@ public class CreationTable extends TableView<Creation>{
         ObservableList<Creation> creations = FXCollections.observableArrayList();
         Scripts scripts =new Scripts();
         scripts.getScript("listCreations", new String[]{});
+        
+        
+        
 		try {
 			// Open the file
 			FileInputStream fstream = new FileInputStream("listing");
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
-	
+			BufferedReader Buff;
 			String strLine;
 			//Read File Line By Line
 			int index=0;
 			while ((strLine = br.readLine()) != null)   {
 			  // Print the content on the console
-				strLine=strLine.replace("./creations/", "");
+				Buff = new BufferedReader(new FileReader("./creations/"+strLine+"/quiz/searchTerm.text"));
+				String text = Buff.readLine();
+				strLine = strLine.replace("./creations/", "");
 				strLine = strLine.replace(".mp4", "");
-				creations.add(new Creation(strLine, ++index));
+				creations.add(new Creation(strLine, ++index, text));
 			}
 	
 			//Close the input stream

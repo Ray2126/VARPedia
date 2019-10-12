@@ -46,6 +46,7 @@ public class MusicSelectorScreen extends VBox{
 		//Music column
 		TableColumn<Music, String> musicColumn = new TableColumn<>("Music");
 		musicColumn.setMinWidth(400);
+		musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
 		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		
 		//Radio buttons
@@ -56,6 +57,7 @@ public class MusicSelectorScreen extends VBox{
 		          return new SimpleBooleanProperty(f.getValue() != null);
 	        }
 	    });
+		selectColumn.setStyle("-fx-font: 16px \"Verdana\";");
 		ToggleGroup group = new ToggleGroup();
 		selectColumn.setCellFactory(new Callback<TableColumn<Music, Boolean>, TableCell<Music, Boolean>>() {
 			@Override 
@@ -70,6 +72,7 @@ public class MusicSelectorScreen extends VBox{
 		//Play buttons
 		TableColumn<Music, Boolean> buttonColumn = new TableColumn<Music, Boolean>("Preview:");
 		buttonColumn.setMinWidth(100);
+		buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
 	    buttonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Music, Boolean>, ObservableValue<Boolean>>() {
 	        @Override 
 	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> f) {

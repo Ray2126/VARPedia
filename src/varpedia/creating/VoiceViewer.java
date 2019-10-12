@@ -1,5 +1,7 @@
 package varpedia.creating;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -40,27 +42,33 @@ public class VoiceViewer {
 	private Button _playButton;
 	private Button _deleteButton;
 	private PauseButton _pauseButton;
+	public ObservableList<Audio> audios;
 
     public VoiceViewer() {
         scripts = new Scripts();
         
         //Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(1400);
+        nameColumn.setMinWidth(1095);
+        nameColumn.setStyle("-fx-font: 16px \"Verdana\";");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         //Audio Table
         audioTable = new TableView<Audio>();
-        audioTable.setPlaceholder(new Label("You currently have no creations"));
+        Label wrong = new Label("You currently have no creations");
+        wrong.setFont(Font.font ("Verdana", 16));
+        audioTable.setPlaceholder(wrong);
         refreshTable();
         audioTable.getColumns().addAll(nameColumn);
-        audioTable.setMaxWidth(1400);
-        audioTable.setMaxHeight(200);
+        audioTable.setMaxWidth(1100);
+        audioTable.setMaxHeight(250);
 
         //Play, delete and pause buttons
         _playButton = new Button("Play");
+        _playButton.setFont(Font.font ("Verdana", 16));
         _playButton.setOnAction(e -> playButtonClicked());
         _deleteButton = new Button("Delete");
+        _deleteButton.setFont(Font.font ("Verdana", 16));
         _deleteButton.setOnAction(e -> deleteButtonClicked());
         _pauseButton = new PauseButton();
 
@@ -77,18 +85,23 @@ public class VoiceViewer {
         bottomPane.setPadding(new Insets(10,10,10,10));
         bottomPane.setSpacing(10);
         bottomPane.setStyle("-fx-alignment: CENTER");
-        bottomPane.setMaxWidth(1400);
+        bottomPane.setMaxWidth(1000);
         bottomPane.getChildren().addAll(region2, _playButton, _deleteButton, region, _timeSlider, _pauseButton);
         
         //Set up vbox for table and buttons
         mainPane = new VBox();
         mainPane.setAlignment(Pos.CENTER);
         mainPane.getChildren().addAll(audioTable, bottomPane);
+        
     }
 
+    public ObservableList<Audio> getTableList(){
+    	return audios;
+    }
+    
 	//Loads all current chunks and displays in table
     public void refreshTable(){
-        ObservableList<Audio> audios = FXCollections.observableArrayList();
+        audios = FXCollections.observableArrayList();
         
         scripts.getScript("listAudio", null);
         try {

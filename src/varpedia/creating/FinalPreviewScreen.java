@@ -45,10 +45,12 @@ public class FinalPreviewScreen {
         videoBox.getChildren().addAll(videoPlayer);
         nameInput = new TextField();
         Text prompt = new Text("What would you like to name your creation");
+        prompt.setStyle("-fx-font: 16px \"Verdana\";");
         bad = new Text("");
         bad.setFill(Color.RED);
         bad.setFont(Font.font(Font.getDefault().getName(),0));
         nameInput.setMaxWidth(250);
+        nameInput.setStyle("-fx-font: 16px \"Verdana\";");
         name = new VBox();
         name.setAlignment(Pos.CENTER);
         name.setSpacing(10);
@@ -60,7 +62,7 @@ public class FinalPreviewScreen {
     }
 
     public void audioAndImageCombine(CreatorMain mainScreen, int imgCount) {
-        File file = new File("output.wav");
+        File file = new File("./output.wav");
         bad.setFont(Font.font(Font.getDefault().getName(),0));
         AudioInputStream audioInputStream = null;
         try {
@@ -103,8 +105,8 @@ public class FinalPreviewScreen {
         return screen;
     }
 
-    public void playVideo(Creation preview) {
-        videoPlayer.playVideo(preview);
+    public void playVideo() {
+        videoPlayer.playPreview();
     }
 
     // Deleting creation when have naming conflict
