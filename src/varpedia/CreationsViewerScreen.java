@@ -1,8 +1,13 @@
 package varpedia;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -10,6 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -25,8 +31,6 @@ public class CreationsViewerScreen extends VBox{
 	
 	private VideoPlayer _videoPlayer;
 	private CreationTable _creationTable;
-	private Button _playButton;
-	private Button _deleteButton;
 	private Button homeButton;
 	private Home home;
 	
@@ -44,7 +48,7 @@ public class CreationsViewerScreen extends VBox{
 		videoBox.getChildren().addAll(_videoPlayer);
 		
 		
-		_creationTable = new CreationTable();
+		_creationTable = new CreationTable(_videoPlayer);
 		_creationTable.setMaxWidth(980);
 		
 		//Pane for table of creations
@@ -54,20 +58,17 @@ public class CreationsViewerScreen extends VBox{
 		tableBox.setPadding(new Insets(10,10,10,10));
 		
 		
-		_playButton = new Button("Play");
-		_deleteButton = new Button("Delete");
-		homeButton = new Button("Home");
-		
-		_playButton.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				_videoPlayer.playVideo(_creationTable.getSelectionModel().getSelectedItem());
-			}
-		});
-		
-		_deleteButton.setOnAction(e -> {
-			deleteButtonClicked();
-		});
+		homeButton = new Button();
+		try {
+			BufferedImage image = ImageIO.read(new File("resources/icons/home.png"));
+			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
+			imageView.fitHeightProperty().set(30);
+			imageView.fitWidthProperty().set(30);
+			homeButton.setGraphic(imageView);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		
 		homeButton.setOnAction(e -> {
 				home.showHome();
@@ -82,7 +83,9 @@ public class CreationsViewerScreen extends VBox{
 		//Anchor home button to right side of HBox
 		Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
-		buttonsPane.getChildren().addAll(_playButton, _deleteButton, region, homeButton);
+		Region region2 = new Region();
+		HBox.setHgrow(region2, Priority.ALWAYS);
+		buttonsPane.getChildren().addAll(region, homeButton, region2);
 		
 		this.setHeight(900);
 		this.setWidth(1200);
@@ -90,33 +93,5 @@ public class CreationsViewerScreen extends VBox{
 		this.getChildren().addAll(videoBox,tableBox, buttonsPane);
 	}
 
-	private void deleteButtonClicked() {
-		Creation selectedItem = _creationTable.getSelectionModel().getSelectedItem();
-		
-		if(selectedItem != null) {
-			
-			//Create a dialog for user to confirm their delete selection
-			Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-			((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
-			confirmAlert.setTitle("Confirmation");
-			confirmAlert.setHeaderText(null);
-			confirmAlert.setContentText("You are about to delete " + selectedItem.getName() + ". Are you sure?");
-			Optional<ButtonType> result = confirmAlert.showAndWait();
-			
-			if(result.get() == ButtonType.OK) {
-				File file = new File("creations/" + selectedItem.getName() + ".mp4");
-				file.delete();
-			}
-		}
-		
-		_creationTable.refreshTable();
-		
-		//If deleted creation is same as creation playing currently, stop the creation
-		File videoPlaying = new File(_videoPlayer.getMediaPlayer().getMedia().getSource());
-		if(videoPlaying.getName().equals(selectedItem.getName()+".mp4")) {
-			_videoPlayer.stop();
-			_videoPlayer.disposeMedia();
-		} 
-		
-	}
+	
 }

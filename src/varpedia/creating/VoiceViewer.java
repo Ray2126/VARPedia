@@ -2,8 +2,6 @@ package varpedia.creating;
 
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -25,7 +23,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import varpedia.videoPlayer.PauseButton;
 import varpedia.videoPlayer.TimeSlider;
 
@@ -66,9 +63,6 @@ public class VoiceViewer {
         
         Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
-		Region region2 = new Region();
-		region2.setMinWidth(230);
-		HBox.setHgrow(region2, Priority.ALWAYS);
         
         //HBox for the buttons
         bottomPane = new HBox();
@@ -88,7 +82,7 @@ public class VoiceViewer {
     private void setUpTable() {
     	//Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(1250);
+        nameColumn.setMinWidth(938);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         //Play column
@@ -121,15 +115,16 @@ public class VoiceViewer {
 				return new DeleteButtonCell();
 			}
 	    });
-		deleteColumn.setMinWidth(70);
+		deleteColumn.setMinWidth(50);
 		
         //Audio Table
         audioTable = new TableView<Audio>();
         audioTable.setPlaceholder(new Label("You currently have no creations"));
         refreshTable();
         audioTable.getColumns().addAll(nameColumn, playColumn, deleteColumn);
-        audioTable.setMaxWidth(1400);
+        audioTable.setMaxWidth(1100);
         audioTable.setMaxHeight(200);
+        audioTable.setStyle("-fx-font: 16px \"Verdana\";");
     }
     
     private class PlayButtonCell extends TableCell<Audio, Boolean> {
@@ -253,20 +248,16 @@ public class VoiceViewer {
 
             String strLine;
             //Read File Line By Line
-            int index=0;
             while ((strLine = br.readLine()) != null)   {
                 try {
                     // Open the file
                     FileInputStream fstream2 = new FileInputStream(strLine);
                     BufferedReader br2 = new BufferedReader(new InputStreamReader(fstream2));
                     String strLine2;
-                    //Read File Line By Line
-                    int index2=0;
                     while ((strLine2 = br2.readLine()) != null)   {
                         // Print the content on the console
                         audios.add(new Audio(strLine2, strLine));
                     }
-
                     //Close the input stream
                     fstream2.close();
                 }catch(Exception e) {

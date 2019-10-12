@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -92,9 +93,18 @@ public class TextViewer {
 				);
 		this.voices = new ComboBox<String>(voiceOptions);
 		voices.setStyle("-fx-font: 16px \"Verdana\";");
-		Text voiceText = new Text("Voice: ");
-		voiceText.setFont(Font.font ("Verdana", 16));
-
+		
+		Label voiceText = new Label();
+		try {
+			BufferedImage image = ImageIO.read(new File("resources/icons/voice.png"));
+			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
+			imageView.fitHeightProperty().set(30);
+			imageView.fitWidthProperty().set(30);
+			voiceText.setGraphic(imageView);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		voices.getSelectionModel().selectFirst();
 		
 

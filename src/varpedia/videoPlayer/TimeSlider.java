@@ -3,8 +3,12 @@ package varpedia.videoPlayer;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 
 /**
  * The time slider in the video player
@@ -12,6 +16,7 @@ import javafx.scene.media.MediaPlayer;
  */
 public class TimeSlider extends Slider{
 
+	
 	public TimeSlider() {
 		super(0,100,0);
 		this.setDisable(true);
