@@ -158,7 +158,7 @@ public class MusicSelectorScreen extends VBox{
 	
 	private class PlayButtonCell extends TableCell<Music, Boolean> {
 
-		private PauseButton _pauseButton = new PauseButton();
+		private PauseButton _pauseButton = new PauseButton(30,30);
 		private StackPane paddedButton = new StackPane();
 
 	    public PlayButtonCell() {

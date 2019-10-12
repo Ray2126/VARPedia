@@ -91,9 +91,9 @@ public class Scripts {
 			printWriter.println("mkdir resampledAudio");
 			for(int i = 0; i < files.length; i++) {
 				String name = files[i].getName();
-			    printWriter.println("if [ -f ./audio/"+name+"  ]; then");
-				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 44100 ./resampledAudio/"+name+" &> /dev/null");
-                printWriter.println("fi");
+			  printWriter.println("if [ -f ./audio/"+name+"  ]; then");
+				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+" &> /dev/null");
+        printWriter.println("fi");
 			}
       
 			printWriter.println("sox ./resampledAudio/*.wav voice.wav");

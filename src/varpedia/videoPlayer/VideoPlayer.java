@@ -34,7 +34,7 @@ public class VideoPlayer extends VBox{
 	private MediaView _mediaView;
 	
 	public VideoPlayer() {
-		_playPauseButton = new PauseButton();
+		_playPauseButton = new PauseButton(30,30);
 		_skipForwardButton = new Button(">>|");
 		_skipBackwardButton = new Button("|<<");
 		_timeSlider = new TimeSlider();
@@ -80,7 +80,7 @@ public class VideoPlayer extends VBox{
 	 */
 	public void playVideo(Creation creation) {
 		File creationToPlay = new File("creations/"+creation.getName()+"/"+creation.getName()+".mp4");
-		
+
 		Media video = new Media(creationToPlay.toURI().toString());
 		
 		//Stop the previous video playing

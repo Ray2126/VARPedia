@@ -3,12 +3,14 @@ package varpedia.creating;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -24,6 +26,7 @@ import varpedia.CreatorMain;
 import varpedia.videoPlayer.PauseButton;
 import varpedia.videoPlayer.TimeSlider;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,6 +34,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.imageio.ImageIO;
 
 //area to select options and edit text and play selected text chunks
 public class TextViewer {
@@ -48,7 +53,8 @@ public class TextViewer {
 	private Text error;
 	private MediaPlayer _mediaPlayer;
 	private TimeSlider _timeSlider;
-	private PauseButton _pauseButton;
+	private Button _playBtn;
+	private Button _saveBtn;
 
 	public TextViewer(VoiceViewer voiceDisp){
 		scripts = new Scripts();
@@ -61,7 +67,6 @@ public class TextViewer {
 	    _mainPane = new BorderPane();
 	    this.voiceDisp = voiceDisp;
 	    _timeSlider = new TimeSlider();
-	    _pauseButton = new PauseButton();
     }
 
     public BorderPane getView(){
@@ -141,21 +146,32 @@ public class TextViewer {
 		error.setFont(Font.font ("Verdana", 16));
 		error.setFill(Color.RED);
 		HBox playSave = new HBox();
-		Button play = new Button("Play Selected");
-		play.setFont(Font.font ("Verdana", 16));
-		play.setOnAction(e -> playClicked());
-		Button save = new Button("Save Selected");
-		save.setFont(Font.font ("Verdana", 16));
-		save.setOnAction(e -> saveClicked());
+
+		_playBtn = new PauseButton(30,30);
+		_playBtn.setDisable(false);
+		_playBtn.setOnAction(e -> playClicked());
+		
+		_saveBtn = new Button();
+		
+		try {
+			BufferedImage image = ImageIO.read(new File("resources/icons/save.png"));
+			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
+			imageView.fitHeightProperty().set(30);
+			imageView.fitWidthProperty().set(30);
+			_saveBtn.setGraphic(imageView);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		_saveBtn.setOnAction(e -> saveClicked());
+
 		playSave.setAlignment(Pos.BOTTOM_RIGHT);
 		
 		Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
 		Region region2 = new Region();
-		region2.setMinWidth(230);
 		HBox.setHgrow(region2, Priority.ALWAYS);
 		
-		playSave.getChildren().addAll(region2, error, play, save, region, _timeSlider, _pauseButton);
+		playSave.getChildren().addAll(region2, error, _saveBtn, _playBtn, _timeSlider, region);
 		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
@@ -194,14 +210,13 @@ public class TextViewer {
     	_mediaPlayer.play();
     	
     	_timeSlider.videoPlayed(_mediaPlayer);
-		_pauseButton.videoPlayed(_mediaPlayer);
+		
 		
 		String cmd = "rm -f ./audio/temp.wav";
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
 		try {
 			pb.start();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -210,7 +225,6 @@ public class TextViewer {
 		try {
 			pb2.start();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
