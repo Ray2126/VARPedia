@@ -38,13 +38,10 @@ public class Scripts {
 					tempScript = playAudioScript(params[0]);
 					break;
 				case "selectSave":
-					tempScript = saveSelected(params[0], params[1], params[2], params[3]);
+					tempScript = saveSelected(params[0], params[1], params[2]);
 					break;
 				case "listAudio":
 					tempScript = audioListFileScript();
-					break;
-				case "selectPlay":
-					tempScript = playSelected(params[0], params[1], params[2]);
 					break;
 				case "search":
 					tempScript = searchScript(params[0]);
@@ -95,7 +92,7 @@ public class Scripts {
 			for(int i = 0; i < files.length; i++) {
 				String name = files[i].getName();
 			    printWriter.println("if [ -f ./audio/"+name+"  ]; then");
-				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+"");
+				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 44100 ./resampledAudio/"+name+" &> /dev/null");
                 printWriter.println("fi");
 			}
       
@@ -173,10 +170,10 @@ public class Scripts {
 			printWriter.println("#!/bin/bash");
 			printWriter.println("mkdir ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name+"/quiz");
-			printWriter.println("mv ./creations/preview.mp4 ./creations/"+name+"/"+name+".mp4");
+			printWriter.println("mv ./temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
       //Create text file for searched
-			printWriter.println("cat "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
-			printWriter.println("mv ./creations/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
+			printWriter.println("echo "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
+			printWriter.println("mv ./temp/preview/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
 
 			printWriter.close();
 
@@ -256,7 +253,7 @@ public class Scripts {
 	
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("touch listing");
-	        printWriter.println("ls ./creations/*.mp4 >listing 2> /dev/null");
+	        printWriter.println("ls ./creations >listing 2> /dev/null");
 	        printWriter.println("cat listing | sed 's/\\..*$//'");
 	        
 	        printWriter.close();
@@ -352,45 +349,7 @@ public class Scripts {
     	}
     }
 
-    public File playSelected(String selected, String synth, String voice){
-		try {
-			File tempScript = File.createTempFile("script", null);
-
-			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-					tempScript));
-			PrintWriter printWriter = new PrintWriter(streamWriter);
-
-			printWriter.println("#!/bin/bash");
-			printWriter.println("TEXT='"+selected+"'");
-			printWriter.println("echo $TEXT > selected");
-			if(synth.equals("espeak")) {
-				printWriter.println("espeak -f selected -w selected.wav");
-			}
-			else {
-			    if(voice.equals("nz")){
-                    printWriter.println("cat selected | text2wave -o selected.wav -eval nz.scm &>/dev/null");
-                }else if(voice.equals("cg")){
-                    printWriter.println("cat selected | text2wave -o selected.wav -eval cg.scm &>/dev/null");
-                }else{
-                    printWriter.println("cat selected | text2wave -o selected.wav &>/dev/null");
-                }
-			}
-			printWriter.println("length=$(wc -w < selected.wav)");
-			printWriter.println("if [ $length -eq 0 ]");
-			printWriter.println("then");
-			printWriter.println("exit 1");
-			printWriter.println("fi");
-			printWriter.println("ffplay -loglevel quiet -autoexit selected.wav");
-
-			printWriter.close();
-
-			return tempScript;
-		}catch (Exception e) {
-			return null;
-		}
-	}
-
-	public File saveSelected(String selected, String name, String synth, String voice){
+	public File saveSelected(String selected, String name, String voice){
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -402,17 +361,12 @@ public class Scripts {
 			printWriter.println("NAME="+name);
 			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");
-			if(synth.equals("espeak")) {
+			if(voice.equals("Robot Voice")) {
 				printWriter.println("espeak -f ./audio/$NAME.txt -w ./audio/${NAME}.wav");
-			}
-			else {
-				if(voice.equals("nz")){
-					printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav -eval nz.scm &>/dev/null");
-				}else if(voice.equals("cg")) {
-					printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav -eval cg.scm &>/dev/null");
-				}else {
+			}else if (voice.equals("New Zealand Accent")){
+				printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav -eval ./resources/nz.scm &>/dev/null");
+			}else {
 				printWriter.println("cat ./audio/$NAME.txt | text2wave -o ./audio/${NAME}.wav &>/dev/null");
-				}
 			}
 			printWriter.println("length=$(wc -w < ./audio/${NAME}.wav)");
 			printWriter.println("if [ $length -eq 0 ]");
@@ -447,9 +401,12 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D output.wav)");
 			printWriter.println("framerate="+framerate);
+			printWriter.println("rm -rf ./temp");
+			printWriter.println("mkdir ./temp");
+			printWriter.println("mkdir ./temp/preview");
 
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/noText.mp4  &> /dev/null" );
-			printWriter.println("ffmpeg -y -i ./creations/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./creations/preview.mp4 &> /dev/null");
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./temp/preview/noText.mp4  &> /dev/null" );
+			printWriter.println("ffmpeg -y -i ./temp/preview/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./temp/preview/preview.mp4 &> /dev/null");
 			printWriter.println("rm -f ./creations/output.mp4");
 
 			printWriter.close();
@@ -469,7 +426,7 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
 			printWriter.println("amount="+amount);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./creations/preview.mp4 &> /dev/null" );
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./temp/preview/preview.mp4 &> /dev/null" );
 
 			printWriter.close();
 

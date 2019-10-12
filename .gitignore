@@ -9,6 +9,7 @@ audio/
 resampledAudio/
 images/
 selectedImages/
+temp/
 
 ### Eclipse ###
 .metadata

@@ -9,7 +9,7 @@ import varpedia.CreatorMain;
 public class ChunkEditorScreen {
     BorderPane screen;
     TextViewer textSection;
-    VoiceViewer voiceSection;
+    public VoiceViewer voiceSection;
 
     public ChunkEditorScreen(){
         voiceSection = new VoiceViewer();
@@ -19,12 +19,17 @@ public class ChunkEditorScreen {
         screen.setTop(textSection.getView());
         screen.setBottom(voiceSection.getMainPane());
     }
+    
     public BorderPane getScreen(){
         return screen;
     }
 
     public TextViewer getTextSection() {
         return textSection;
+    }
+    
+    public VoiceViewer getVoiceSection() {
+        return voiceSection;
     }
 
     public boolean anySelected(){

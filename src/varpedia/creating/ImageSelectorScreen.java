@@ -58,7 +58,7 @@ public class ImageSelectorScreen extends BorderPane{
 
 		//You must have at least one image selected to continue
 		_place = new Text("");
-		_place.setFont(Font.font(Font.getDefault().getName(),15));
+		_place.setFont(Font.font(Font.getDefault().getName(),16));
 		_place.setFill(Color.RED);
 		
 
@@ -148,6 +148,7 @@ public class ImageSelectorScreen extends BorderPane{
 	public boolean isSelected() {
 		if(_listOfSelectedImages.size() == 0){
 			_place.setText("You must have at least one image selected to continue");
+			_place.setFont(Font.font ("Verdana", 16));
 			return false;
 		}else{
 			_place.setText("");
@@ -165,7 +166,7 @@ public class ImageSelectorScreen extends BorderPane{
 		private ImageDisplayBox(BufferedImage image, int index) {
 			_image = image;
 			_imageNumber = new Label("Image #" + index);
-			_imageNumber.setFont(Font.font(Font.getDefault().getName(),15));
+			_imageNumber.setFont(Font.font ("Verdana", 16));
 			_checkBox = new CheckBox();
 			_checkBox.setIndeterminate(false);
 			

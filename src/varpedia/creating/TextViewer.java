@@ -45,7 +45,6 @@ public class TextViewer {
 	private Scripts scripts;
 	private VBox settingsBox;
 	private ComboBox<String> voices;
-	private ComboBox<String> syns;
 	private Text error;
 	private MediaPlayer _mediaPlayer;
 	private TimeSlider _timeSlider;
@@ -55,6 +54,8 @@ public class TextViewer {
 		scripts = new Scripts();
 		saved = 0;
 	    textArea = new TextArea();
+	    textArea.setWrapText(true);
+	    textArea.setMaxWidth(1000);
 	    _changeVoicesPane = new BorderPane();
 		settingsBox = new VBox();
 	    _mainPane = new BorderPane();
@@ -80,48 +81,29 @@ public class TextViewer {
 		//"akl_nz_cw_cg_cg"
 		ObservableList<String> voiceOptions =
 				FXCollections.observableArrayList(
-						"kal",
-						"nz"
+						"American Accent",
+						"New Zealand Accent",
+						"Robot Voice"
 				);
 		this.voices = new ComboBox<String>(voiceOptions);
+		voices.setStyle("-fx-font: 16px \"Verdana\";");
 		Text voiceText = new Text("Voice: ");
-		Text synsText = new Text("Synthesiser: ");
+		voiceText.setFont(Font.font ("Verdana", 16));
 
-		ObservableList<String> synOptions =
-				FXCollections.observableArrayList(
-						"festival",
-						"espeak"
-				);
-		this.syns = new ComboBox<String>(synOptions);
-		
-		syns.getSelectionModel().selectFirst();
 		voices.getSelectionModel().selectFirst();
 		
-		//Disable voices if they choose espeak
-		syns.setOnAction(e -> {
-			if(syns.getSelectionModel().getSelectedItem().equals("espeak")) {
-				voices.setDisable(true);
-			}
-			else {
-				voices.setDisable(false);
-			}
-		});
 
 		HBox options = new HBox();
-		HBox synBox = new HBox();
-		synBox.getChildren().addAll(synsText, syns);
-		synBox.setSpacing(5);
-		synBox.setAlignment(Pos.CENTER);
 		HBox txtBox = new HBox();
 		txtBox.getChildren().addAll(voiceText, voices);
 		txtBox.setSpacing(5);
 		txtBox.setAlignment(Pos.CENTER);
-		options.getChildren().addAll(synBox ,txtBox);
+		options.getChildren().addAll(txtBox);
 		options.setAlignment(Pos.CENTER);
 		options.setPadding(new Insets(10,10,10,10));
 		options.setSpacing(20);
 		_changeVoicesPane.setRight(options);
-		_changeVoicesPane.setMaxWidth(1400);
+		_changeVoicesPane.setMaxWidth(1100);
 	}
 
     public void setSearched(String searched){
@@ -139,27 +121,31 @@ public class TextViewer {
     }
 
     public void setTextArea(TextArea textArea) {
-    	textArea.setMinHeight(550);
+    	textArea.setMinHeight(350);
     	textArea.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent mouseEvent) {
 				error.setText("");
 			}
 		});
-    	textArea.setMaxWidth(1400);
     	textArea.setOnMousePressed(e -> {error.setText("");});
     	this.textArea=textArea;
     	_mainPane.setCenter(this.textArea);
+    	textArea.setWrapText(true);
+    	textArea.setStyle("-fx-font: 16px \"Verdana\";");
     }
     
     private void addPlaySave(){
 		//Can't play selected text: Please change settings or a new chunk
 		error = new Text("");
+		error.setFont(Font.font ("Verdana", 16));
 		error.setFill(Color.RED);
 		HBox playSave = new HBox();
 		Button play = new Button("Play Selected");
+		play.setFont(Font.font ("Verdana", 16));
 		play.setOnAction(e -> playClicked());
 		Button save = new Button("Save Selected");
+		save.setFont(Font.font ("Verdana", 16));
 		save.setOnAction(e -> saveClicked());
 		playSave.setAlignment(Pos.BOTTOM_RIGHT);
 		
@@ -173,8 +159,8 @@ public class TextViewer {
 		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
-		playSave.setMaxWidth(1400);
-		_mainPane.setMaxWidth(1400);
+		playSave.setMaxWidth(1100);
+		_mainPane.setMaxWidth(1100);
 		_mainPane.setBottom(playSave);
 	}
 
@@ -195,7 +181,7 @@ public class TextViewer {
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
 		
-		scripts.getScript("selectSave", new String[]{selected, "temp", syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		scripts.getScript("selectSave", new String[]{selected, "temp",voices.getSelectionModel().getSelectedItem()});
 		
 		Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
     	
@@ -247,7 +233,7 @@ public class TextViewer {
 		selected = selected.replaceAll("\n"," ");
 		selected = selected.replaceAll("'","");
 		selected = selected.replaceAll("\"","");
-		Process process = scripts.getScript("selectSave", new String[]{selected, name, syns.getSelectionModel().getSelectedItem(), voices.getSelectionModel().getSelectedItem()});
+		Process process = scripts.getScript("selectSave", new String[]{selected, name, voices.getSelectionModel().getSelectedItem()});
 		if (process.exitValue() == 1){
 			error.setText("Can't play selected text: Please change settings or a new chunk");
 		}else{
