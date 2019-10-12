@@ -1,10 +1,15 @@
 package varpedia;
 
+import java.util.Optional;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -94,7 +99,20 @@ public class Home extends VBox{
 			BorderPane layout = new BorderPane();
 		    
 			QuizNavigator quiz = new QuizNavigator(this);
-			
+			if(quiz.getQuiz() == null) {
+				//Please create a creation first to play the game
+				Alert alert = new Alert(AlertType.ERROR);
+		    	alert.setTitle("No Creations");
+		    	alert.setHeaderText("You need a creation made to play the game.");
+		    	alert.setContentText("Please create a creation first.");
+
+		    	ButtonType okay = new ButtonType("Okay");
+
+		    	alert.getButtonTypes().setAll(okay);
+
+		    	alert.showAndWait();
+				return;
+			}
 			layout.setCenter(quiz.getQuiz());
 			Scene quizScene = new Scene(layout);
 			quizStage.setScene(quizScene);

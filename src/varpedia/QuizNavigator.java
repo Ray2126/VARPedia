@@ -69,6 +69,9 @@ public class QuizNavigator {
 	}
 	
 	public VBox getQuiz() {
+		if(creations.size() == 0) {
+			return null;
+		}
 		currentVidIndex = 0;
 		videoPlayer.playQuizVideo(creations.get(0));
 		return quizPanel;
