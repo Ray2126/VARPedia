@@ -1,13 +1,20 @@
 package varpedia;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.imageio.ImageIO;
+
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -49,7 +56,16 @@ public class FeedbackScreen {
 		
 		 //Initialize nav bar
         navBar = new HBox();
-        homeBtn = new Button("Home");
+        homeBtn = new Button();
+        try {
+			BufferedImage image = ImageIO.read(new File("resources/icons/home.png"));
+			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
+			imageView.fitHeightProperty().set(30);
+			imageView.fitWidthProperty().set(30);
+			homeBtn.setGraphic(imageView);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
         homeBtn.setDefaultButton(true);
         homeBtn.setFont(Font.font ("Verdana", 15));
         homeBtn.setOnAction(e -> {

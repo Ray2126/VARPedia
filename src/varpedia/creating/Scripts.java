@@ -91,9 +91,9 @@ public class Scripts {
 			printWriter.println("mkdir resampledAudio");
 			for(int i = 0; i < files.length; i++) {
 				String name = files[i].getName();
-			    printWriter.println("if [ -f ./audio/"+name+"  ]; then");
-				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 44100 ./resampledAudio/"+name+" &> /dev/null");
-                printWriter.println("fi");
+				printWriter.println("if [ -f ./audio/"+name+"  ]; then");
+				printWriter.println("ffmpeg -y -i ./audio/"+name+" -ar 25600 ./resampledAudio/"+name+" &> /dev/null");
+				printWriter.println("fi");
 			}
       
 			printWriter.println("sox ./resampledAudio/*.wav voice.wav");
@@ -405,7 +405,7 @@ public class Scripts {
 			printWriter.println("mkdir ./temp");
 			printWriter.println("mkdir ./temp/preview");
 
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./temp/preview/noText.mp4  &> /dev/null" );
+			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./temp/preview/noText.mp4 &> /dev/null" );
 			printWriter.println("ffmpeg -y -i ./temp/preview/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy ./temp/preview/preview.mp4 &> /dev/null");
 			printWriter.println("rm -f ./creations/output.mp4");
 

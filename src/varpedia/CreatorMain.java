@@ -131,7 +131,7 @@ public class CreatorMain {
         
         //Stop video player if on preview screen
         if(currentScreen.equals("preview")) {
-            previewScreen.stop();	
+            previewScreen.stop();
         }
     }
     

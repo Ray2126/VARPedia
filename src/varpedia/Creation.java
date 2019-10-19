@@ -6,8 +6,7 @@ public class Creation {
     private String search;
 
     public Creation(){
-        this.name = "";
-        this.number = 0;
+        this("",0,"");
     }
 
     public Creation(String name, int number, String search){
@@ -15,8 +14,8 @@ public class Creation {
         this.number = number;
         this.search = search;
     }
-
-    public void setName(String name){
+    
+	public void setName(String name){
         this.name = name;
     }
 
