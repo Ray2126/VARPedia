@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.quiz;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -21,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import varpedia.home.Home;
 
 public class FeedbackScreen {
 	private VBox screen;

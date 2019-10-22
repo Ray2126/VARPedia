@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.components.tables;
 
 public class Music {
 	

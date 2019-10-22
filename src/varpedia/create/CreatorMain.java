@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.create;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +21,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import varpedia.creating.*;
+import varpedia.create.*;
+import varpedia.home.Home;
 
 /**
  * Manages the screens for creating a new creation

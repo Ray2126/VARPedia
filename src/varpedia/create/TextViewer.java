@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.create;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,9 +23,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import varpedia.CreatorMain;
-import varpedia.videoPlayer.PauseButton;
-import varpedia.videoPlayer.TimeSlider;
+import varpedia.components.videoPlayer.PauseButton;
+import varpedia.components.videoPlayer.TimeSlider;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.create;
 
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
@@ -13,9 +13,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import varpedia.Creation;
-import varpedia.CreatorMain;
-import varpedia.videoPlayer.VideoPlayer;
+import varpedia.components.tables.Creation;
+import varpedia.components.videoPlayer.VideoPlayer;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;

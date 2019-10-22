@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.view;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -33,9 +33,11 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Callback;
-import varpedia.creating.Scripts;
-import varpedia.videoPlayer.PauseButton;
-import varpedia.videoPlayer.VideoPlayer;
+import varpedia.components.tables.Creation;
+import varpedia.components.videoPlayer.PauseButton;
+import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.create.Scripts;
+import varpedia.components.tables.PlayButtonColumn;
 
 /**
  * The table of creations seen on the view creations screen
@@ -66,23 +68,25 @@ public class CreationTable extends TableView<Creation>{
         searchColumn.setMinWidth(363);
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
         
-    	//Play buttons
-  		TableColumn<Creation, Boolean> playButtonColumn = new TableColumn<Creation, Boolean>("Play:");
-  		playButtonColumn.setMinWidth(100);
-  		playButtonColumn.setStyle("-fx-font: 16px \"Verdana\";");
-  	    playButtonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Creation, Boolean>, ObservableValue<Boolean>>() {
-  	        @Override 
-  	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Creation, Boolean> f) {
-  	          return new SimpleBooleanProperty(f.getValue() != null);
-  	        }
-  	    });
-  	    // create a cell value factory with an add button for each row in the table.
-	    playButtonColumn.setCellFactory(new Callback<TableColumn<Creation, Boolean>, TableCell<Creation, Boolean>>() {
-			@Override 
-			public TableCell<Creation, Boolean> call(TableColumn<Creation, Boolean> e) {
-				return new PlayButtonCell();
-			}
-	    });
+//    	//Play buttons
+//  		TableColumn<Creation, Boolean> playButtonColumn = new TableColumn<Creation, Boolean>("Play:");
+//  		playButtonColumn.setMinWidth(100);
+//  		playButtonColumn.setStyle("-fx-font: 16px \"Verdana\";");
+//  	    playButtonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Creation, Boolean>, ObservableValue<Boolean>>() {
+//  	        @Override 
+//  	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Creation, Boolean> f) {
+//  	          return new SimpleBooleanProperty(f.getValue() != null);
+//  	        }
+//  	    });
+//  	    // create a cell value factory with an add button for each row in the table.
+//	    playButtonColumn.setCellFactory(new Callback<TableColumn<Creation, Boolean>, TableCell<Creation, Boolean>>() {
+//			@Override 
+//			public TableCell<Creation, Boolean> call(TableColumn<Creation, Boolean> e) {
+//				return new PlayButtonCell();
+//			}
+//	    });
+        
+        TableColumn<Creation, Boolean> playButtonColumn = new PlayButtonColumn<Creation> (this);
 	    
     	//Play buttons
   		TableColumn<Creation, Boolean> deleteButtonColumn = new TableColumn<Creation, Boolean>("Delete:");
@@ -107,6 +111,11 @@ public class CreationTable extends TableView<Creation>{
         this.getColumns().addAll(numberColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);
         refreshTable();
         
+	}
+	
+	public void play() {
+		_selectedCreation = getSelectionModel().getSelectedItem();
+    	_videoPlayer.playVideo(_selectedCreation);
 	}
 	
 	private class PlayButtonCell extends TableCell<Creation, Boolean> {

@@ -1,4 +1,4 @@
-package varpedia.videoPlayer;
+package varpedia.components.videoPlayer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -15,7 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.shape.Circle;
-import varpedia.Main;
+import varpedia.home.Main;
 
 /**
  * The play/pause button for the video player

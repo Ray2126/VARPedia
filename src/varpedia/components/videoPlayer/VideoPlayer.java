@@ -1,4 +1,4 @@
-package varpedia.videoPlayer;
+package varpedia.components.videoPlayer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,7 +26,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import varpedia.Creation;
+import varpedia.components.tables.Creation;
 
 /**
  * Video player seen on the main screen and preview screen

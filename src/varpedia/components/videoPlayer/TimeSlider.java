@@ -1,4 +1,4 @@
-package varpedia.videoPlayer;
+package varpedia.components.videoPlayer;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;

@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.components.tables;
 
 public class Creation {
 	private String name;

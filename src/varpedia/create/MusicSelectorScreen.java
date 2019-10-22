@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.create;
 
 import java.io.File;
 
@@ -25,7 +25,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 import javafx.util.Duration;
-import varpedia.videoPlayer.PauseButton;
+import varpedia.components.tables.Music;
+import varpedia.components.videoPlayer.PauseButton;
 
 public class MusicSelectorScreen extends VBox{
 
