@@ -24,6 +24,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
 import varpedia.components.tables.Audio;
+import varpedia.components.tables.DeleteButtonClickedEvent;
+import varpedia.components.tables.DeleteButtonColumn;
+import varpedia.components.tables.PlayButtonClickedEvent;
+import varpedia.components.tables.PlayButtonColumn;
+import varpedia.components.tables.TableButtonHandler;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
 
@@ -81,45 +86,45 @@ public class VoiceViewer {
     }
 
     private void setUpTable() {
+    	audioTable = new TableView<Audio>();
+      
     	//Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
         nameColumn.setMinWidth(938);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         //Play column
-        TableColumn<Audio, Boolean> playColumn = new TableColumn<Audio, Boolean>("Play:");
-		playColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Audio, Boolean>, ObservableValue<Boolean>>() {
-	        @Override 
-	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Audio, Boolean> f) {
-	        	return new SimpleBooleanProperty(f.getValue() != null);
-	        }
-	    });
-    	playColumn.setCellFactory(new Callback<TableColumn<Audio, Boolean>, TableCell<Audio, Boolean>>() {
-			@Override 
-			public TableCell<Audio, Boolean> call(TableColumn<Audio, Boolean> p) {
-				return new PlayButtonCell();
+        TableColumn<Audio, Boolean> playColumn = new PlayButtonColumn<Audio>(audioTable);
+        
+        //Delete column
+      	TableColumn<Audio, Boolean> deleteColumn = new DeleteButtonColumn<Audio>(audioTable);
+        audioTable.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
+
+			@Override
+			public void handlePlay(PlayButtonClickedEvent e) {
+		    	ObservableList<Audio> audioSelected = getSelected();
+		    	Media audio = new Media(new File(audioSelected.get(0).getNumber()+".wav").toURI().toString());
+	        	
+	        	//Stop previous audio playing
+	        	if(_mediaPlayer != null) {
+	        		_mediaPlayer.stop();
+	        	}
+	        	
+	        	_mediaPlayer = new MediaPlayer(audio);
+	        	_mediaPlayer.play();
+	        	
+	        	_timeSlider.videoPlayed(_mediaPlayer);
+	    		_pauseButton.videoPlayed(_mediaPlayer);
 			}
-	    });
-		playColumn.setMinWidth(50);
-		
-		//Delete column
-		TableColumn<Audio, Boolean> deleteColumn = new TableColumn<Audio, Boolean>("Delete:");
-		deleteColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Audio, Boolean>, ObservableValue<Boolean>>() {
-	        @Override 
-	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Audio, Boolean> f) {
-		          return new SimpleBooleanProperty(f.getValue() != null);
-	        }
-	    });
-    	deleteColumn.setCellFactory(new Callback<TableColumn<Audio, Boolean>, TableCell<Audio, Boolean>>() {
-			@Override 
-			public TableCell<Audio, Boolean> call(TableColumn<Audio, Boolean> p) {
-				return new DeleteButtonCell();
+
+			@Override
+			public void handleDelete(DeleteButtonClickedEvent event) {
+				deleteButtonClicked();
 			}
-	    });
-		deleteColumn.setMinWidth(50);
+        	
+        });
 		
         //Audio Table
-        audioTable = new TableView<Audio>();
         audioTable.setPlaceholder(new Label("You currently have no creations"));
         refreshTable();
         audioTable.getColumns().addAll(nameColumn, playColumn, deleteColumn);
@@ -128,110 +133,21 @@ public class VoiceViewer {
         audioTable.setStyle("-fx-font: 16px \"Verdana\";");
     }
     
-    private class PlayButtonCell extends TableCell<Audio, Boolean> {
-
-		private PauseButton pauseButton = new PauseButton(20,20);
-		private StackPane paddedButton = new StackPane();
-
-	    public PlayButtonCell() {
-		    pauseButton.setDisable(false);
-		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(pauseButton);
-		
-		    pauseButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override 
-			    public void handle(ActionEvent actionEvent) {
-			    	audioTable.getSelectionModel().select(getTableRow().getIndex());
-			    	ObservableList<Audio> audioSelected = getSelected();
-			    	Media audio = new Media(new File(audioSelected.get(0).getNumber()+".wav").toURI().toString());
-		        	
-		        	//Stop previous audio playing
-		        	if(_mediaPlayer != null) {
-		        		_mediaPlayer.stop();
-		        	}
-		        	
-		        	_mediaPlayer = new MediaPlayer(audio);
-		        	_mediaPlayer.play();
-		        	
-		        	_timeSlider.videoPlayed(_mediaPlayer);
-		    		_pauseButton.videoPlayed(_mediaPlayer);
-			    }
-		    });
-	    }
-
-	    /** places an add button in the row only if the row is not empty. */
-	    @Override 
-	    protected void updateItem(Boolean item, boolean empty) {
-	    	super.updateItem(item, empty);
-
-	    	if (!empty) {
-	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-	    		setGraphic(paddedButton);
-	    	}
-	    	else {
-	    		setGraphic(null);
-	    	}
-	    }
-	}
-    
-    private class DeleteButtonCell extends TableCell<Audio, Boolean> {
-
-		private Button _deleteButton = new Button();
-		private StackPane paddedButton = new StackPane();
-
-	    public DeleteButtonCell() {
-	    	BufferedImage image;
-			try {
-				image = ImageIO.read(new File("resources/icons/delete.png"));
-				ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-				imageView.fitHeightProperty().set(20);
-				imageView.fitWidthProperty().set(20);
-				_deleteButton.setGraphic(imageView);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_deleteButton);
-	    
-		    _deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-			    @Override 
-			    public void handle(ActionEvent actionEvent) {
-			    	audioTable.getSelectionModel().select(getTableRow().getIndex());
-			    	deleteButtonClicked();
-		    	}
-		    });
-	    }
-	    
-	    /** places an add button in the row only if the row is not empty. */
-	    @Override 
-	    protected void updateItem(Boolean item, boolean empty) {
-	    	super.updateItem(item, empty);
-
-	    	if (!empty) {
-	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-	    		setGraphic(paddedButton);
-	    	}
-	    	else {
-	    		setGraphic(null);
-	    	}
-	    }
-	    
-	    //Delete selected creation
-	    private void deleteButtonClicked(){
-	        ObservableList<Audio> audioSelected = getSelected();
-	        if(audioSelected.size() != 0) {
-	        	//Get confirmation of delete
-	            Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
-	            Optional<ButtonType> result = del.showAndWait();
-	            if (result.get() == ButtonType.YES){
-	                scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
-	                refreshTable();
-	            } else {
-	                return;
-	            }
-	        }
-	    }
-	}
+    //Delete selected creation
+    private void deleteButtonClicked(){
+        ObservableList<Audio> audioSelected = getSelected();
+        if(audioSelected.size() != 0) {
+        	//Get confirmation of delete
+            Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
+            Optional<ButtonType> result = del.showAndWait();
+            if (result.get() == ButtonType.YES){
+                scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
+                refreshTable();
+            } else {
+                return;
+            }
+        }
+    }
     
     public ObservableList<Audio> getTableList(){
     	return audios;

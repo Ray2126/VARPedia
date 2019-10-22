@@ -1,25 +1,34 @@
 package varpedia.components.tables;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import varpedia.components.videoPlayer.PauseButton;
 
+public class DeleteButtonColumn<T> extends TableColumn< T, Boolean> {
 
-public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
+private TableView<T> _tableView;
 	
-	private TableView<T> _tableView;
-
-	public PlayButtonColumn(TableView<T> tableView) {
-		this.setText("Play");
+	public DeleteButtonColumn(TableView<T> tableView) {
+		this.setText("Delete");
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {
@@ -32,31 +41,40 @@ public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 		this.setCellFactory(new Callback<TableColumn<T, Boolean>, TableCell<T, Boolean>>() {
 			@Override 
 			public TableCell<T, Boolean> call(TableColumn<T, Boolean> e) {
-				return new PlayButtonCell();
+				return new DeleteButtonCell();
 			}
 		});
 		_tableView = tableView;
 	}
 	
-	private class PlayButtonCell extends TableCell< T, Boolean> {
+	private class DeleteButtonCell extends TableCell< T, Boolean> {
 
-		private PauseButton _pauseButton = new PauseButton(20,20);
+		private Button _deleteButton = new Button();
 		private StackPane paddedButton = new StackPane();
 
-	    public PlayButtonCell() {
-		    _pauseButton.setDisable(false);
+	    public DeleteButtonCell() {
+	    	BufferedImage image;
+			try {
+				image = ImageIO.read(new File("resources/icons/delete.png"));
+				ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
+				imageView.fitHeightProperty().set(20);
+				imageView.fitWidthProperty().set(20);
+				_deleteButton.setGraphic(imageView);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_pauseButton);
-		
-		    _pauseButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override 
+		    paddedButton.getChildren().add(_deleteButton);
+	    
+		    _deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+			    @Override 
 			    public void handle(ActionEvent actionEvent) {
-		    		_tableView.getSelectionModel().select(getTableRow().getIndex());
-			    	PlayButtonClickedEvent.fireEvent(_tableView, new PlayButtonClickedEvent());
-			    }
+			    	_tableView.getSelectionModel().select(getTableRow().getIndex());
+			    	DeleteButtonClickedEvent.fireEvent(_tableView, new DeleteButtonClickedEvent());
+		    	}
 		    });
 	    }
-
+	    
 	    /** places an add button in the row only if the row is not empty. */
 	    @Override 
 	    protected void updateItem(Boolean item, boolean empty) {
@@ -71,7 +89,5 @@ public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 	    	}
 	    }
 	}
-
 	
 }
-

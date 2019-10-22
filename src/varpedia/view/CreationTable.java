@@ -1,5 +1,7 @@
 package varpedia.view;
 
+
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,7 +19,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -34,10 +39,14 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Callback;
 import varpedia.components.tables.Creation;
+import varpedia.components.tables.DeleteButtonClickedEvent;
+import varpedia.components.tables.DeleteButtonColumn;
+import varpedia.components.tables.PlayButtonClickedEvent;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.create.Scripts;
 import varpedia.components.tables.PlayButtonColumn;
+import varpedia.components.tables.TableButtonHandler;
 
 /**
  * The table of creations seen on the view creations screen
@@ -68,134 +77,34 @@ public class CreationTable extends TableView<Creation>{
         searchColumn.setMinWidth(363);
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
         
-//    	//Play buttons
-//  		TableColumn<Creation, Boolean> playButtonColumn = new TableColumn<Creation, Boolean>("Play:");
-//  		playButtonColumn.setMinWidth(100);
-//  		playButtonColumn.setStyle("-fx-font: 16px \"Verdana\";");
-//  	    playButtonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Creation, Boolean>, ObservableValue<Boolean>>() {
-//  	        @Override 
-//  	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Creation, Boolean> f) {
-//  	          return new SimpleBooleanProperty(f.getValue() != null);
-//  	        }
-//  	    });
-//  	    // create a cell value factory with an add button for each row in the table.
-//	    playButtonColumn.setCellFactory(new Callback<TableColumn<Creation, Boolean>, TableCell<Creation, Boolean>>() {
-//			@Override 
-//			public TableCell<Creation, Boolean> call(TableColumn<Creation, Boolean> e) {
-//				return new PlayButtonCell();
-//			}
-//	    });
-        
+        //Play buttons column
         TableColumn<Creation, Boolean> playButtonColumn = new PlayButtonColumn<Creation> (this);
-	    
-    	//Play buttons
-  		TableColumn<Creation, Boolean> deleteButtonColumn = new TableColumn<Creation, Boolean>("Delete:");
-  		deleteButtonColumn.setMinWidth(100);
-  		deleteButtonColumn.setStyle("-fx-font: 16px \"Verdana\";");
-  	    deleteButtonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Creation, Boolean>, ObservableValue<Boolean>>() {
-  	        @Override 
-  	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Creation, Boolean> f) {
-  	          return new SimpleBooleanProperty(f.getValue() != null);
-  	        }
-  	    });
-  	    // create a cell value factory with an add button for each row in the table.
-	    deleteButtonColumn.setCellFactory(new Callback<TableColumn<Creation, Boolean>, TableCell<Creation, Boolean>>() {
-			@Override 
-			public TableCell<Creation, Boolean> call(TableColumn<Creation, Boolean> e) {
-				return new DeleteButtonCell();
-			}
-	    });
-	    
+        
+        //Delete Buttons Column
+        TableColumn<Creation, Boolean> deleteButtonColumn = new DeleteButtonColumn<Creation> (this);
+
+        //Add event handler for when they press a button in table
+        this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
+          @Override
+          public void handlePlay(PlayButtonClickedEvent e) {
+            _selectedCreation = getSelectionModel().getSelectedItem();
+              _videoPlayer.playVideo(_selectedCreation);
+
+          }
+          @Override
+          public void handleDelete(DeleteButtonClickedEvent event) {
+            _selectedCreation = getSelectionModel().getSelectedItem();
+            deleteButtonClicked();
+            refreshTable();
+          }
+        	
+        });
+
 	    //When they have no creations
         this.setPlaceholder(new Label("You currently have no creations"));
         this.getColumns().addAll(numberColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);
         refreshTable();
         
-	}
-	
-	public void play() {
-		_selectedCreation = getSelectionModel().getSelectedItem();
-    	_videoPlayer.playVideo(_selectedCreation);
-	}
-	
-	private class PlayButtonCell extends TableCell<Creation, Boolean> {
-
-		private PauseButton _pauseButton = new PauseButton(20,20);
-		private StackPane paddedButton = new StackPane();
-
-	    public PlayButtonCell() {
-		    _pauseButton.setDisable(false);
-		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_pauseButton);
-		
-		    _pauseButton.setOnAction(new EventHandler<ActionEvent>() {
-		    @Override 
-			    public void handle(ActionEvent actionEvent) {
-			    	getSelectionModel().select(getTableRow().getIndex());
-			    	_selectedCreation = getSelectionModel().getSelectedItem();
-			    	_videoPlayer.playVideo(_selectedCreation);
-			    }
-		    });
-	    }
-
-	    /** places an add button in the row only if the row is not empty. */
-	    @Override 
-	    protected void updateItem(Boolean item, boolean empty) {
-	    	super.updateItem(item, empty);
- 
-	    	if (!empty) {
-	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-	    		setGraphic(paddedButton);
-	    	}
-	    	else {
-	    		setGraphic(null);
-	    	}
-	    }
-	}
-	
-	private class DeleteButtonCell extends TableCell<Creation, Boolean> {
-
-		private Button _deleteButton = new Button();
-		private StackPane paddedButton = new StackPane();
-
-	    public DeleteButtonCell() {
-	    	BufferedImage image;
-			try {
-				image = ImageIO.read(new File("resources/icons/delete.png"));
-				ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-				imageView.fitHeightProperty().set(20);
-				imageView.fitWidthProperty().set(20);
-				_deleteButton.setGraphic(imageView);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_deleteButton);
-	    
-		    _deleteButton.setOnAction(new EventHandler<ActionEvent>() {
-			    @Override 
-			    public void handle(ActionEvent actionEvent) {
-			    	getSelectionModel().select(getTableRow().getIndex());
-			    	_selectedCreation = getSelectionModel().getSelectedItem();
-			    	deleteButtonClicked();
-			    	refreshTable();
-		    	}
-		    });
-	    }
-	    
-	    /** places an add button in the row only if the row is not empty. */
-	    @Override 
-	    protected void updateItem(Boolean item, boolean empty) {
-	    	super.updateItem(item, empty);
-
-	    	if (!empty) {
-	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-	    		setGraphic(paddedButton);
-	    	}
-	    	else {
-	    		setGraphic(null);
-	    	}
-	    }
 	}
 	    
     private void deleteButtonClicked() {
@@ -211,7 +120,6 @@ public class CreationTable extends TableView<Creation>{
 			Optional<ButtonType> result = confirmAlert.showAndWait();
 			
 			if(result.get() == ButtonType.OK) {
-				File file = new File("creations/" + _selectedCreation.getName());
 				String cmd = "rm -fr creations/"+_selectedCreation.getName();
 				ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
 				try {
@@ -260,5 +168,4 @@ public class CreationTable extends TableView<Creation>{
 		this.setItems(creations);
     	
     }
-	
 }
