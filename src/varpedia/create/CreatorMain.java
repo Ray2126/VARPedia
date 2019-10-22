@@ -19,6 +19,7 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.create.*;
@@ -31,8 +32,12 @@ import varpedia.home.Home;
 public class CreatorMain {
 
 	private BorderPane mainPane;
+	private BorderPane loadingPane;
+	private StackPane stackPane;
 	private Scene scene;
 	private Stage stage;
+	
+	private ProgressIndicator progressIndicator;
 	
 	private Home home;
 	private SearchSelectorScreen searchScreen;
@@ -46,29 +51,44 @@ public class CreatorMain {
 	private Button backBtn;
 	private Button nextBtn;
 	private Button cancelBtn;
-	private ProgressIndicator progressIndicator;
 	
     private String searchedTerm;
     private int imageAmount;
 
     private Scripts scripts;
     
-    
     public CreatorMain(Home home){
-    	
     	this.home = home;
         scripts = new Scripts();
         
         stage = new Stage();
+        stackPane = new StackPane();
         mainPane = new BorderPane();
+        loadingPane = new BorderPane();
         
         searchScreen = new SearchSelectorScreen();
         chunkScreen = new ChunkEditorScreen();
         musicScreen = new MusicSelectorScreen();
         imagesScreen = new ImageSelectorScreen();
-
         
-        //Initialize nav bar
+        setUp();
+    
+        mainPane.setBottom(navBar);
+        stackPane.getChildren().add(mainPane);
+    }
+
+    /**
+     * Initialises all the components seen on screen
+     */
+    private void setUp() {
+    	initialiseNavBar();
+    	initialiseProgressIndicator();
+    }
+
+    /**
+     * Initialise the nav bar (back, next, cancel buttons)
+     */
+	private void initialiseNavBar() {
         navBar = new HBox();
         
         backBtn = new Button("Back");
@@ -84,20 +104,26 @@ public class CreatorMain {
         cancelBtn.setFont(Font.font ("Verdana", 15));
         cancelBtn.setOnAction(e -> closeRequest());
         
-        progressIndicator = new ProgressIndicator();
-        progressIndicator.isIndeterminate();
-        
         //Navbar style
-        navBar.setPadding(new Insets(10,10,0,10));
+        navBar.setPadding(new Insets(10,10,10,10));
         navBar.setSpacing(10);
         navBar.setAlignment(Pos.CENTER_RIGHT);
-        progressIndicator.setOpacity(0);
-        progressIndicator.setMaxWidth(20);
         
-        navBar.getChildren().addAll(progressIndicator, backBtn, nextBtn, cancelBtn);
-        mainPane.setBottom(navBar);
+        navBar.getChildren().addAll(backBtn, nextBtn, cancelBtn);
     }
-
+	
+	/**
+	 * Initialise the progressIndicator which will show once background tasks are running
+	 */
+    private void initialiseProgressIndicator() {
+    	progressIndicator = new ProgressIndicator();
+        progressIndicator.isIndeterminate();
+        loadingPane.setCenter(progressIndicator);
+        progressIndicator.setMaxWidth(2000);
+        progressIndicator.setMinWidth(2000);
+        progressIndicator.setPrefWidth(2000);
+	}
+    
     /**
      * Confirm closing with popup
      */
@@ -143,7 +169,7 @@ public class CreatorMain {
         searchScreenUp();
 
         stage.setTitle("Creation Maker");
-        scene = new Scene(mainPane, 1200, 810);
+        scene = new Scene(stackPane, 1200, 810);
         stage.setScene(scene);
         
         //When top right exit pressed does this
@@ -253,7 +279,7 @@ public class CreatorMain {
 	}
 	
 	/**
-	 * Set screen to the imageSelectorScreen
+	 * Set screen to the choosing images screen
 	 */
     private void imageScreenUp(){
         currentScreen="image";
@@ -295,6 +321,9 @@ public class CreatorMain {
         return previewScreen;
     }
 
+    /**
+     * Nav bar back button is clicked
+     */
     private void backButtonClicked(){
     	hideProgressIndicator();
         if(currentScreen == "preview"){
@@ -317,6 +346,9 @@ public class CreatorMain {
         }
     }
 
+    /**
+     * Nav bar next button is clicked
+     */
     private void nextButtonClicked(){
         if(currentScreen == "search"){
             loadChunkScreen();
@@ -331,11 +363,24 @@ public class CreatorMain {
         }
     }
     
+    /**
+     * Show progress indicator while lengthy tasks are running in background
+     */
+    private void showProgressIndicator(){
+    	stackPane.getChildren().add(loadingPane);
+    	navBar.setOpacity(0.5);
+    	mainPane.setOpacity(0.5);
+    	
+    }
+    
+    /**
+     * Hide the progress indicator after loading is complete
+     */
     private void hideProgressIndicator(){
-    	progressIndicator.setOpacity(0);
+    	stackPane.getChildren().remove(loadingPane);
+    	navBar.setOpacity(100);
+    	mainPane.setOpacity(100);
     }
 
-    private void showProgressIndicator(){
-    	progressIndicator.setOpacity(100);
-    }
+
 }

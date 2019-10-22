@@ -90,7 +90,7 @@ public class VoiceViewer {
       
     	//Name Column
         TableColumn<Audio, String> nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(938);
+        nameColumn.setMinWidth(898);
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         //Play column
