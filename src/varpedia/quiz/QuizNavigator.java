@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.quiz;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +27,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import varpedia.videoPlayer.VideoPlayer;
+import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.home.Home;
 
 public class QuizNavigator {
 	private VBox quizPanel;

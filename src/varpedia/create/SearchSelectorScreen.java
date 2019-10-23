@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.create;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

@@ -1,4 +1,4 @@
-package varpedia.videoPlayer;
+package varpedia.components.videoPlayer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,7 +26,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import varpedia.Creation;
+import varpedia.components.tables.Creation;
 
 /**
  * Video player seen on the main screen and preview screen
@@ -36,12 +36,12 @@ public class VideoPlayer extends VBox{
 	private PauseButton _playPauseButton;
 	private Button _skipForwardButton;
 	private Button _skipBackwardButton;
-	private Slider _volumeSlider;
 	private TimeSlider _timeSlider;
 	private VBox _mediaPlayerPane;
 	private MediaPlayer _mediaPlayer;
 	private MediaView _mediaView;
 	private Label _durationVideo;
+	private VolumeControl _volume;
 	
 	public VideoPlayer() {
 		_playPauseButton = new PauseButton(30,30);
@@ -66,14 +66,13 @@ public class VideoPlayer extends VBox{
 			e.printStackTrace();
 		}
 		_timeSlider = new TimeSlider();
-		_volumeSlider = new Slider(0,100,100);
+		
 		_durationVideo = new Label("00:00");
 		_durationVideo.setStyle("-fx-font: 16px \"Verdana\";");
 		
 		//Disable buttons when video is not played yet
 		_skipForwardButton.setDisable(true);
 		_skipBackwardButton.setDisable(true);
-		_volumeSlider.setDisable(true);
 		
 		_mediaPlayerPane = new VBox();
 		
@@ -99,7 +98,8 @@ public class VideoPlayer extends VBox{
 		region2.setMinWidth(120);
 		HBox.setHgrow(region2, Priority.ALWAYS);
 		
-		bottomPane.getChildren().addAll(region2,_skipBackwardButton, _playPauseButton, _skipForwardButton, region, _volumeSlider);
+		_volume = new VolumeControl();
+		bottomPane.getChildren().addAll(region2,_skipBackwardButton, _playPauseButton, _skipForwardButton, region, _volume);
 		
 		HBox sliderPane = new HBox();
 		_timeSlider.setMinWidth(950);
@@ -205,9 +205,9 @@ public class VideoPlayer extends VBox{
 		//Re-enable buttons and sliders as video is now played
 		_skipForwardButton.setDisable(false);
 		_skipBackwardButton.setDisable(false);
-		_volumeSlider.setDisable(false);
 		_timeSlider.videoPlayed(_mediaPlayer);
 		_playPauseButton.videoPlayed(_mediaPlayer);
+		_volume.videoPlayed(_mediaPlayer);
 		
 		//Duration of video
 		_mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
@@ -218,14 +218,6 @@ public class VideoPlayer extends VBox{
 				time += ":";
 				time += String.format("%02d", (int)newValue.toSeconds());
 				_durationVideo.setText(time);
-			}
-		});
-		
-		//Functionality for volume slider
-		_volumeSlider.valueProperty().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable arg0) {
-				_mediaPlayer.setVolume(_volumeSlider.getValue()/100);
 			}
 		});
 		
@@ -272,7 +264,6 @@ public class VideoPlayer extends VBox{
 		_playPauseButton.setDisable(true);
 		_skipForwardButton.setDisable(true);
 		_skipBackwardButton.setDisable(true);
-		_volumeSlider.setDisable(true);
 		_timeSlider.setDisable(true);
 	}
 	

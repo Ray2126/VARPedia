@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.view;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,7 +20,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import varpedia.videoPlayer.VideoPlayer;
+import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.home.Home;
 
 /**
  * The view creations screen containing the video player, creation table and buttons to play, 

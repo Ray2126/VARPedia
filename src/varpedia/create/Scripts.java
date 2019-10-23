@@ -1,4 +1,4 @@
-package varpedia.creating;
+package varpedia.create;
 
 import java.io.*;
 import java.nio.file.Files;

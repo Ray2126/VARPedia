@@ -1,9 +1,8 @@
-package varpedia.creating;
+package varpedia.create;
 
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
-import varpedia.CreatorMain;
 
 // Screen that contains TextViewer and VoiceViewer
 public class ChunkEditorScreen {

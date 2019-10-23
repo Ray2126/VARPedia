@@ -1,4 +1,4 @@
-package varpedia;
+package varpedia.home;
 
 import java.util.Optional;
 
@@ -15,6 +15,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import varpedia.create.CreatorMain;
+import varpedia.quiz.QuizNavigator;
+import varpedia.view.CreationsViewerScreen;
 
 public class Home extends VBox{
 	
