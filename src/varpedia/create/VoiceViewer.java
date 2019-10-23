@@ -31,6 +31,7 @@ import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
+import varpedia.helper.Scripts;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

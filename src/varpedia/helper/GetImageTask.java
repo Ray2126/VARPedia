@@ -1,4 +1,4 @@
-package varpedia.create;
+package varpedia.helper;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;

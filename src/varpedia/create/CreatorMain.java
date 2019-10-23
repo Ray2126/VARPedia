@@ -23,6 +23,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.create.*;
+import varpedia.helper.GetImageTask;
+import varpedia.helper.Scripts;
+import varpedia.helper.SearchTask;
 import varpedia.home.Home;
 
 /**

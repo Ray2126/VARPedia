@@ -15,6 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import varpedia.components.tables.Creation;
 import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.helper.Scripts;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;

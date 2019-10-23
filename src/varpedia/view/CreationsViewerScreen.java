@@ -21,6 +21,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.helper.LoadIcon;
 import varpedia.home.Home;
 
 /**
@@ -60,15 +61,7 @@ public class CreationsViewerScreen extends VBox{
 		
 		
 		homeButton = new Button();
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/home.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			homeButton.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		homeButton.setGraphic(LoadIcon.loadIcon("home", 30, 30));
 
 		
 		homeButton.setOnAction(e -> {

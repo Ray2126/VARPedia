@@ -22,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import varpedia.components.videoPlayer.PauseButton;
+import varpedia.helper.LoadIcon;
 
 public class DeleteButtonColumn<T> extends TableColumn< T, Boolean> {
 
@@ -53,16 +54,7 @@ private TableView<T> _tableView;
 		private StackPane paddedButton = new StackPane();
 
 	    public DeleteButtonCell() {
-	    	BufferedImage image;
-			try {
-				image = ImageIO.read(new File("resources/icons/delete.png"));
-				ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-				imageView.fitHeightProperty().set(20);
-				imageView.fitWidthProperty().set(20);
-				_deleteButton.setGraphic(imageView);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	    	_deleteButton.setGraphic(LoadIcon.loadIcon("delete", 20, 20));
 		    paddedButton.setPadding(new Insets(3));
 		    paddedButton.getChildren().add(_deleteButton);
 	    

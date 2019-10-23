@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import varpedia.create.MusicSelectorScreen;
-import varpedia.create.Scripts;
+import varpedia.helper.Scripts;
 
 public class Main extends Application {
 	

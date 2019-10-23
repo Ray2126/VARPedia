@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.shape.Circle;
+import varpedia.helper.LoadIcon;
 import varpedia.home.Main;
 
 /**
@@ -66,26 +67,10 @@ public class PauseButton extends Button{
 	}
 
 	private void playImage() {
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/play.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(_height);
-			imageView.fitWidthProperty().set(_width);
-			this.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.setGraphic(LoadIcon.loadIcon("play", _width, _height));
 	}
 	
 	private void pauseImage() {
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/pause.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(_height);
-			imageView.fitWidthProperty().set(_width);
-			this.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		this.setGraphic(LoadIcon.loadIcon("pause", _width, _height));
 	}
 }

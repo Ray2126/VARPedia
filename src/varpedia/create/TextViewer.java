@@ -25,6 +25,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
+import varpedia.helper.LoadIcon;
+import varpedia.helper.Scripts;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -94,15 +96,7 @@ public class TextViewer {
 		voices.setStyle("-fx-font: 16px \"Verdana\";");
 		
 		Label voiceText = new Label();
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/voice.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			voiceText.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		voiceText.setGraphic(LoadIcon.loadIcon("voice", 30, 30));
 		
 		voices.getSelectionModel().selectFirst();
 		
@@ -162,15 +156,7 @@ public class TextViewer {
 		
 		_saveBtn = new Button();
 		
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/save.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			_saveBtn.setGraphic(imageView);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		_saveBtn.setGraphic(LoadIcon.loadIcon("save", 30, 30));
 		_saveBtn.setOnAction(e -> saveClicked());
 
 		playSave.setAlignment(Pos.BOTTOM_RIGHT);

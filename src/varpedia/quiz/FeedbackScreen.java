@@ -21,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import varpedia.helper.LoadIcon;
 import varpedia.home.Home;
 
 public class FeedbackScreen {
@@ -58,15 +59,7 @@ public class FeedbackScreen {
 		 //Initialize nav bar
         navBar = new HBox();
         homeBtn = new Button();
-        try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/home.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			homeBtn.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        homeBtn.setGraphic(LoadIcon.loadIcon("home", 30, 30));
         homeBtn.setDefaultButton(true);
         homeBtn.setFont(Font.font ("Verdana", 15));
         homeBtn.setOnAction(e -> {

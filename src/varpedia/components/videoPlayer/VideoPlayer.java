@@ -27,6 +27,7 @@ import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import varpedia.components.tables.Creation;
+import varpedia.helper.LoadIcon;
 
 /**
  * Video player seen on the main screen and preview screen
@@ -46,25 +47,9 @@ public class VideoPlayer extends VBox{
 	public VideoPlayer() {
 		_playPauseButton = new PauseButton(30,30);
 		_skipForwardButton = new Button();
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/skipForward.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			_skipForwardButton.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		_skipForwardButton.setGraphic(LoadIcon.loadIcon("skipForward", 30, 30));
 		_skipBackwardButton = new Button();
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/skipBackward.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			_skipBackwardButton.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		_skipBackwardButton.setGraphic(LoadIcon.loadIcon("skipBackward", 30, 30));
 		_timeSlider = new TimeSlider();
 		
 		_durationVideo = new Label("00:00");

@@ -30,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import varpedia.helper.Scripts;
 
 public class ImageSelectorScreen extends BorderPane{
 	// User selects how many images to create

@@ -18,6 +18,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.MediaPlayer;
+import varpedia.helper.LoadIcon;
 
 public class VolumeControl extends HBox{
 	
@@ -104,26 +105,10 @@ public class VolumeControl extends HBox{
 	}
 	
 	private void volumeUpIcon() {
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/volumeUp.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			_muteButton.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		_muteButton.setGraphic(LoadIcon.loadIcon("volumeUp", 30, 30));
 	}
 	
 	private void volumeOffIcon() {
-		try {
-			BufferedImage image = ImageIO.read(new File("resources/icons/volumeOff.png"));
-			ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
-			imageView.fitHeightProperty().set(30);
-			imageView.fitWidthProperty().set(30);
-			_muteButton.setGraphic(imageView);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		_muteButton.setGraphic(LoadIcon.loadIcon("volumeOff", 30, 30));
 	}
 }

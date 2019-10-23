@@ -3,6 +3,7 @@ package varpedia.create;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
+import varpedia.helper.Scripts;
 
 // Screen that contains TextViewer and VoiceViewer
 public class ChunkEditorScreen {

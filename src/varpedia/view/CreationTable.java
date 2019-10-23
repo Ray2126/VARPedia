@@ -44,7 +44,7 @@ import varpedia.components.tables.DeleteButtonColumn;
 import varpedia.components.tables.PlayButtonClickedEvent;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.VideoPlayer;
-import varpedia.create.Scripts;
+import varpedia.helper.Scripts;
 import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
 
