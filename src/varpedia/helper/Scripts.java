@@ -99,19 +99,18 @@ public class Scripts {
 			printWriter.println("sox ./resampledAudio/*.wav voice.wav");
 			
 			if(!music.equals("No music")) {
-				printWriter.println("sox -v 0.2 ./resources/music/"+music+".wav quiet.wav");
-				printWriter.println("ffmpeg -y -stream_loop 20 -i quiet.wav -codec copy loop.wav >& /dev/null");
+				printWriter.println("sox -v 0.2 ./resources/music/"+music+".wav quiet.wav &> /dev/null");
+				printWriter.println("ffmpeg -y -stream_loop 20 -i quiet.wav -codec copy loop.wav &> /dev/null");
 				printWriter.println("length=$(soxi -D voice.wav)");
-				printWriter.println("ffmpeg -y -i loop.wav -ss 0 -to $length -codec copy cutLoop.wav >& /dev/null");
-				printWriter.println("sox -M voice.wav cutLoop.wav output.wav");
+				printWriter.println("ffmpeg -y -i loop.wav -ss 0 -to $length -codec copy cutLoop.wav &> /dev/null");
+				printWriter.println("sox -M voice.wav cutLoop.wav output.wav &> /dev/null");
 				
 				printWriter.println("rm -f quiet.wav");
 				printWriter.println("rm -f loop.wav");
 				printWriter.println("rm -f cutLoop.wav");
-				printWriter.println("rm -f voice.wav");
 			}
 			else {
-				printWriter.println("mv voice.wav output.wav");
+				printWriter.println("cp voice.wav output.wav");
 			}
 
 			printWriter.close();
@@ -203,6 +202,7 @@ public class Scripts {
 			printWriter.println("rm -f selected");
 			printWriter.println("rm -f audios");
 			printWriter.println("rm -f listing");
+			printWriter.println("rm -f voice.wav");
 
 
 			printWriter.close();

@@ -62,7 +62,7 @@ public class FinalPreviewScreen {
     }
 
     public void audioAndImageCombine(CreatorMain mainScreen, int imgCount) {
-        File file = new File("./output.wav");
+        File file = new File("./voice.wav");
         bad.setFont(Font.font(Font.getDefault().getName(),0));
         AudioInputStream audioInputStream = null;
         try {
