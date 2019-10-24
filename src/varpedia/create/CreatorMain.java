@@ -115,6 +115,7 @@ public class CreatorMain {
         navBar.setPadding(new Insets(10,10,10,10));
         navBar.setSpacing(10);
         navBar.setAlignment(Pos.CENTER_RIGHT);
+        Styling.yellowBG(navBar);
         
         navBar.getChildren().addAll(backBtn, nextBtn, cancelBtn);
     }
@@ -192,7 +193,7 @@ public class CreatorMain {
      */
     private void searchScreenUp(){
         currentScreen = "search";
-        mainPane.setCenter(searchScreen.getScene());
+        mainPane.setCenter(searchScreen);
         backBtn.setDisable(true);
     }
 
@@ -243,7 +244,7 @@ public class CreatorMain {
      * When the searched word is invalid
      */
 	private void invalidSearch(){
-        mainPane.setCenter(searchScreen.invalidSearch());
+        searchScreen.invalidSearch();
     }
 
     /**

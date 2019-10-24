@@ -47,4 +47,20 @@ public class Styling {
 	public static void textColor(Node node) {
 		node.setStyle("-fx-font-weight: bold; -fx-text-fill: #4C4C4C");
 	}
+	
+	public static void errorSearch(Node node) {
+		node.setStyle("-fx-background-radius: 20;\n" +
+					"-fx-background-color: red;\n" + 
+					"-fx-text-fill: white;\n" +
+					"-fx-font-size: 20px;\n" +
+					"-fx-font-weight: bold;");
+	}
+	
+	public static void textField(TextField textField) {
+		textField.setStyle("-fx-background-radius: 20;\n" +
+							"-fx-background-color: #4C4C4C;\n" + 
+							"-fx-text-fill: white;\n" +
+							"-fx-font-size: 20px;\n" +
+							"-fx-font-weight: bold;");
+	}
 }
