@@ -2,6 +2,8 @@ package varpedia.helper;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class Styling {
@@ -36,7 +38,7 @@ public class Styling {
 		});
 	}
 	
-	public static void textInput(TextField tf) {
+	public static void textField(TextField tf) {
 		tf.setStyle("-fx-font: 16px \"Verdana\";-fx-background-color: #6E6E6E,radial-gradient(center 50% 50%, radius 100%, #6E6E6E, #4C4C4C); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1); -fx-font-weight: bold;"); 
 	}
 	
@@ -49,18 +51,6 @@ public class Styling {
 	}
 	
 	public static void errorSearch(Node node) {
-		node.setStyle("-fx-background-radius: 20;\n" +
-					"-fx-background-color: red;\n" + 
-					"-fx-text-fill: white;\n" +
-					"-fx-font-size: 20px;\n" +
-					"-fx-font-weight: bold;");
-	}
-	
-	public static void textField(TextField textField) {
-		textField.setStyle("-fx-background-radius: 20;\n" +
-							"-fx-background-color: #4C4C4C;\n" + 
-							"-fx-text-fill: white;\n" +
-							"-fx-font-size: 20px;\n" +
-							"-fx-font-weight: bold;");
+		node.setStyle("-fx-font: 16px \"Verdana\";-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #d62929, #b02525); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1); -fx-font-weight: bold;"); 
 	}
 }

@@ -211,7 +211,7 @@ public class CreatorMain {
             return;
         }
         searchForTerm();
-        chunkScreen.getTextSection().setSearched(searchedTerm);
+        chunkScreen.getTextSection().setUp(searchedTerm);
     }
 
     /**
@@ -226,7 +226,7 @@ public class CreatorMain {
 				invalidSearch();
 				hideProgressIndicator();
 			}else {
-				chunkScreen.getTextSection().setTextArea(dummy);
+				chunkScreen.getTextSection().searchComplete(dummy);
 				chunkScreenUp();
 				hideProgressIndicator();
 			}
@@ -252,8 +252,19 @@ public class CreatorMain {
      */
     private void chunkScreenUp(){
         backBtn.setDisable(false);
-        mainPane.setCenter(chunkScreen.getScreen());
+        mainPane.setCenter(chunkScreen);
         currentScreen="create";
+    }
+    
+    /**
+     * Before music screen, check they have at least one chunk
+     */
+    private void loadMusicScreen() {
+        if(! chunkScreen.anySelected()){
+        	hideProgressIndicator();
+        } else {
+        	musicScreenUp();
+        }
     }
     
     /**
@@ -270,12 +281,6 @@ public class CreatorMain {
 	private void loadImageScreen(){
 		showProgressIndicator();
 		
-		//No chunks created
-        if(! chunkScreen.anySelected()){
-        	hideProgressIndicator();
-            return;
-        }
-        
         GetImageTask task = new GetImageTask(searchedTerm);
         ExecutorService ex = Executors.newSingleThreadExecutor();
         ex.submit(task);
@@ -285,6 +290,7 @@ public class CreatorMain {
             imageScreenUp();
             hideProgressIndicator();
         });
+        
 	}
 	
 	/**
@@ -336,22 +342,18 @@ public class CreatorMain {
     private void backButtonClicked(){
     	hideProgressIndicator();
         if(currentScreen == "preview"){
-            mainPane.setCenter(imagesScreen);
-            currentScreen="image";
+            imageScreenUp();
             nextBtn.setText("Next");
             previewScreen.stop();
         }
         else if(currentScreen=="image"){
-            mainPane.setCenter(musicScreen);
-            currentScreen="music";
+            musicScreenUp();
         }
         else if(currentScreen == "music") {
-        	mainPane.setCenter(chunkScreen.getScreen());
-        	currentScreen = "create";
+        	chunkScreenUp();
         }
         else if(currentScreen == "create"){
             searchScreenUp();
-            currentScreen="search";
         }
     }
 
@@ -362,7 +364,7 @@ public class CreatorMain {
         if(currentScreen == "search"){
             loadChunkScreen();
         }else if(currentScreen == "create") {
-            musicScreenUp();
+        	loadMusicScreen();
         }else if(currentScreen == "music") {
         	loadImageScreen();
         }else if(currentScreen == "image"){

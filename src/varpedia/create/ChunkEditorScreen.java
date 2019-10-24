@@ -4,36 +4,34 @@ import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import varpedia.helper.Scripts;
+import varpedia.helper.Styling;
 
-// Screen that contains TextViewer and VoiceViewer
-public class ChunkEditorScreen {
-    BorderPane screen;
-    TextViewer textSection;
-    public VoiceViewer voiceSection;
+public class ChunkEditorScreen extends BorderPane{
+	
+    private ChunkTextViewer textSection;
+    private ChunkTable tableSection;
 
     public ChunkEditorScreen(){
-        voiceSection = new VoiceViewer();
-        textSection = new TextViewer(voiceSection);
-        screen = new BorderPane();
-        BorderPane.setAlignment(textSection.getView(), Pos.TOP_CENTER);
-        screen.setTop(textSection.getView());
-        screen.setBottom(voiceSection.getMainPane());
-    }
-    
-    public BorderPane getScreen(){
-        return screen;
+    	Styling.yellowBG(this);
+    	tableSection = new ChunkTable();
+        textSection = new ChunkTextViewer(tableSection);
+
+        BorderPane.setAlignment(textSection, Pos.TOP_CENTER);
+        
+        this.setTop(textSection);
+        this.setBottom(tableSection.getMainPane());
     }
 
-    public TextViewer getTextSection() {
+    public ChunkTextViewer getTextSection() {
         return textSection;
     }
     
-    public VoiceViewer getVoiceSection() {
-        return voiceSection;
+    public ChunkTable getVoiceSection() {
+        return tableSection;
     }
 
     public boolean anySelected(){
-        return voiceSection.anySelected();
+        return tableSection.anySelected();
     }
 
     public void combineTheAudio(CreatorMain mainScreen, String music) {

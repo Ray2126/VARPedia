@@ -73,7 +73,7 @@ public class QuizNavigator {
 		what.setFont(Font.font("Verdana", 20));
         options.setAlignment(Pos.CENTER);
         guessInput = new TextField();
-        Styling.textInput(guessInput);
+        Styling.textField(guessInput);
         Styling.yellowBG(quizPanel);
         guessInput.requestFocus();
         BooleanBinding guessValid = Bindings.createBooleanBinding(() -> {
