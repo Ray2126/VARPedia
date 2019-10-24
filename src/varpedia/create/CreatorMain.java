@@ -26,6 +26,7 @@ import varpedia.create.*;
 import varpedia.helper.GetImageTask;
 import varpedia.helper.Scripts;
 import varpedia.helper.SearchTask;
+import varpedia.helper.Styling;
 import varpedia.home.Home;
 
 /**
@@ -95,15 +96,18 @@ public class CreatorMain {
         navBar = new HBox();
         
         backBtn = new Button("Back");
+        Styling.blueButton(backBtn);
         backBtn.setOnAction(e -> backButtonClicked());
         backBtn.setFont(Font.font ("Verdana", 15));
         
         nextBtn = new Button("Next");
+        Styling.blueButton(nextBtn);
         nextBtn.setFont(Font.font ("Verdana", 15));
         nextBtn.setOnAction(e -> nextButtonClicked());
         nextBtn.setDefaultButton(true);
         
         cancelBtn = new Button("Cancel");
+        Styling.blueButton(cancelBtn);
         cancelBtn.setFont(Font.font ("Verdana", 15));
         cancelBtn.setOnAction(e -> closeRequest());
         
@@ -198,8 +202,9 @@ public class CreatorMain {
     private void loadChunkScreen(){
     	showProgressIndicator();
         searchedTerm = searchScreen.getInput();
-        
-        if(searchedTerm.isEmpty()){
+        searchedTerm.trim();
+        searchedTerm.toLowerCase();
+        if(searchedTerm.isEmpty() || searchedTerm.contains(" ")){
             invalidSearch();
             hideProgressIndicator();
             return;
