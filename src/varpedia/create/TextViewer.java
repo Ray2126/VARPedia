@@ -23,6 +23,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import varpedia.components.StopPlayButton;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
 import varpedia.helper.LoadIcon;
@@ -54,8 +55,7 @@ public class TextViewer {
 	private ComboBox<String> voices;
 	private Text error;
 	private MediaPlayer _mediaPlayer;
-	private TimeSlider _timeSlider;
-	private Button _playBtn;
+	private StopPlayButton _playBtn;
 	private Button _saveBtn;
 
 	public TextViewer(VoiceViewer voiceDisp){
@@ -68,7 +68,6 @@ public class TextViewer {
 		settingsBox = new VBox();
 	    _mainPane = new BorderPane();
 	    this.voiceDisp = voiceDisp;
-	    _timeSlider = new TimeSlider();
     }
 
     public BorderPane getView(){
@@ -150,8 +149,7 @@ public class TextViewer {
 		error.setFill(Color.RED);
 		HBox playSave = new HBox();
 
-		_playBtn = new PauseButton(30,30);
-		_playBtn.setDisable(false);
+		_playBtn = new StopPlayButton(30,30);
 		_playBtn.setOnAction(e -> playClicked());
 		
 		_saveBtn = new Button();
@@ -166,7 +164,7 @@ public class TextViewer {
 		Region region2 = new Region();
 		HBox.setHgrow(region2, Priority.ALWAYS);
 		
-		playSave.getChildren().addAll(region2, error, _saveBtn, _playBtn, _timeSlider, region);
+		playSave.getChildren().addAll(region2, error, _saveBtn, _playBtn, region);
 		BorderPane.setAlignment(playSave, Pos.BOTTOM_RIGHT);
 		playSave.setPadding(new Insets(10,10,10,10));
 		playSave.setSpacing(10);
@@ -196,16 +194,10 @@ public class TextViewer {
 		
 		Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
     	
-    	//Stop previous audio playing
-    	if(_mediaPlayer != null) {
-    		_mediaPlayer.stop();
-    	}
-    	
-    	_mediaPlayer = new MediaPlayer(audio);
-    	_mediaPlayer.play();
-    	
-    	_timeSlider.videoPlayed(_mediaPlayer);
-		
+		_playBtn.audioPlayed(audio);
+
+
+
 		
 		String cmd = "rm -f ./audio/temp.wav";
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);

@@ -47,6 +47,7 @@ import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.Scripts;
 import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
+import varpedia.components.tables.TableButtonHandlerAdapter;
 
 /**
  * The table of creations seen on the view creations screen
@@ -84,7 +85,7 @@ public class CreationTable extends TableView<Creation>{
         TableColumn<Creation, Boolean> deleteButtonColumn = new DeleteButtonColumn<Creation> (this);
 
         //Add event handler for when they press a button in table
-        this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
+        this.addEventHandler(ActionEvent.ANY, new TableButtonHandlerAdapter() {
           @Override
           public void handlePlay(PlayButtonClickedEvent e) {
             _selectedCreation = getSelectionModel().getSelectedItem();

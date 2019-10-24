@@ -23,12 +23,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import varpedia.components.StopPlayButton;
 import varpedia.components.tables.Audio;
 import varpedia.components.tables.DeleteButtonClickedEvent;
 import varpedia.components.tables.DeleteButtonColumn;
 import varpedia.components.tables.PlayButtonClickedEvent;
 import varpedia.components.tables.PlayButtonColumn;
+import varpedia.components.tables.StopButtonClickedEvent;
+import varpedia.components.tables.StopButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
+import varpedia.components.tables.TableButtonHandlerAdapter;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
 import varpedia.helper.Scripts;
@@ -52,37 +56,23 @@ public class VoiceViewer {
 
     private TableView<Audio> audioTable;
     private VBox mainPane;
-    private HBox bottomPane;
     private Scripts scripts;
 	private MediaPlayer _mediaPlayer;
-	private TimeSlider _timeSlider;
-	private PauseButton _pauseButton;
 	public ObservableList<Audio> audios;
 
     public VoiceViewer() {
         scripts = new Scripts();
         
         setUpTable();
-        
-        _pauseButton = new PauseButton(30,30);
 
-        _timeSlider = new TimeSlider();
         
         Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
         
-        //HBox for the buttons
-        bottomPane = new HBox();
-        bottomPane.setPadding(new Insets(10,10,10,10));
-        bottomPane.setSpacing(10);
-        bottomPane.setStyle("-fx-alignment: CENTER");
-        bottomPane.setMaxWidth(1000);
-        bottomPane.getChildren().addAll(region, _timeSlider, _pauseButton);
-        
         //Set up vbox for table and buttons
         mainPane = new VBox();
         mainPane.setAlignment(Pos.CENTER);
-        mainPane.getChildren().addAll(audioTable, bottomPane);
+        mainPane.getChildren().addAll(audioTable);
         
     }
 
@@ -95,27 +85,18 @@ public class VoiceViewer {
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
         //Play column
-        TableColumn<Audio, Boolean> playColumn = new PlayButtonColumn<Audio>(audioTable);
+        StopButtonColumn<Audio> playColumn = new StopButtonColumn<Audio>(audioTable);
         
         //Delete column
       	TableColumn<Audio, Boolean> deleteColumn = new DeleteButtonColumn<Audio>(audioTable);
-        audioTable.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
+
+        audioTable.addEventHandler(ActionEvent.ANY, new TableButtonHandlerAdapter() {
 
 			@Override
-			public void handlePlay(PlayButtonClickedEvent e) {
-		    	ObservableList<Audio> audioSelected = getSelected();
+			public void handleStop(StopButtonClickedEvent e) {
+		      	ObservableList<Audio> audioSelected = getSelected();
 		    	Media audio = new Media(new File(audioSelected.get(0).getNumber()+".wav").toURI().toString());
-	        	
-	        	//Stop previous audio playing
-	        	if(_mediaPlayer != null) {
-	        		_mediaPlayer.stop();
-	        	}
-	        	
-	        	_mediaPlayer = new MediaPlayer(audio);
-	        	_mediaPlayer.play();
-	        	
-	        	_timeSlider.videoPlayed(_mediaPlayer);
-	    		_pauseButton.videoPlayed(_mediaPlayer);
+		    	playColumn.getStopButton().audioPlayed(audio);
 			}
 
 			@Override
@@ -124,7 +105,7 @@ public class VoiceViewer {
 			}
         	
         });
-		
+        
         //Audio Table
         audioTable.setPlaceholder(new Label("You currently have no creations"));
         refreshTable();

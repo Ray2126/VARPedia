@@ -36,6 +36,8 @@ public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 			}
 		});
 		_tableView = tableView;
+		
+
 	}
 	
 	private class PlayButtonCell extends TableCell< T, Boolean> {

@@ -6,7 +6,8 @@ import javafx.event.EventHandler;
 public abstract class TableButtonHandler implements EventHandler<ActionEvent>{
 	
 	public abstract void handlePlay(PlayButtonClickedEvent e);
-	public abstract void handleDelete(DeleteButtonClickedEvent event);
+	public abstract void handleDelete(DeleteButtonClickedEvent e);
+	public abstract void handleStop(StopButtonClickedEvent e);
 	
 	@Override
 	public void handle(ActionEvent e) {
@@ -15,6 +16,9 @@ public abstract class TableButtonHandler implements EventHandler<ActionEvent>{
 		}
 		else if(e instanceof PlayButtonClickedEvent){
 			handlePlay(new PlayButtonClickedEvent());
+		}
+		else if(e instanceof StopButtonClickedEvent) {
+			handleStop(new StopButtonClickedEvent());
 		}
 	}
 

@@ -25,6 +25,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 import javafx.util.Duration;
+import varpedia.components.StopPlayButton;
 import varpedia.components.tables.Music;
 import varpedia.components.videoPlayer.PauseButton;
 
@@ -159,36 +160,21 @@ public class MusicSelectorScreen extends VBox{
 	
 	private class PlayButtonCell extends TableCell<Music, Boolean> {
 
-		private PauseButton _pauseButton = new PauseButton(30,30);
+		private StopPlayButton _stopButton = new StopPlayButton(30,30);
 		private StackPane paddedButton = new StackPane();
 
 	    public PlayButtonCell() {
-		    _pauseButton.setDisable(false);
 		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_pauseButton);
+		    paddedButton.getChildren().add(_stopButton);
 		
-		    _pauseButton.setOnAction(new EventHandler<ActionEvent>() {
+		    _stopButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 			    public void handle(ActionEvent actionEvent) {
 			    	_musicTable.getSelectionModel().select(getTableRow().getIndex());
 
 			    	Media audio = new Media(new File("resources/music/" + _musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
 		        	
-		        	//Stop previous audio playing
-		        	if(_mediaPlayer != null) {
-		        		_mediaPlayer.stop();
-		        	}
-		        	
-		        	_mediaPlayer = new MediaPlayer(audio);
-		        	_mediaPlayer.play();
-		        	
-		    		_pauseButton.videoPlayed(_mediaPlayer);
-			    	_mediaPlayer.setOnEndOfMedia(new Runnable() {
-						@Override
-						public void run() {
-							_mediaPlayer.seek(Duration.ZERO);
-						}
-			    	});
+		        	_stopButton.audioPlayed(audio);
 			    }
 		    });
 	    }
