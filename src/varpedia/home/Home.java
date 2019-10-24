@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import varpedia.create.CreatorMain;
+import varpedia.helper.Styling;
 import varpedia.quiz.QuizNavigator;
 import varpedia.view.CreationsViewerScreen;
 
@@ -29,24 +30,31 @@ public class Home extends VBox{
 	
 	public Home(Stage primaryStage) {
 		title = new Label("VARpedia");
-		title.setFont(new Font("Arial", 30));
+		title.setFont(new Font("Arial", 60));
+		Styling.textColor(title);
 		
 		play = new Button("Play Learning Game");
-		
+		Styling.blueButton(play);		
 		setQuiz();
 		
 		viewCreations = new Button("View My Creations");
+		Styling.blueButton(viewCreations);
 		setViewCreations();
 		
 		newCreation = new Button("Create New");
+		Styling.blueButton(newCreation);
 		setNewCreation();
 		
 		help = new Button("Get help");
+		Styling.blueButton(help);
 		
 		exit = new Button("Quit");
+		Styling.blueButton(exit);
+
 		setExit();
 		
 		this.getChildren().addAll(title, play, viewCreations, newCreation, help, exit);
+		Styling.yellowBG(this);
 		
 		this.primaryStage = primaryStage;
 		creationsStage = new Stage();
