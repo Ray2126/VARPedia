@@ -13,12 +13,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.media.MediaPlayer;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 
 public class VolumeControl extends HBox{
 	
@@ -29,12 +31,14 @@ public class VolumeControl extends HBox{
 
 	public VolumeControl() {
 		_muteButton = new Button();
+		Styling.blueButton(_muteButton);
 		volumeUpIcon();
 		_muteButton.setMaxWidth(60);
 		_muteButton.setMinWidth(60);
 		_muteButton.setDisable(true);
 		_volumeSlider = new Slider(0,100,100);
 		_volumeSlider.setDisable(true);
+		this.setAlignment(Pos.CENTER);
 		
 		this.getChildren().addAll(_muteButton,_volumeSlider);
 	}

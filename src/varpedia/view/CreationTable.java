@@ -63,19 +63,21 @@ public class CreationTable extends TableView<Creation>{
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		
 		//Number column
-		TableColumn<Creation, Integer> numberColumn = new TableColumn<>("#");
+		TableColumn<Creation, Integer> numberColumn = new TableColumn<>();
         numberColumn.setMinWidth(50);
         numberColumn.setStyle("-fx-alignment: CENTER");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
 
         //Name Column
         TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
-        nameColumn.setMinWidth(363);
+        nameColumn.setMinWidth(100);
+        nameColumn.setStyle("-fx-alignment: CENTER");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
         //Search term Column
         TableColumn<Creation, String> searchColumn = new TableColumn<>("Topic");
-        searchColumn.setMinWidth(363);
+        searchColumn.setMinWidth(100);
+        searchColumn.setStyle("-fx-alignment: CENTER");
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
         
         //Play buttons column

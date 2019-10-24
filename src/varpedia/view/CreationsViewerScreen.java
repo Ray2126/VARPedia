@@ -15,13 +15,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 import varpedia.home.Home;
 
 /**
@@ -29,7 +32,7 @@ import varpedia.home.Home;
  * delete and return home.
  *
  */
-public class CreationsViewerScreen extends VBox{
+public class CreationsViewerScreen extends HBox{
 	
 	private VideoPlayer _videoPlayer;
 	private CreationTable _creationTable;
@@ -40,29 +43,36 @@ public class CreationsViewerScreen extends VBox{
 		super(10);
 		
 		this.home = home;
+		Styling.yellowBG(this);
 		
 		_videoPlayer = new VideoPlayer();
 		
 		//Pane for the video to sit in
+		VBox videoWrapper = new VBox();
+		videoWrapper.setAlignment(Pos.CENTER);
 		HBox videoBox = new HBox();
-		videoBox.setPadding(new Insets(10,10,10,10));
+		videoWrapper.getChildren().add(videoBox);
 		videoBox.setAlignment(Pos.CENTER);
+		videoBox.setPadding(new Insets(10,10,10,10));
 		videoBox.getChildren().addAll(_videoPlayer);
 		
-		
+		Label title = new Label("Your Creations");
+		Styling.textColor(title);
+		title.setFont(Font.font("Verdana", 30));
 		_creationTable = new CreationTable(_videoPlayer);
-		_creationTable.setMaxWidth(980);
+		_creationTable.setMaxWidth(455);
 		
 		//Pane for table of creations
 		VBox tableBox = new VBox();
-		tableBox.getChildren().addAll(_creationTable);
+		tableBox.getChildren().addAll(title, _creationTable);
+		tableBox.setSpacing(20);
 		tableBox.setAlignment(Pos.CENTER);
 		tableBox.setPadding(new Insets(10,10,10,10));
 		
 		
 		homeButton = new Button();
 		homeButton.setGraphic(LoadIcon.loadIcon("home", 30, 30));
-
+		Styling.blueButton(homeButton);
 		
 		homeButton.setOnAction(e -> {
 				home.showHome();
@@ -82,9 +92,9 @@ public class CreationsViewerScreen extends VBox{
 		buttonsPane.getChildren().addAll(region, homeButton, region2);
 		
 		this.setHeight(900);
-		this.setWidth(1200);
+		this.setWidth(700);
 		
-		this.getChildren().addAll(videoBox,tableBox, buttonsPane);
+		this.getChildren().addAll(tableBox, videoWrapper,buttonsPane);
 	}
 
 	

@@ -16,6 +16,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.shape.Circle;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 import varpedia.home.Main;
 
 /**
@@ -31,7 +32,7 @@ public class PauseButton extends Button{
 		super();
 		_width = width;
 		_height = height;
-		
+		Styling.blueButton(this);
 		
 		playImage();
 		

@@ -28,6 +28,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import varpedia.components.videoPlayer.VideoPlayer;
+import varpedia.helper.Styling;
 import varpedia.home.Home;
 
 public class QuizNavigator {
@@ -48,6 +49,7 @@ public class QuizNavigator {
 	
 	public QuizNavigator(Home home) {
 		this.home = home;
+		quizPanel = new VBox();
 		creationsAmount = getAmount();
 		creations = getCreations();
 		
@@ -67,10 +69,13 @@ public class QuizNavigator {
         currentVidIndex = 0;
         HBox options = new HBox();
         Label what = new Label("What is this videos topic? ");
-        what.setFont(Font.font ("Verdana", 20));
+		Styling.textColor(what);
+		what.setFont(Font.font("Verdana", 20));
         options.setAlignment(Pos.CENTER);
         guessInput = new TextField();
-        guessInput.setStyle("-fx-font: 16px \"Verdana\";");
+        Styling.textInput(guessInput);
+        Styling.yellowBG(quizPanel);
+        guessInput.requestFocus();
         BooleanBinding guessValid = Bindings.createBooleanBinding(() -> {
             if(guessInput.getText().isEmpty()) {
             	return false;
@@ -85,6 +90,7 @@ public class QuizNavigator {
         //Initialize nav bar
         navBar = new HBox();
         backBtn = new Button("Back");
+        Styling.blueButton(backBtn);
         backBtn.setDisable(true);
         backBtn.setOnAction(e -> {
         	if(currentVidIndex != 0) {
@@ -97,11 +103,13 @@ public class QuizNavigator {
         });
         backBtn.setFont(Font.font ("Verdana", 15));
         nextBtn = new Button("Next");
+        Styling.blueButton(nextBtn);
         nextBtn.setDefaultButton(true);
         nextBtn.disableProperty().bind(guessValid.not());
         nextBtn.setFont(Font.font ("Verdana", 15));
         cancelBtn = new Button("Cancel");
         cancelBtn.setFont(Font.font ("Verdana", 15));
+        Styling.blueButton(cancelBtn);
         cancelBtn.setOnAction(e -> {
         	videoPlayer.stop();
         	home.showHome();
@@ -109,7 +117,7 @@ public class QuizNavigator {
         
         nextBtn.setOnAction(e -> {
         	backBtn.setDisable(false);
-        	guesses.add(currentVidIndex,guessInput.getText());
+        	guesses.add(currentVidIndex,guessInput.getText().toLowerCase());
         	if(currentVidIndex < creations.size()-1) {
             	currentVidIndex++;
             	playNextVid();	
@@ -131,7 +139,6 @@ public class QuizNavigator {
         
         navBar.getChildren().addAll(backBtn, nextBtn, cancelBtn);
         
-        quizPanel = new VBox();
         quizPanel.getChildren().addAll(videoBox, options, navBar);
 	}
 	

@@ -2,6 +2,7 @@ package varpedia.components.tables;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import varpedia.helper.Styling;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -31,7 +32,7 @@ private TableView<T> _tableView;
 	public DeleteButtonColumn(TableView<T> tableView) {
 		this.setText("Delete");
 		this.setMinWidth(100);
-		this.setStyle("-fx-font: 16px \"Verdana\";");
+		this.setStyle("-fx-font: 16px \"Verdana\";-fx-font-weight: bold;");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {
 	      @Override 
 	      public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<T, Boolean> f) {
@@ -54,6 +55,7 @@ private TableView<T> _tableView;
 		private StackPane paddedButton = new StackPane();
 
 	    public DeleteButtonCell() {
+	    	Styling.blueButton(_deleteButton);
 	    	_deleteButton.setGraphic(LoadIcon.loadIcon("delete", 20, 20));
 		    paddedButton.setPadding(new Insets(3));
 		    paddedButton.getChildren().add(_deleteButton);

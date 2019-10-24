@@ -2,6 +2,7 @@ package varpedia.helper;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 
 public class Styling {
 	public static void blueButton(Button button) {
@@ -33,6 +34,10 @@ public class Styling {
 					"  -fx-text-fill: white;\n" + 
 					"  -fx-font-size: 1.1em;");
 		});
+	}
+	
+	public static void textInput(TextField tf) {
+		tf.setStyle("-fx-font: 16px \"Verdana\";-fx-background-color: #6E6E6E,radial-gradient(center 50% 50%, radius 100%, #6E6E6E, #4C4C4C); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1); -fx-font-weight: bold;"); 
 	}
 	
 	public static void yellowBG(Node node) {

@@ -13,6 +13,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -28,6 +30,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import varpedia.components.tables.Creation;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 
 /**
  * Video player seen on the main screen and preview screen
@@ -43,12 +46,15 @@ public class VideoPlayer extends VBox{
 	private MediaView _mediaView;
 	private Label _durationVideo;
 	private VolumeControl _volume;
+	private int width = 700;
 	
 	public VideoPlayer() {
 		_playPauseButton = new PauseButton(30,30);
 		_skipForwardButton = new Button();
+		Styling.blueButton(_skipForwardButton);;
 		_skipForwardButton.setGraphic(LoadIcon.loadIcon("skipForward", 30, 30));
 		_skipBackwardButton = new Button();
+		Styling.blueButton(_skipBackwardButton);
 		_skipBackwardButton.setGraphic(LoadIcon.loadIcon("skipBackward", 30, 30));
 		_timeSlider = new TimeSlider();
 		
@@ -62,16 +68,17 @@ public class VideoPlayer extends VBox{
 		_mediaPlayerPane = new VBox();
 		
 		//Set a black box as a placeholder for the video
-		Rectangle r = new Rectangle(1000,500);
+		Rectangle r = new Rectangle(width,500);
+		r.setStyle("-fx-fill: #36b5f5");
 		_mediaPlayerPane.getChildren().addAll(r);
 		
 		//Set size of video player pane
 		_mediaPlayerPane.setMinHeight(500);
 		_mediaPlayerPane.setMaxHeight(500);
 		_mediaPlayerPane.setPrefHeight(500);
-		_mediaPlayerPane.setMinWidth(1000);
-		_mediaPlayerPane.setMaxWidth(1000);
-		_mediaPlayerPane.setPrefWidth(1000);
+		_mediaPlayerPane.setMinWidth(width);
+		_mediaPlayerPane.setMaxWidth(width);
+		_mediaPlayerPane.setPrefWidth(width);
 		
 		//Pane for the buttons and volume sliders
 		HBox bottomPane = new HBox();
@@ -84,12 +91,15 @@ public class VideoPlayer extends VBox{
 		HBox.setHgrow(region2, Priority.ALWAYS);
 		
 		_volume = new VolumeControl();
+		bottomPane.setPadding(new Insets(10,10,10,10));
+		bottomPane.setSpacing(10);
+		bottomPane.setAlignment(Pos.CENTER);
 		bottomPane.getChildren().addAll(region2,_skipBackwardButton, _playPauseButton, _skipForwardButton, region, _volume);
 		
 		HBox sliderPane = new HBox();
-		_timeSlider.setMinWidth(950);
-		_timeSlider.setMaxWidth(950);
-		_timeSlider.setPrefWidth(950);
+		_timeSlider.setMinWidth(width-50);
+		_timeSlider.setMaxWidth(width-50);
+		_timeSlider.setPrefWidth(width-50);
 		sliderPane.getChildren().addAll(_timeSlider, _durationVideo);
 		
 		this.getChildren().addAll(_mediaPlayerPane, sliderPane, bottomPane);
@@ -243,7 +253,7 @@ public class VideoPlayer extends VBox{
 		_mediaPlayerPane.getChildren().remove(_mediaView);
 		
 		//Set a black box as a placeholder for the video
-		Rectangle r = new Rectangle(1000,500);
+		Rectangle r = new Rectangle(width,500);
 		_mediaPlayerPane.getChildren().addAll(r);
 		
 		_playPauseButton.setDisable(true);
