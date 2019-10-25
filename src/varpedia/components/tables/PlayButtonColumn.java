@@ -12,6 +12,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import varpedia.components.videoPlayer.PauseButton;
+import varpedia.helper.Styling;
 
 
 public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {

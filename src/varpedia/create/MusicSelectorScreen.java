@@ -5,6 +5,7 @@ import java.io.File;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,140 +28,137 @@ import javafx.util.Callback;
 import javafx.util.Duration;
 import varpedia.components.StopPlayButton;
 import varpedia.components.tables.Music;
+import varpedia.components.tables.RadioButtonColumn;
 import varpedia.components.videoPlayer.PauseButton;
+import varpedia.helper.Styling;
 
 public class MusicSelectorScreen extends VBox{
 
-	private MediaPlayer _mediaPlayer;
 	private Label _title;
 	private TableView<Music> _musicTable;
-	private Music _selectedMusic;
+	private RadioButtonColumn _selectColumn;
+	private TableColumn<Music, String> _musicColumn;
+	private TableColumn<Music, Boolean> _buttonColumn;
 	
 	public MusicSelectorScreen() {
-		//Set up label
-		_title = new Label("Select background music for creation: ");
-		_title.setAlignment(Pos.CENTER);
-		_title.setFont(Font.font(Font.getDefault().getName(),30));
-		_title.setPadding(new Insets(0,0,50,0));
-		
-		_selectedMusic = new Music("No music");
-		
-		//Music column
-		TableColumn<Music, String> musicColumn = new TableColumn<>("Music");
-		musicColumn.setMinWidth(400);
-		musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
-		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		
-		//Radio buttons
-		TableColumn<Music, Boolean> selectColumn = new TableColumn<Music, Boolean>("Select:");
-		selectColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Music, Boolean>, ObservableValue<Boolean>>() {
-	        @Override 
-	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> f) {
-		          return new SimpleBooleanProperty(f.getValue() != null);
-	        }
-	    });
-		selectColumn.setStyle("-fx-font: 16px \"Verdana\";");
-		ToggleGroup group = new ToggleGroup();
-		selectColumn.setCellFactory(new Callback<TableColumn<Music, Boolean>, TableCell<Music, Boolean>>() {
-			@Override 
-			public TableCell<Music, Boolean> call(TableColumn<Music, Boolean> personBooleanTableColumn) {
-				return new RadioButtonCell(group);
-			}
-	    });
-		selectColumn.setMinWidth(50);
-	
-		
-		
-		//Play buttons
-		TableColumn<Music, Boolean> buttonColumn = new TableColumn<Music, Boolean>("Preview:");
-		buttonColumn.setMinWidth(100);
-		buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
-	    buttonColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Music, Boolean>, ObservableValue<Boolean>>() {
-	        @Override 
-	        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Music, Boolean> f) {
-	          return new SimpleBooleanProperty(f.getValue() != null);
-	        }
-	    });
-	    
-	    // create a cell value factory with an add button for each row in the table.
-	    buttonColumn.setCellFactory(new Callback<TableColumn<Music, Boolean>, TableCell<Music, Boolean>>() {
-			@Override 
-			public TableCell<Music, Boolean> call(TableColumn<Music, Boolean> e) {
-				return new PlayButtonCell();
-			}
-	    });
-		
-		_musicTable = new TableView<>();
-		_musicTable.setItems(getMusic());
-		_musicTable.getColumns().addAll(selectColumn, musicColumn, buttonColumn);
-		
-		_musicTable.setMaxWidth(567);
-		_musicTable.setMaxHeight(300);
-		
+		setUpLabel();
+		setUpTable();
 		getChildren().addAll(_title, _musicTable);
 		setAlignment(Pos.CENTER);
-	} 
+	}
 	
-	//Get all of the music from music folder
+	/**
+	 * Set up the label informing them to select background music
+	 */
+	private void setUpLabel() {
+		_title = new Label("Select background music");
+		_title.setAlignment(Pos.CENTER);
+		_title.setFont(Font.font(Font.getDefault().getName(),30));
+		Styling.textColor(_title);
+		_title.setPadding(new Insets(0,0,50,0));
+	}
+	
+	/**
+	 * Set up the music table
+	 */
+	private void setUpTable() {
+		_musicTable = new TableView<>();
+		_musicTable.setItems(getMusic());
+		setUpColumns();
+		_musicTable.getColumns().addAll(_selectColumn, _musicColumn, _buttonColumn);
+		_musicTable.setMaxWidth(563);
+		_musicTable.setMaxHeight(274);
+		_musicTable.setFixedCellSize(60);
+		_musicTable.setEditable(false);
+		
+		//Disable drag and drop reordering of columns
+		_musicTable.getColumns().addListener(new ListChangeListener() {
+	        public boolean suspended;
+
+	        @Override
+	        public void onChanged(Change change) {
+	            change.next();
+	            if (change.wasReplaced() && !suspended) {
+	                this.suspended = true;
+	                _musicTable.getColumns().setAll(_selectColumn, _musicColumn, _buttonColumn);
+	                this.suspended = false;
+	            }
+	        }
+	    });
+	}
+	
+	/**
+	 * Get the music files to display to user
+	 * @return	ObservableList<Music>	list of music files to add to table
+	 */
 	private ObservableList<Music> getMusic() {
 		File file = new File("resources/music");
 		File[] files = file.listFiles();
-		
-		ObservableList<Music> musicList = FXCollections.observableArrayList();
-		//Add selection for no music
-		
-		
+		ObservableList<Music> musicList = FXCollections.observableArrayList();		
 		for(int i = 0; i < files.length; i++) {
+			//Remove extension
 			String name = files[i].getName().substring(0, files[i].getName().lastIndexOf('.'));
 			musicList.add(new Music(name));
 		}
+		//Add an option for no music
 		musicList.add(new Music("No music"));
 		return musicList;
 	} 
 	
-	private class RadioButtonCell extends TableCell<Music, Boolean> {
-
-		private RadioButton _selection = new RadioButton();
-		private StackPane paddedButton = new StackPane();
-
-	    public RadioButtonCell(ToggleGroup group) {
-	    	_selection.setToggleGroup(group);
-	    	
-		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_selection);
-		
-		    _selection.setOnAction(new EventHandler<ActionEvent>() {
-
-				@Override 
-		    	public void handle(ActionEvent actionEvent) {
-		    		_musicTable.getSelectionModel().select(getTableRow().getIndex());
-		    		_selectedMusic = _musicTable.getSelectionModel().getSelectedItem();
-		    	}
-		    });
-
-	    }
-
-	    /** places an add button in the row only if the row is not empty. */
-	    @Override 
-	    protected void updateItem(Boolean item, boolean empty) {
-	    	super.updateItem(item, empty);
-
-    		
-    		if (!empty) {
-	    		setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-	    		setGraphic(paddedButton);
-	    		_selection.setSelected(true);
-	    	}
-	    	else {
-	    		setGraphic(null);
-	    	}
-	    }
+	/**
+	 * Set up all the columns for the table
+	 */
+	private void setUpColumns() {
+		setUpMusicColumn();
+		setUpRadioColumn();
+		setUpPlayColumn();
 	}
 	
+	/**
+	 * Set up the column showing names of the music
+	 */
+	private void setUpMusicColumn() {
+		_musicColumn = new TableColumn<>("Music");
+		_musicColumn.setMinWidth(400);
+		_musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
+		_musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+		_musicColumn.setSortable(false);
+	}
+
+	/**
+	 * Set up the radio buttons to allow user to select music
+	 */
+	private void setUpRadioColumn() {
+		_selectColumn = new RadioButtonColumn(_musicTable);
+		_selectColumn.setSortable(false);
+	}
 	
+	/**
+	 * Set up buttons to allow user to preview music
+	 */
+	private void setUpPlayColumn() {
+		_buttonColumn = new TableColumn<Music, Boolean>("Preview");
+		_buttonColumn.setMinWidth(100);
+		_buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
+	    _buttonColumn.setCellFactory(col -> new PlayButtonCell() {});
+	    _buttonColumn.setSortable(false);
+	}
+
+	/**
+	 * Get the music the user has selected
+	 * @return	Music	the music user has selected
+	 */
+	public Music getSelectedMusic() {
+		return _selectColumn.getSelectedMusic();
+	}
+
+	/**
+	 * The individual cells of each play button in the table
+	 *
+	 */
 	private class PlayButtonCell extends TableCell<Music, Boolean> {
 
-		private StopPlayButton _stopButton = new StopPlayButton(30,30);
+		private StopPlayButton _stopButton = new StopPlayButton(20,20);
 		private StackPane paddedButton = new StackPane();
 
 	    public PlayButtonCell() {
@@ -171,19 +169,20 @@ public class MusicSelectorScreen extends VBox{
 		    @Override 
 			    public void handle(ActionEvent actionEvent) {
 			    	_musicTable.getSelectionModel().select(getTableRow().getIndex());
-
 			    	Media audio = new Media(new File("resources/music/" + _musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
-		        	
 		        	_stopButton.audioPlayed(audio);
 			    }
 		    });
 	    }
 
-	    /** places an add button in the row only if the row is not empty. */
+	    /**
+	     * Checks if row is not empty, then set the cell to play button
+	     */
 	    @Override 
 	    protected void updateItem(Boolean item, boolean empty) {
 	    	super.updateItem(item, empty);
 
+	    	//Remove play button from no music row
 	    	if(getTableRow().getIndex() == _musicTable.getItems().size()-1) {
 	    		setGraphic(null);
 	    	}	    
@@ -197,9 +196,4 @@ public class MusicSelectorScreen extends VBox{
 	    	}
 	    }
 	}
-	
-	public Music getSelectedMusic() {
-		return _selectedMusic;
-	}
-
 }

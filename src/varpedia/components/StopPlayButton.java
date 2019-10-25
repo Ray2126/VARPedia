@@ -7,6 +7,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 
 public class StopPlayButton extends Button{
 	
@@ -16,6 +17,7 @@ public class StopPlayButton extends Button{
 	
 	public StopPlayButton(int height, int width) {
 		super();
+		Styling.blueButton(this);
 		_width = width;
 		_height = height;
 		playIcon();
