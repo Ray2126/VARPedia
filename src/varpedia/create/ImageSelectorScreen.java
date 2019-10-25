@@ -7,28 +7,21 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import varpedia.helper.Scripts;
 import varpedia.helper.Styling;
@@ -39,16 +32,44 @@ import varpedia.helper.Styling;
  */
 public class ImageSelectorScreen extends BorderPane{
 	
+	/**
+	 * The title of this screen - "Select images"
+	 */
 	private Label _title;
+	
+	/**
+	 * Pane containing the rows of images. 
+	 */
 	private VBox _rowsPane;
+	
+	/**
+	 * Error text when user selects no images
+	 */
 	private Label _errorText;
 	
+	/**
+	 * The list of boxes of images on the screen
+	 */
 	private List<ImageDisplayBox> _listOfImages;
+	
+	/**
+	 * The boxes of images the user has selected
+	 */
 	private List<ImageDisplayBox> _listOfSelectedImages;
+	
+	/**
+	 * The number of images the user has selected
+	 */
 	private int amountSelected;
 	
+	/**
+	 * Linux scripts
+	 */
 	private Scripts scripts;
 
+	/**
+	 * Constructor.
+	 */
 	public ImageSelectorScreen() {
 		_listOfImages = new ArrayList<ImageDisplayBox>();
 		_listOfSelectedImages = new ArrayList<ImageDisplayBox>();

@@ -2,8 +2,6 @@ package varpedia.create;
 
 import java.io.File;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -13,23 +11,17 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
-import javafx.util.Callback;
-import javafx.util.Duration;
 import varpedia.components.StopPlayButton;
 import varpedia.components.tables.Music;
 import varpedia.components.tables.RadioButtonColumn;
-import varpedia.components.videoPlayer.PauseButton;
 import varpedia.helper.Styling;
 
 /**
@@ -38,12 +30,34 @@ import varpedia.helper.Styling;
  */
 public class MusicSelectorScreen extends VBox{
 
+	/**
+	 * The title - "Select background music"
+	 */
 	private Label _title;
+	
+	/**
+	 * The table of music and buttons on the center of screen.
+	 */
 	private TableView<Music> _musicTable;
+	
+	/**
+	 * The column containing the radio buttons
+	 */
 	private RadioButtonColumn _selectColumn;
+	
+	/**
+	 * The column containing the names of the music
+	 */
 	private TableColumn<Music, String> _musicColumn;
+	
+	/**
+	 * The column containing the preview buttons
+	 */
 	private TableColumn<Music, Boolean> _buttonColumn;
 	
+	/**
+	 * Constructor
+	 */
 	public MusicSelectorScreen() {
 		setUpLabel();
 		setUpTable();

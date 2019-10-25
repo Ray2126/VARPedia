@@ -3,18 +3,12 @@ package varpedia.create;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import varpedia.components.tables.Creation;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.Scripts;
 import varpedia.helper.Styling;
@@ -33,17 +27,37 @@ import java.util.Optional;
  *
  */
 public class FinalPreviewScreen extends BorderPane{
-	
+
+	/**
+	 * The video player the plays the preview
+	 */
     private VideoPlayer videoPlayer;
     
+    /**
+     * The text field where user can enter name of creation.
+     */
     private TextField nameInput;
+    
+    /**
+     * The error message that will tell the user of invalid creation names.
+     */
     private Text invalidNameText;
     
+    /**
+     * The term the user searched.
+     */
     private String searched;
     
+    /**
+     * Linux scripts.
+     */
     private Scripts scripts;
     
 
+    /**
+     * Constructor.
+     * @param searched	The term the user searched
+     */
     public FinalPreviewScreen(String searched){
     	this.searched = searched;
         scripts = new Scripts();

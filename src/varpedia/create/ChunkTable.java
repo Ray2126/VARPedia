@@ -1,95 +1,88 @@
 package varpedia.create;
 
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
-import varpedia.components.StopPlayButton;
 import varpedia.components.tables.Audio;
 import varpedia.components.tables.DeleteButtonClickedEvent;
 import varpedia.components.tables.DeleteButtonColumn;
-import varpedia.components.tables.PlayButtonClickedEvent;
-import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.StopButtonClickedEvent;
 import varpedia.components.tables.StopButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
-import varpedia.components.videoPlayer.PauseButton;
-import varpedia.components.videoPlayer.TimeSlider;
 import varpedia.helper.Scripts;
-import varpedia.helper.Styling;
-
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
-import javax.imageio.ImageIO;
-
 /**
- * The table of chunks saved on the bottom of the chunk screen
+ * The table of chunks saved on the bottom of the chunk screen.
  *
  */
 public class ChunkTable extends TableView<Audio>{
 
-    private Scripts scripts;
-	private TableColumn<Audio, String> nameColumn;
+    /**
+     * The column for the chunks information - displays text in the chunk.
+     */
+	private TableColumn<Audio, String> chunkColumn;
+	
+	/**
+	 * The column with the play buttons.
+	 */
 	private StopButtonColumn<Audio> playColumn;
+	
+	/**
+	 * The column with the delete buttons.
+	 */
 	private TableColumn<Audio, Boolean> deleteColumn;
+	
+	/**
+	 * Linux scripts.
+	 */
+    private Scripts scripts;
+    
 
+	/**
+	 * Constructor.
+	 */
     public ChunkTable() {
         scripts = new Scripts();
         setUpTable();
     }
 
     /**
-     * Set up the columns and design of table
+     * Set up the columns and design of table.
      */
     private void setUpTable() {
-    	//Name Column
-        nameColumn = new TableColumn<>("name");
-        nameColumn.setMinWidth(898);
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        chunkColumn = new TableColumn<>("Chunks");
+        chunkColumn.setMinWidth(898);
+        chunkColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         
-        //Play column
         playColumn = new StopButtonColumn<Audio>(this);
         
-        //Delete column
       	deleteColumn = new DeleteButtonColumn<Audio>(this);
       	
       	addButtonHandlers();
 
         this.setPlaceholder(new Label("You currently have no creations"));
         refreshTable();
-        this.getColumns().addAll(nameColumn, playColumn, deleteColumn);
+        this.getColumns().addAll(chunkColumn, playColumn, deleteColumn);
         this.setMaxWidth(1100);
         this.setMaxHeight(200);
         this.setStyle("-fx-font: 16px \"Verdana\";");
     }
     
     /**
-     * Add event handlers to the play and delete buttons
+     * Add event handlers to the play and delete buttons.
      */
     private void addButtonHandlers() {
         this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
@@ -106,7 +99,7 @@ public class ChunkTable extends TableView<Audio>{
     }
     
     /**
-     * When play button is clicked, play chunk
+     * When play button is clicked, play chunk.
      */
     private void playButtonClicked() {
     	ObservableList<Audio> audioSelected = getSelectionModel().getSelectedItems();
@@ -115,7 +108,7 @@ public class ChunkTable extends TableView<Audio>{
     }
     
     /**
-     * Delete audio chunk
+     * Delete audio chunk.
      */
     private void deleteButtonClicked(){
         ObservableList<Audio> audioSelected = getSelectionModel().getSelectedItems();
@@ -133,7 +126,7 @@ public class ChunkTable extends TableView<Audio>{
     }
 
 	/**
-	 * Loads the current chunks and displays in table
+	 * Loads the current chunks and displays in table.
 	 */
     public void refreshTable(){
         ObservableList<Audio> audios = FXCollections.observableArrayList();
@@ -161,11 +154,11 @@ public class ChunkTable extends TableView<Audio>{
     }
    
     /**
-     * Check they have at least one chunk saved
+     * Check they have at least one chunk saved.
      * @return false  no chunks saved
      * 		   true   at least one chunk saved
      */
-    public boolean anySelected() {
+    public boolean anyChunksCreated() {
         if(this.getItems().isEmpty()){
             Text place = new Text("You must have at least one chunk of audio to continue");
             place.setFont(Font.font(Font.getDefault().getName(),15));
@@ -178,8 +171,8 @@ public class ChunkTable extends TableView<Audio>{
     }
     
     /**
-     * Returns a pane with the table in the center
-     * @return  pane	the pane containing table
+     * Returns a pane with the table in the center.
+     * @return  the pane containing table
      */
     public VBox getMainPane(){
         VBox pane = new VBox();

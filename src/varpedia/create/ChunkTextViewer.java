@@ -1,47 +1,29 @@
 package varpedia.create;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import varpedia.components.StopPlayButton;
-import varpedia.components.videoPlayer.PauseButton;
-import varpedia.components.videoPlayer.TimeSlider;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Scripts;
 import varpedia.helper.Styling;
 
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.imageio.ImageIO;
 
 /**
  * Top half of the chunk screen. Contains text area to edit, play and save chunks, and voice options.
@@ -49,28 +31,64 @@ import javax.imageio.ImageIO;
  */
 public class ChunkTextViewer extends BorderPane{
 	
-	private ChunkTable voiceDisp;
+	/**
+	 * The table of chunks this is associated to.
+	 */
+	private ChunkTable chunkTable;
 	
+	/**
+	 * The text area where user can edit and select text.
+	 */
 	private TextArea textArea;
 	
+	/**
+	 * The pane that contains the play and delete buttons and the voice icon and combo box.
+	 */
 	private HBox buttonVoicePane;
+	
+	/**
+	 * The play button.
+	 */
 	private StopPlayButton _playBtn;
+	
+	/**
+	 * The save button.
+	 */
 	private Button _saveBtn;
+	
+	/**
+	 * The combo box of voices.
+	 */
 	private ComboBox<String> voices;
+	
+	/**
+	 * The text that displays error if selected text is not valid.
+	 */
 	private Text error;
 	
+	/**
+	 * The number of chunks the user has saved.
+	 */
+	private int savedChunks;
+	
+	/**
+	 * Linux scripts.
+	 */
 	private Scripts scripts;
 	
-	private int savedChunks;
-
-	public ChunkTextViewer(ChunkTable voiceDisp){
+	
+	/**
+	 * Constructor.
+	 * @param chunkTable	the chunk table this will be associated with
+	 */
+	public ChunkTextViewer(ChunkTable chunkTable){
 		scripts = new Scripts();
-	    this.voiceDisp = voiceDisp;
+	    this.chunkTable = chunkTable;
 	    this.setMaxWidth(1100);
     }
 	
 	/**
-	 * Set up this screen 
+	 * Set up this screen .
 	 * @param searched  the term the user searched
 	 */
     public void setUp(String searched){
@@ -79,7 +97,7 @@ public class ChunkTextViewer extends BorderPane{
     }
     
     /**
-     * Set up the title showing what they searched on top of this screen
+     * Set up the title showing what they searched on top of this screen.
      * @param searched	the term the user searched
      */
     private void titleSearchTerm(String searched) {
@@ -96,7 +114,7 @@ public class ChunkTextViewer extends BorderPane{
     }
 
     /**
-     * Set up pane for the buttons, voices options and error text
+     * Set up pane for the buttons, voices options and error text.
      */
     private void setUpOptionsButtons(){
     	buttonVoicePane = new HBox();
@@ -110,7 +128,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
     
     /**
-     * Add buttons to the pane
+     * Add buttons to the pane.
      */
     private void addButtons() {
     	_playBtn = new StopPlayButton(30,30);
@@ -130,7 +148,7 @@ public class ChunkTextViewer extends BorderPane{
     }
 
     /**
-     * Load the combo box used for choosing voice
+     * Load the combo box used for choosing voice.
      */
     private void loadVoicesBox(){
 		ObservableList<String> voiceOptions =
@@ -146,7 +164,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
     
     /**
-     * Add the combo box and icon to the pane
+     * Add the combo box and icon to the pane.
      */
     private void addVoiceOptions() {
     	Label voiceIcon = new Label();
@@ -159,7 +177,7 @@ public class ChunkTextViewer extends BorderPane{
     }
     
     /**
-     * Add error text to the pane
+     * Add error text to the pane.
      */
     private VBox addErrorText(){
     	VBox plusErrorPane = new VBox();
@@ -174,7 +192,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
 
     /**
-     * Set up the text area as search has been completed
+     * Set up the text area as search has been completed.
      * @param textArea	the text area to add to this screen
      */
     public void searchComplete(TextArea textArea) {
@@ -191,7 +209,7 @@ public class ChunkTextViewer extends BorderPane{
     }
     
     /**
-     * Play/preview button is clicked
+     * Play/preview button is clicked.
      */
 	private void playClicked(){
 		if(validSelection()) {
@@ -203,7 +221,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
 
 	/**
-	 * Save button is clicked
+	 * Save button is clicked.
 	 */
 	private void saveClicked(){
 		if(validSelection()) {
@@ -213,13 +231,13 @@ public class ChunkTextViewer extends BorderPane{
 			if (process.exitValue() == 1){
 				error.setText("Can't play selected text: Please change settings or a new chunk");
 			}else{
-				voiceDisp.refreshTable();
+				chunkTable.refreshTable();
 			}
 		}
 	}
 	
 	/**
-	 * Get the user selected text and format it to remove newlines, apostrophes and slashes
+	 * Get the user selected text and format it to remove newlines, apostrophes and slashes.
 	 * @return	the formatted selected text
 	 */
 	private String getSelectionFormatted() {
@@ -232,7 +250,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
 	
 	/**
-	 * check if the user selected text is valid
+	 * check if the user selected text is valid.
 	 * @return	true	selected text is valid
 	 * 			false 	selected text is invalid
 	 */
@@ -253,7 +271,7 @@ public class ChunkTextViewer extends BorderPane{
 	}
 	
 	/**
-	 * Remove the temporary files made to preview a chunk
+	 * Remove the temporary files made to preview a chunk.
 	 */
 	private void removeTemp() {
 		String cmd = "rm -f ./audio/temp.wav";

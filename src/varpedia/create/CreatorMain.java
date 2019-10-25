@@ -4,15 +4,11 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressIndicator;
@@ -22,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import varpedia.create.*;
 import varpedia.helper.GetImageTask;
 import varpedia.helper.Scripts;
 import varpedia.helper.SearchTask;
@@ -35,32 +30,105 @@ import varpedia.home.Home;
  */
 public class CreatorMain {
 
+	/**
+	 * The main pane containing the buttons and the current screen.
+	 */
 	private BorderPane mainPane;
+	
+	/**
+	 * The pane containing the progress indicator.
+	 */
 	private BorderPane loadingPane;
+	
+	/**
+	 * The stack pane that will have the loading pane added on once task is running.
+	 */
 	private StackPane stackPane;
-	private Scene scene;
+	
+	/**
+	 * The creating stage.
+	 */
 	private Stage stage;
 	
+	/**
+	 * The progress indicator shown when tasks are running.
+	 */
 	private ProgressIndicator progressIndicator;
 	
+	/**
+	 * The home screen.
+	 */
 	private Home home;
+	
+	/**
+	 * The search screen.
+	 */
 	private SearchSelectorScreen searchScreen;
+	
+	/**
+	 * The chunk editor screen.
+	 */
 	private ChunkEditorScreen chunkScreen;
+	
+	/**
+	 * The music selector screen.
+	 */
 	private MusicSelectorScreen musicScreen;
+	
+	/**
+	 * The image selector screen.
+	 */
 	private ImageSelectorScreen imagesScreen;
+	
+	/**
+	 * The final preview screen.
+	 */
 	private FinalPreviewScreen previewScreen;
+	
+	/**
+	 * A string that contains a description of the current screen.
+	 */
 	private String currentScreen;
 	
+	/**
+	 * The navigation bar pane that will have back, next and cancel buttons.
+	 */
 	private HBox navBar;
+	
+	/**
+	 * The back button.
+	 */
 	private Button backBtn;
+	
+	/**
+	 * The next button.
+	 */
 	private Button nextBtn;
+	
+	/**
+	 * The cancel button.
+	 */
 	private Button cancelBtn;
 	
+	/**
+	 * The term the user searched on the search screen.
+	 */
     private String searchedTerm;
+    
+    /**
+     * The number of images the user selected on the image selector screen.
+     */
     private int imageAmount;
 
+    /**
+     * Linux scripts.
+     */
     private Scripts scripts;
     
+    /**
+     * Constructor.
+     * @param home	the home screen
+     */
     public CreatorMain(Home home){
     	this.home = home;
         scripts = new Scripts();
@@ -82,7 +150,7 @@ public class CreatorMain {
     }
 
     /**
-     * Initialises all the components seen on screen
+     * Initialises all the components seen on screen.
      */
     private void setUp() {
     	initialiseNavBar();
@@ -90,7 +158,7 @@ public class CreatorMain {
     }
 
     /**
-     * Initialise the nav bar (back, next, cancel buttons)
+     * Initialise the nav bar (back, next, cancel buttons).
      */
 	private void initialiseNavBar() {
         navBar = new HBox();
@@ -121,7 +189,7 @@ public class CreatorMain {
     }
 	
 	/**
-	 * Initialise the progressIndicator which will show once background tasks are running
+	 * Initialise the progressIndicator which will show once background tasks are running.
 	 */
     private void initialiseProgressIndicator() {
     	progressIndicator = new ProgressIndicator();
@@ -133,7 +201,7 @@ public class CreatorMain {
 	}
     
     /**
-     * Confirm closing with popup
+     * Confirm closing with popup.
      */
     private void closeRequest() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -155,8 +223,8 @@ public class CreatorMain {
     }
 
     /**
-     * Close creation window
-     * Have to clean up all temp created files
+     * Close creation window.
+     * Have to clean up all temp created files.
      */
     public void close(){
         //cleanup files
@@ -171,13 +239,13 @@ public class CreatorMain {
     }
     
     /**
-     * Initial screen up when entering create mode
+     * Initial screen up when entering create mode.
      */
     public void beginCreate() {
         searchScreenUp();
 
         stage.setTitle("Creation Maker");
-        scene = new Scene(stackPane, 1200, 810);
+        Scene scene = new Scene(stackPane, 1200, 810);
         stage.setScene(scene);
         
         //When top right exit pressed does this
@@ -189,7 +257,7 @@ public class CreatorMain {
     }
 
     /**
-     * Set screen center to the search screen
+     * Set screen center to the search screen.
      */
     private void searchScreenUp(){
         currentScreen = "search";
@@ -198,7 +266,7 @@ public class CreatorMain {
     }
 
     /**
-     * Set up the chunk screen and search for word
+     * Set up the chunk screen and search for word.
      */
     private void loadChunkScreen(){
     	showProgressIndicator();
@@ -215,7 +283,7 @@ public class CreatorMain {
     }
 
     /**
-     * Search for the term user inputted in the searchSelectorScreen
+     * Search for the term user inputted in the searchSelectorScreen.
      */
     private void searchForTerm() {
 		SearchTask task = new SearchTask(searchedTerm);
@@ -241,14 +309,14 @@ public class CreatorMain {
 	}
     
     /**
-     * When the searched word is invalid
+     * When the searched word is invalid.
      */
 	private void invalidSearch(){
         searchScreen.invalidSearch();
     }
 
     /**
-     * Set the screen to the chunk screen
+     * Set the screen to the chunk screen.
      */
     private void chunkScreenUp(){
         backBtn.setDisable(false);
@@ -257,10 +325,10 @@ public class CreatorMain {
     }
     
     /**
-     * Before music screen, check they have at least one chunk
+     * Before music screen, check they have at least one chunk.
      */
     private void loadMusicScreen() {
-        if(! chunkScreen.anySelected()){
+        if(! chunkScreen.anyChunksCreated()){
         	hideProgressIndicator();
         } else {
         	musicScreenUp();
@@ -268,7 +336,7 @@ public class CreatorMain {
     }
     
     /**
-     * Set music screen to center
+     * Set music screen to center.
      */
     private void musicScreenUp() {
     	currentScreen = "music";
@@ -276,7 +344,7 @@ public class CreatorMain {
     }
 
 	/**
-	 * Set up image screen and get images from Flickr
+	 * Set up image screen and get images from Flickr.
 	 */
 	private void loadImageScreen(){
 		showProgressIndicator();
@@ -294,14 +362,17 @@ public class CreatorMain {
 	}
 	
 	/**
-	 * Set screen to the choosing images screen
+	 * Set screen to the choosing images screen.
 	 */
     private void imageScreenUp(){
         currentScreen="image";
         mainPane.setCenter(imagesScreen);
     }
     
-
+    /**
+     * Get the number of images that have been selected on the image screen.
+     * @return	number of images selected
+     */
     public int getImageAmount() {
         imagesScreen.saveSelectedImages();
         imageAmount = imagesScreen.getAmountSelected();
@@ -309,7 +380,7 @@ public class CreatorMain {
     }
 	
     /**
-     * Set up final preview screen and combine video and audio
+     * Set up final preview screen and combine video and audio.
      */
     private void loadPreviewScreen(){
         //make sure images selected
@@ -320,7 +391,7 @@ public class CreatorMain {
     }
     
     /**
-     * Set screen to final preview screen
+     * Set screen to final preview screen.
      */
     public void previewScreenUp(){
         previewScreen.playVideo();
@@ -330,14 +401,17 @@ public class CreatorMain {
         hideProgressIndicator();
     }
     
-
+    /**
+     * Get the preview screen.
+     * @return	the preview screen
+     */
     public FinalPreviewScreen getPreview() {
     	previewScreen = new FinalPreviewScreen(searchScreen.getInput());
         return previewScreen;
     }
 
     /**
-     * Nav bar back button is clicked
+     * Nav bar back button is clicked.
      */
     private void backButtonClicked(){
     	hideProgressIndicator();
@@ -358,7 +432,7 @@ public class CreatorMain {
     }
 
     /**
-     * Nav bar next button is clicked
+     * Nav bar next button is clicked.
      */
     private void nextButtonClicked(){
         if(currentScreen == "search"){
@@ -377,7 +451,7 @@ public class CreatorMain {
     }
     
     /**
-     * Show progress indicator while lengthy tasks are running in background
+     * Show progress indicator while lengthy tasks are running in background.
      */
     private void showProgressIndicator(){
     	stackPane.getChildren().add(loadingPane);
@@ -387,7 +461,7 @@ public class CreatorMain {
     }
     
     /**
-     * Hide the progress indicator after loading is complete
+     * Hide the progress indicator after loading is complete.
      */
     private void hideProgressIndicator(){
     	stackPane.getChildren().remove(loadingPane);
