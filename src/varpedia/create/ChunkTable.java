@@ -32,7 +32,6 @@ import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.StopButtonClickedEvent;
 import varpedia.components.tables.StopButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
-import varpedia.components.tables.TableButtonHandlerAdapter;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.TimeSlider;
 import varpedia.helper.Scripts;
@@ -93,7 +92,7 @@ public class ChunkTable extends TableView<Audio>{
      * Add event handlers to the play and delete buttons
      */
     private void addButtonHandlers() {
-        this.addEventHandler(ActionEvent.ANY, new TableButtonHandlerAdapter() {
+        this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
 			@Override
 			public void handleStop(StopButtonClickedEvent e) {
 		      	playButtonClicked();

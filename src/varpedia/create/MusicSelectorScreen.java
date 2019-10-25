@@ -32,6 +32,10 @@ import varpedia.components.tables.RadioButtonColumn;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.helper.Styling;
 
+/**
+ * Screen where the user selects background music
+ *
+ */
 public class MusicSelectorScreen extends VBox{
 
 	private Label _title;
@@ -45,6 +49,7 @@ public class MusicSelectorScreen extends VBox{
 		setUpTable();
 		getChildren().addAll(_title, _musicTable);
 		setAlignment(Pos.CENTER);
+		Styling.yellowBG(this);
 	}
 	
 	/**

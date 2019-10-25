@@ -31,60 +31,91 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import varpedia.helper.Scripts;
+import varpedia.helper.Styling;
 
+/**
+ * The screen where the user selects the images they would like in their creation
+ *
+ */
 public class ImageSelectorScreen extends BorderPane{
-	// User selects how many images to create
-	// getImages() method; wgets amount of images
 	
-	private Text _title;
-	private List<ImageDisplayBox> _listOfImages;
-
-	private List<String> _listOfSelectedImages;
-	private int amount;
-	ArrayList<String> names;
-	ArrayList<String> selected;
-	Scripts scripts;
+	private Label _title;
 	private VBox _rowsPane;
-	private Text _place;
-
+	private Label _errorText;
 	
+	private List<ImageDisplayBox> _listOfImages;
+	private List<ImageDisplayBox> _listOfSelectedImages;
+	private int amountSelected;
+	
+	private Scripts scripts;
+
 	public ImageSelectorScreen() {
-		_title = new Text("Choose the images you would like in your creation: ");
-		_title.setTextAlignment(TextAlignment.CENTER);
-		_title.setFont(Font.font(Font.getDefault().getName(),20));
-
 		_listOfImages = new ArrayList<ImageDisplayBox>();
-		
-		_listOfSelectedImages = FXCollections.observableArrayList();
-
-		//You must have at least one image selected to continue
-		_place = new Text("");
-		_place.setFont(Font.font(Font.getDefault().getName(),16));
-		_place.setFill(Color.RED);
-		
-
+		_listOfSelectedImages = new ArrayList<ImageDisplayBox>();
+		scripts = new Scripts();
+		Styling.yellowBG(this);
 	}
-
-	public void loadImages() {
+	
+	/**
+	 * Images have completed downloading so set up this screen
+	 */
+	public void setUp() {
+		//Clear lists for when they press back then go next to this screen
 		_listOfImages.clear();
 		_listOfSelectedImages.clear();
+		setUpPane();
+		setUpTitle();
+		getImageFiles();
+		setUpImages();
+		setUpError();
+		this.setCenter(_rowsPane);
+	}
+	
+	/**
+	 * Set up the pane for the rows of images
+	 */
+	private void setUpPane() {
+		_rowsPane = new VBox();
+		_rowsPane.setSpacing(20);
+		_rowsPane.setAlignment(Pos.CENTER);
+		_rowsPane.setPadding(new Insets(10,20,10,20));
+	}
+	
+	/**
+	 * Set up the title on the top of screen
+	 */
+	private void setUpTitle() {
+		_title = new Label("Select Images");
+		_title.setTextAlignment(TextAlignment.CENTER);
+		_title.setFont(Font.font(Font.getDefault().getName(),20));
+		BorderPane.setAlignment(_title, Pos.TOP_CENTER);
+		Styling.textColor(_title);
+		_title.setPadding(new Insets(30,20,10,20));
+		this.setTop(_title);
+	}
+	
+	/**
+	 * Get the images downloading to the images folder and instantiate inner class for
+	 * each image and add them to list
+	 */
+	private void getImageFiles() {
 		File imagesDir = new File("images");
 		File[] images = imagesDir.listFiles();
-		BufferedImage image;
-		names = new ArrayList<>();
-		selected = new ArrayList<>();
-		scripts = new Scripts();
 		int index = 0;
 		for(File i: images) {
 			try {
-				names.add(i.getName());
-				image = ImageIO.read(i);
+				BufferedImage image = ImageIO.read(i);
 				_listOfImages.add(new ImageDisplayBox(image, ++index));
 			} catch (IOException e) {
-				//If image cannot be read
+				e.printStackTrace();
 			}
 		}
-		
+	}
+	
+	/**
+	 * Add the images to the screen in two rows
+	 */
+	private void setUpImages() {
 		HBox row1 = new HBox(10);
 		row1.setSpacing(20);
 		row1.setAlignment(Pos.CENTER);
@@ -93,7 +124,6 @@ public class ImageSelectorScreen extends BorderPane{
 		row2.setSpacing(20);
 		row2.setAlignment(Pos.CENTER);
 		row2.setPadding(new Insets(20,20,20,20));
-		//Add images to the rows panes
 		for(int i = 0; i < 5; i++) {
 			row1.getChildren().addAll(_listOfImages.get(i));
 		}
@@ -101,109 +131,126 @@ public class ImageSelectorScreen extends BorderPane{
 		for(int i = 5; i < 10; i++) {
 			row2.getChildren().addAll(_listOfImages.get(i));
 		}
-		
-		_rowsPane = new VBox();
-		_rowsPane.setSpacing(20);
-		_rowsPane.setAlignment(Pos.CENTER);
-		_rowsPane.setPadding(new Insets(10,20,10,20));
-		
-
-		HBox title = new HBox();
-		title.setSpacing(20);
-		title.setAlignment(Pos.CENTER);
-		title.setPadding(new Insets(0,20,30,20));
-		title.getChildren().addAll(_title);
-		
-		_rowsPane.getChildren().addAll(title, row1, row2, _place);
-		this.setCenter(_rowsPane);
-		
+		_rowsPane.getChildren().addAll(row1, row2);
 	}
-
-	public int getAmountSelected(){
-		return(amount);
-	};
 	
-	//Get the images that have been selected by the user(images in the table)
-	public void saveSelectedImages() {
-		List<BufferedImage> outputList = new ArrayList<BufferedImage>();
-		selected.clear();
-		for(int i = 0; i < _listOfSelectedImages.size(); i++) {
-			for(int j = 0; j < _listOfImages.size(); j++) {
-				if(_listOfSelectedImages.get(i).equals(_listOfImages.get(j).getName())) {
-					outputList.add(_listOfImages.get(j).getImage());
-					selected.add(names.get(j));
-				}
-			}
-		}
-
-		Iterator<String> iter= selected.iterator();
-		scripts.getScript("clearSelImg", new String[]{});
-		while(iter.hasNext()){
-			String name = iter.next();
-			scripts.getScript("copyImg", new String[]{name});
-		}
-
-		amount = outputList.size();
+	/**
+	 * Set up the error text for when they don't select at least one image
+	 */
+	private void setUpError() {
+		_errorText = new Label("");
+		_errorText.setFont(Font.font(Font.getDefault().getName(),20));
+		_errorText.setTextFill(Color.RED);
+		BorderPane.setAlignment(_errorText, Pos.BOTTOM_CENTER);
+		_errorText.setPadding(new Insets(0,0,30,0));
+		this.setBottom(_errorText);
 	}
-
+	
+	/**
+	 * Check if there is at least one image selected
+	 * @return	true 	at least one image is selected
+	 * 			false	no images are selected
+	 */
 	public boolean isSelected() {
 		if(_listOfSelectedImages.size() == 0){
-			_place.setText("You must have at least one image selected to continue");
-			_place.setFont(Font.font ("Verdana", 16));
+			_errorText.setText("You must have at least one image selected to continue");
+			_errorText.setFont(Font.font ("Verdana", 16));
 			return false;
 		}else{
-			_place.setText("");
+			_errorText.setText("");
 			return true;
 		}
 	}
 
-	//Inner class for each image display box (10 of these)
+	/**
+	 * Save the selected images to a separate folder in the file system
+	 */
+	public void saveSelectedImages() {
+		//Clear selected images folder for when they press back and then next
+		scripts.getScript("clearSelImg", new String[]{});
+		for(int i = 0; i < _listOfSelectedImages.size(); i++) {
+			String name = _listOfSelectedImages.get(i).getNumber();
+			scripts.getScript("copyImg", new String[]{name+".jpg"});
+		}
+		amountSelected = _listOfSelectedImages.size();
+	}
+	
+	/**
+	 * Return the number of images user has selected
+	 * @return	number of images selected
+	 */
+	public int getAmountSelected(){
+		return amountSelected;
+	};
+
+
+	/**
+	 * Inner class for each image box seen on the screen(there will be 10 of these)
+	 *
+	 */
 	private class ImageDisplayBox extends VBox{
 		
-		Label _imageNumber;
-		BufferedImage _image;
-		CheckBox _checkBox;
+		private ImageDisplayBox thisObject = this;
+		private BufferedImage _image;
+		private int _imageNumber;
+		private CheckBox _checkBox;
 		
+		/**
+		 * @param image		the image this will display
+		 * @param index		the number of this image
+		 */
 		private ImageDisplayBox(BufferedImage image, int index) {
 			_image = image;
-			_imageNumber = new Label("Image #" + index);
-			_imageNumber.setFont(Font.font ("Verdana", 16));
-			_checkBox = new CheckBox();
-			_checkBox.setIndeterminate(false);
-			
-			_image = resize(_image, 200, 200);
-			
-			ImageView imageBox = new ImageView();
-			imageBox.setImage(SwingFXUtils.toFXImage(_image, null));
-			
-			//When user checks the box it will add to the list and when they uncheck it will remove
-			_checkBox.setOnAction(new EventHandler<ActionEvent>() {	
-				@Override
-				public void handle(ActionEvent arg0) {
-					if(_checkBox.isSelected()) {
-						_listOfSelectedImages.add(_imageNumber.getText());
-					}
-					else if((!_checkBox.isSelected())) {
-						_listOfSelectedImages.remove(_imageNumber.getText());
-					}
-				}
-			});
-			
-			
-			this.getChildren().addAll(_imageNumber, imageBox, _checkBox);
+			_imageNumber = index;
+			setUpImageBox();
+			setUpCheckBox();
 			this.setSpacing(10);
 			this.setAlignment(Pos.CENTER);
 		}
 		
-		private BufferedImage getImage() {
-			return _image;
+		/**
+		 * Set up the image view of the image this will display
+		 */
+		private void setUpImageBox() {
+			_image = resize(_image, 200, 200);
+			ImageView imageBox = new ImageView();
+			imageBox.setImage(SwingFXUtils.toFXImage(_image, null));
+			this.getChildren().add(imageBox);
 		}
 		
-		private String getName() {
-			return _imageNumber.getText();
+		/**
+		 * Set up the checkbox
+		 */
+		private void setUpCheckBox() {
+			_checkBox = new CheckBox();
+			_checkBox.setIndeterminate(false);
+			//When user checks the box it will add to the list and when they uncheck it will remove
+			_checkBox.setOnAction(e -> {
+				if(_checkBox.isSelected()) {
+					_listOfSelectedImages.add(thisObject);
+				}
+				else if((!_checkBox.isSelected())) {
+					_listOfSelectedImages.remove(thisObject);
+				}
+			});
+			this.getChildren().add(_checkBox);
 		}
 		
-		//Helper method to resize the image
+		/**
+		 * Gets the number(index) of this object
+		 * @return	index as a string
+		 */
+		private String getNumber() {
+			return String.valueOf(_imageNumber);
+		}
+		
+		/**
+		 * Helper method to resize the images to fix in each box
+		 * @param img		image to resize
+		 * @param height	height to resize to
+		 * @param width		width to resize to
+		 * @return			resized image
+		 */
 		private BufferedImage resize(BufferedImage img, int height, int width) {
 			Image tmp = img.getScaledInstance(width,  height,  Image.SCALE_SMOOTH);
 			BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

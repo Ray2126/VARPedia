@@ -286,7 +286,7 @@ public class CreatorMain {
         ex.submit(task);
         
         task.setOnSucceeded(e -> {
-        	imagesScreen.loadImages();
+        	imagesScreen.setUp();
             imageScreenUp();
             hideProgressIndicator();
         });
