@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.paint.Color;
@@ -18,6 +19,8 @@ import varpedia.components.tables.StopButtonClickedEvent;
 import varpedia.components.tables.StopButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
 import varpedia.helper.Scripts;
+import varpedia.helper.Styling;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +49,11 @@ public class ChunkTable extends TableView<Audio>{
 	private TableColumn<Audio, Boolean> deleteColumn;
 	
 	/**
+	 * Error text when at least one chunk is not created
+	 */
+	private Text errorText;
+	
+	/**
 	 * Linux scripts.
 	 */
     private Scripts scripts;
@@ -57,6 +65,7 @@ public class ChunkTable extends TableView<Audio>{
     public ChunkTable() {
         scripts = new Scripts();
         setUpTable();
+        Styling.tableView(this);
     }
 
     /**
@@ -64,20 +73,23 @@ public class ChunkTable extends TableView<Audio>{
      */
     private void setUpTable() {
         chunkColumn = new TableColumn<>("Chunks");
-        chunkColumn.setMinWidth(898);
+        chunkColumn.setMinWidth(880);
         chunkColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        chunkColumn.setReorderable(false);
         
         playColumn = new StopButtonColumn<Audio>(this);
+        playColumn.setReorderable(false);
         
       	deleteColumn = new DeleteButtonColumn<Audio>(this);
+      	deleteColumn.setReorderable(false);
       	
       	addButtonHandlers();
-
-        this.setPlaceholder(new Label("You currently have no creations"));
+      	setUpError();
+      	setUpPlaceHolder();
         refreshTable();
         this.getColumns().addAll(chunkColumn, playColumn, deleteColumn);
         this.setMaxWidth(1100);
-        this.setMaxHeight(200);
+        this.setMaxHeight(230);
         this.setStyle("-fx-font: 16px \"Verdana\";");
     }
     
@@ -124,7 +136,28 @@ public class ChunkTable extends TableView<Audio>{
             }
         }
     }
-
+    
+    /**
+     * Set up the error text for when they have no creations and press next
+     */
+    private void setUpError() {
+    	errorText = new Text("");
+    	errorText.setFont(Font.font(Font.getDefault().getName(),20));
+        errorText.setFill(Color.ORANGERED);
+    }
+    
+    /**
+     * Set up the placeholder as same colour as table so it is not white
+     */
+    private void setUpPlaceHolder() {
+      	HBox placeholder = new HBox();
+      	placeholder.setStyle("-fx-background-color: #6E6E6E;");
+      	placeholder.getChildren().add(errorText);
+      	placeholder.setAlignment(Pos.CENTER);
+      	this.setPlaceholder(placeholder);
+    }
+    
+    
 	/**
 	 * Loads the current chunks and displays in table.
 	 */
@@ -160,10 +193,7 @@ public class ChunkTable extends TableView<Audio>{
      */
     public boolean anyChunksCreated() {
         if(this.getItems().isEmpty()){
-            Text place = new Text("You must have at least one chunk of audio to continue");
-            place.setFont(Font.font(Font.getDefault().getName(),15));
-            place.setFill(Color.RED);
-            setPlaceholder(place);
+            errorText.setText("You must have at least one chunk saved to continue!");
             return false;
         }else{
             return true;

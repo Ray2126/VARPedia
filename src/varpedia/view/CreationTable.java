@@ -16,7 +16,9 @@ import javax.imageio.ImageIO;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ListChangeListener.Change;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 
@@ -45,6 +47,7 @@ import varpedia.components.tables.PlayButtonClickedEvent;
 import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.Scripts;
+import varpedia.helper.Styling;
 import varpedia.components.tables.PlayButtonColumn;
 import varpedia.components.tables.TableButtonHandler;
 import varpedia.components.tables.TableButtonHandler;
@@ -61,6 +64,7 @@ public class CreationTable extends TableView<Creation>{
 	public CreationTable(VideoPlayer videoPlayer) {
 		_videoPlayer = videoPlayer;
 		this.setStyle("-fx-font: 16px \"Verdana\";");
+		Styling.tableView(this);
 		
 		//Number column
 		TableColumn<Creation, Integer> numberColumn = new TableColumn<>();
@@ -68,24 +72,30 @@ public class CreationTable extends TableView<Creation>{
         numberColumn.setMaxWidth(50);
         numberColumn.setStyle("-fx-alignment: CENTER");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
+        numberColumn.setReorderable(false);
+        
 
         //Name Column
         TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setMinWidth(100);
         nameColumn.setStyle("-fx-alignment: CENTER");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameColumn.setReorderable(false);
 
         //Search term Column
         TableColumn<Creation, String> searchColumn = new TableColumn<>("Topic");
         searchColumn.setMinWidth(100);
         searchColumn.setStyle("-fx-alignment: CENTER");
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
+        searchColumn.setReorderable(false);
         
         //Play buttons column
         TableColumn<Creation, Boolean> playButtonColumn = new PlayButtonColumn<Creation> (this);
+        playButtonColumn.setReorderable(false);
         
         //Delete Buttons Column
         TableColumn<Creation, Boolean> deleteButtonColumn = new DeleteButtonColumn<Creation> (this);
+        deleteButtonColumn.setReorderable(false);
 
         //Add event handler for when they press a button in table
         this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
@@ -103,7 +113,8 @@ public class CreationTable extends TableView<Creation>{
           }
         	
         });
-
+        
+        setEditable(false);
 	    //When they have no creations
         this.setPlaceholder(new Label("You currently have no creations"));
         this.getColumns().addAll(numberColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);

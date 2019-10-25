@@ -85,25 +85,11 @@ public class MusicSelectorScreen extends VBox{
 		_musicTable.setItems(getMusic());
 		setUpColumns();
 		_musicTable.getColumns().addAll(_selectColumn, _musicColumn, _buttonColumn);
-		_musicTable.setMaxWidth(563);
+		_musicTable.setMaxWidth(630);
 		_musicTable.setMaxHeight(274);
 		_musicTable.setFixedCellSize(60);
 		_musicTable.setEditable(false);
-		
-		//Disable drag and drop reordering of columns
-		_musicTable.getColumns().addListener(new ListChangeListener() {
-	        public boolean suspended;
-
-	        @Override
-	        public void onChanged(Change change) {
-	            change.next();
-	            if (change.wasReplaced() && !suspended) {
-	                this.suspended = true;
-	                _musicTable.getColumns().setAll(_selectColumn, _musicColumn, _buttonColumn);
-	                this.suspended = false;
-	            }
-	        }
-	    });
+		Styling.tableView(_musicTable);
 	}
 	
 	/**
@@ -142,6 +128,7 @@ public class MusicSelectorScreen extends VBox{
 		_musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
 		_musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		_musicColumn.setSortable(false);
+		_musicColumn.setReorderable(false);
 	}
 
 	/**
@@ -150,6 +137,7 @@ public class MusicSelectorScreen extends VBox{
 	private void setUpRadioColumn() {
 		_selectColumn = new RadioButtonColumn(_musicTable);
 		_selectColumn.setSortable(false);
+		_selectColumn.setReorderable(false);
 	}
 	
 	/**
@@ -161,6 +149,7 @@ public class MusicSelectorScreen extends VBox{
 		_buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
 	    _buttonColumn.setCellFactory(col -> new PlayButtonCell() {});
 	    _buttonColumn.setSortable(false);
+	    _buttonColumn.setReorderable(false);
 	}
 
 	/**

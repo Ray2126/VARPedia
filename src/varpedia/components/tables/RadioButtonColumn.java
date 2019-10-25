@@ -19,9 +19,12 @@ public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 	
 	public RadioButtonColumn(TableView<Music> tableView) {
 		super("Select");
+		
 		//Set default to no music
 		_selectedMusic = new Music("No music");
 		_tableView = tableView;
+		
+		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		ToggleGroup group = new ToggleGroup();
 		

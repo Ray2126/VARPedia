@@ -53,4 +53,8 @@ public class Styling {
 	public static void errorSearch(Node node) {
 		node.setStyle("-fx-font: 16px \"Verdana\";-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #d62929, #b02525); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1); -fx-font-weight: bold;"); 
 	}
+	
+	public static void tableView(TableView t) {
+		t.getStylesheets().add("table.css");
+	}
 }
