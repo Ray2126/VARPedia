@@ -455,7 +455,6 @@ public class CreatorMain {
      */
     private void showProgressIndicator(){
     	stackPane.getChildren().add(loadingPane);
-    	navBar.setOpacity(0.5);
     	mainPane.setOpacity(0.5);
     	
     }
@@ -465,7 +464,6 @@ public class CreatorMain {
      */
     private void hideProgressIndicator(){
     	stackPane.getChildren().remove(loadingPane);
-    	navBar.setOpacity(100);
     	mainPane.setOpacity(100);
     }
 
