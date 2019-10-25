@@ -44,6 +44,7 @@ public class FeedbackScreen {
 		layout.setAlignment(Pos.CENTER);
 		layout.setHgap(50);
 		layout.setVgap(50);
+		layout.setMaxWidth(1000);
 		
 		panel = new BorderPane();
 		BorderPane.setAlignment(layout, Pos.CENTER);

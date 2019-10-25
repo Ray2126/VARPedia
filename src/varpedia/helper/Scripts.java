@@ -52,6 +52,9 @@ public class Scripts {
 				case "nameValid":
 					tempScript = nameValidScript(params[0]);
 					break;
+				case "delCreation":
+					tempScript = deleteCreationScript(params[0]);
+					break;
 			}
 	        try {
 	            ProcessBuilder pb = new ProcessBuilder("bash", tempScript.toString());
@@ -67,6 +70,25 @@ public class Scripts {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	private File deleteCreationScript(String creation) {
+		try {
+			File tempScript = File.createTempFile("script", null);
+
+			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+					tempScript));
+			PrintWriter printWriter = new PrintWriter(streamWriter);
+			printWriter.println("#!/bin/bash");
+			//printWriter.println("lsof +D ./creations/"+creation+"/ | awk '{print $2}' | tail -n +2 | xargs kill -9");
+			printWriter.println("rm -rf ./creations/"+creation+"/");
+
+			printWriter.close();
+
+			return tempScript;
+		}catch (Exception e) {
+			return null;
+		}
 	}
 
 	public File mergeAudioScript(String music) {

@@ -65,6 +65,7 @@ public class CreationTable extends TableView<Creation>{
 		//Number column
 		TableColumn<Creation, Integer> numberColumn = new TableColumn<>();
         numberColumn.setMinWidth(50);
+        numberColumn.setMaxWidth(50);
         numberColumn.setStyle("-fx-alignment: CENTER");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
 
@@ -123,13 +124,8 @@ public class CreationTable extends TableView<Creation>{
 			Optional<ButtonType> result = confirmAlert.showAndWait();
 			
 			if(result.get() == ButtonType.OK) {
-				String cmd = "rm -fr creations/"+_selectedCreation.getName();
-				ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
-				try {
-					pb.start();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				Scripts scripts = new Scripts();
+				scripts.getScript("delCreation", new String[] {_selectedCreation.getName()});
 			}
 		}
     }
@@ -142,8 +138,6 @@ public class CreationTable extends TableView<Creation>{
         ObservableList<Creation> creations = FXCollections.observableArrayList();
         Scripts scripts =new Scripts();
         scripts.getScript("listCreations", new String[]{});
-        
-        
         
 		try {
 			// Open the file
