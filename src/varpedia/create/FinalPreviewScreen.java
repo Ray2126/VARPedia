@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import varpedia.components.tables.Creation;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.Scripts;
+import varpedia.helper.Styling;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -23,47 +25,130 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
-//Name creation and preview video of creation
-public class FinalPreviewScreen {
-    VideoPlayer videoPlayer;
-    TextField nameInput;
-    VBox name;
-    VBox screen;
-    Scripts scripts;
-    Text bad;
-    String searched;
+/**
+ * The screen where user can preview their almost complete creation. The user will
+ * choose a name for their creation on this screen.
+ *
+ */
+public class FinalPreviewScreen extends BorderPane{
+	
+    private VideoPlayer videoPlayer;
+    
+    private TextField nameInput;
+    private Text invalidNameText;
+    
+    private String searched;
+    
+    private Scripts scripts;
+    
 
     public FinalPreviewScreen(String searched){
     	this.searched = searched;
         scripts = new Scripts();
-        HBox videoBox = new HBox();
+        Styling.yellowBG(this);
+        setUp();
+    }
+    
+    /**
+     * Set up this screen
+     */
+    private void setUp() {
+    	setUpVideoPlayer();
+    	setUpErrorText();
+    	setUpNameInput();
+    }
+
+    /**
+     * Set up the text that will say invalid creation name
+     */
+    private void setUpErrorText() {
+    	invalidNameText = new Text("");
+        invalidNameText.setFill(Color.RED);
+        invalidNameText.setFont(Font.font(Font.getDefault().getName(),20));
+        this.setCenter(invalidNameText);
+	}
+
+    /**
+     * Set up the text field where the user enters the name of the creation
+     */
+	private void setUpNameInput() {
+    	nameInput = new TextField();
+    	nameInput.setMaxWidth(250);
+        Styling.textField(nameInput);
+        
+        Text nameText = new Text("Name: ");
+        nameText.setFont(Font.font(Font.getDefault().getName(),20));
+        Styling.textColor(nameText);
+        
+        HBox namePane = new HBox(10);
+        namePane.getChildren().addAll(nameText, nameInput);
+        BorderPane.setAlignment(namePane, Pos.BOTTOM_CENTER);
+        namePane.setAlignment(Pos.CENTER);
+        namePane.setPadding(new Insets(0,0,30,0));
+        this.setBottom(namePane);
+	}
+
+	/**
+	 * Set up the video player
+	 */
+	private void setUpVideoPlayer() {
+		videoPlayer = new VideoPlayer();
+		
+    	HBox videoBox = new HBox();
         videoBox.setPadding(new Insets(40,40,40,40));
         videoBox.setMaxSize(500,1000);
         videoBox.setAlignment(Pos.CENTER);
-        videoPlayer = new VideoPlayer();
-        videoBox.getChildren().addAll(videoPlayer);
-        nameInput = new TextField();
-        Text prompt = new Text("What would you like to name your creation");
-        prompt.setStyle("-fx-font: 16px \"Verdana\";");
-        bad = new Text("");
-        bad.setFill(Color.RED);
-        bad.setFont(Font.font(Font.getDefault().getName(),0));
-        nameInput.setMaxWidth(250);
-        nameInput.setStyle("-fx-font: 16px \"Verdana\";");
-        name = new VBox();
-        name.setAlignment(Pos.CENTER);
-        name.setSpacing(10);
-        name.getChildren().addAll(prompt, bad, nameInput);
-        screen = new VBox();
-        screen.setAlignment(Pos.CENTER);
-        screen.setSpacing(10);
-        screen.getChildren().addAll(videoBox, name);
+        BorderPane.setAlignment(videoBox, Pos.TOP_CENTER);
+        videoBox.getChildren().add(videoPlayer);
+        this.setTop(videoBox);
+	}
+	
+	/**
+	 * Play the preview video
+	 */
+    public void playVideo() {
+        videoPlayer.playPreview();
     }
+    
+    /**
+     * Stop the preview video as moving to a different screen
+     */
+	public void stopVideo() {
+		videoPlayer.stop();
+	}
 
-    public void audioAndImageCombine(CreatorMain mainScreen, int imgCount) {
-        File file = new File("./voice.wav");
-        bad.setFont(Font.font(Font.getDefault().getName(),0));
+	/**
+	 * Make the preview creation, combine the audio and images
+	 * @param mainScreen	the creating stage
+	 * @param imgCount		number of images to be put in creation
+	 */
+	public void makePreview(CreatorMain mainScreen, int imgCount) {
+		double framerate = findFramerate(imgCount);
+        Task<Void> task = new Task<Void>() {
+            @Override protected Void call() throws Exception {
+                scripts.getScript("preview", new String[]{String.valueOf(framerate)});
+                return null;
+            }
+        };
+        task.setOnSucceeded(e -> {
+        	//TODO maybe error handling
+        	mainScreen.previewScreenUp();
+        });
+        
+        Thread backgroundThread = new Thread(task);
+        backgroundThread.setDaemon(true);
+        backgroundThread.start();
+    }
+	
+	/**
+	 * Find the framerate of the audio, needed for adding images
+	 * @param imgCount	number of images to be put in creation
+	 * @return			framerate of audio
+	 */
+	private double findFramerate(int imgCount) {
+		File file = new File("./voice.wav");
         AudioInputStream audioInputStream = null;
         try {
             audioInputStream = AudioSystem.getAudioInputStream(file);
@@ -75,89 +160,20 @@ public class FinalPreviewScreen {
         AudioFormat format = audioInputStream.getFormat();
         long frames = audioInputStream.getFrameLength();
         double durationInSeconds = (frames+0.0) / format.getFrameRate();
-        double imgLength=durationInSeconds/imgCount;
-        double framerate=1/imgLength;
-        Scripts scripts = new Scripts();
-        Task<Integer> task = new Task<Integer>() {
-            @Override protected Integer call() throws Exception {
-                Process process = scripts.getScript("preview", new String[]{String.valueOf(framerate)});
-                return process.exitValue();
-            }
-        };
-        task.setOnSucceeded(e -> {
-            int result = task.getValue();
-            if(result != 0) {
-                //error
-            }else {
-                //Should be images but not done yet
-                mainScreen.previewScreenUp();
-            }
-        });
-        // Run the task in a background thread
-        Thread backgroundThread = new Thread(task);
-        // Terminate the running thread if the application exits
-        backgroundThread.setDaemon(true);
-        // Start the thread
-        backgroundThread.start();
-    }
+        double imgLength = durationInSeconds/imgCount;
+        return 1/imgLength;
+	}
 
-    public Node getScreen() {
-        return screen;
-    }
-
-    public void playVideo() {
-        videoPlayer.playPreview();
-    }
-
-    // Deleting creation when have naming conflict
-    private void deleteButtonClicked(String name){
-        scripts.getScript("name", new String[]{name, searched});
-    }
-
-    //Popup window for user to choose whether to delete or rename an existing file
-    private void deleteOrRename(String name, CreatorMain mainScreen) {
-        Stage window = new Stage();
-        bad.setFont(Font.font(Font.getDefault().getName(),0));
-        //Block events to other windows
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Name Taken");
-        window.setMinWidth(250);
-
-        Label label = new Label();
-        label.setText("Creation name "+ name+ " is already taken");
-        Button reButton = new Button("Rename");
-        Button overButton = new Button("Override");
-
-        overButton.setOnAction(e -> {
-            deleteButtonClicked(name);
-            window.close();
-            mainScreen.close();
-        });
-
-        reButton.setOnAction(e -> {
-            window.close();
-        });
-        VBox layout = new VBox(10);
-        HBox buttons = new HBox(10);
-        buttons.setPadding(new Insets(10,10,10,10));
-        layout.setPadding(new Insets(10,10,10,10));
-        buttons.getChildren().addAll(reButton, overButton);
-        layout.getChildren().addAll(label, buttons);
-        buttons.setAlignment(Pos.CENTER);
-        layout.setAlignment(Pos.CENTER);
-
-        //Display window and wait for it to be closed before returning
-        Scene scene = new Scene(layout);
-        window.setScene(scene);
-        window.showAndWait();
-    }
-    public void createNew(CreatorMain mainScreen){
-    	bad.setFont(Font.font(Font.getDefault().getName(),0));
-        boolean valid = true;
+	/**
+	 * Check if the name the user entered is valid
+	 * @return	true	name is valid
+	 * 			false 	name is invalid
+	 */
+    public boolean isValidName() {
+    	boolean valid = true;
         if(nameInput.getText().isEmpty()){
-            bad.setFont(Font.getDefault());
-        	bad.setText("Invalid creation name, please try again");
-            return;
+        	invalidNameText.setText("Invalid creation name, please try again");
+            return false;
         }
         char[] a = nameInput.getText().toCharArray();
 
@@ -171,16 +187,19 @@ public class FinalPreviewScreen {
 
             if (!valid)
             {
-                bad.setFont(Font.getDefault());
-            	bad.setText("Invalid creation name, please try again");
-                return;
+            	invalidNameText.setText("Invalid creation name, please try again");
+                return false;
             }
         }
-        startTaskCreate( mainScreen);
+        return true;
     }
 
-    //Task to have creating a video in a new thread
-    public void startTaskCreate(CreatorMain mainScreen)
+    /**
+     * Once name is valid, rename the temp created video to entered name or if name is taken
+     * create popup asking if they want to override
+     * @param mainScreen
+     */
+    public void createCreation(CreatorMain mainScreen)
     {
         String name = nameInput.getText();
         Task<Integer> task = new Task<Integer>() {
@@ -189,7 +208,6 @@ public class FinalPreviewScreen {
                 if(nameProcess.exitValue() == 1) {
                     return 1;
                 }
-                //rename preview to creation na,e
                 return 0;
             }
         };
@@ -200,24 +218,36 @@ public class FinalPreviewScreen {
                     Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
                     success.showAndWait();
                     mainScreen.close();
-                    //close
                     break;
                 case 1:
-                    deleteOrRename(name, mainScreen);
+                    deleteOrRename(mainScreen);
                     break;
             }
 
         });
-        // Run the task in a background thread
         Thread backgroundThread = new Thread(task);
-        // Terminate the running thread if the application exits
         backgroundThread.setDaemon(true);
-        // Start the thread
         backgroundThread.start();
     }
+    
+    /**
+     * Pop up window asking if the user wants to override
+     * @param mainScreen	the creating stage
+     */
+    private void deleteOrRename(CreatorMain mainScreen) {
+		Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
+		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
+		confirmAlert.setTitle("Confirmation");
+		confirmAlert.setHeaderText(null);
+		confirmAlert.setContentText("Name already taken. Would you like to override?");
+		Optional<ButtonType> result = confirmAlert.showAndWait();
+		
+		if(result.get() == ButtonType.OK) {
+        	scripts.getScript("name", new String[]{nameInput.getText(), searched});
+        	mainScreen.close();
+		}
+    }
 
-	public void stop() {
-		// TODO Auto-generated method stub
-		videoPlayer.stop();
-	}
+
 }

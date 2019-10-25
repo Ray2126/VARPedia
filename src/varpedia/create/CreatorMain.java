@@ -166,7 +166,7 @@ public class CreatorMain {
         
         //Stop video player if on preview screen
         if(currentScreen.equals("preview")) {
-            previewScreen.stop();
+            previewScreen.stopVideo();
         }
     }
     
@@ -324,7 +324,7 @@ public class CreatorMain {
      */
     public void previewScreenUp(){
         previewScreen.playVideo();
-        mainPane.setCenter(previewScreen.getScreen());
+        mainPane.setCenter(previewScreen);
         nextBtn.setText("Finish");
         currentScreen="preview";
         hideProgressIndicator();
@@ -344,7 +344,7 @@ public class CreatorMain {
         if(currentScreen == "preview"){
             imageScreenUp();
             nextBtn.setText("Next");
-            previewScreen.stop();
+            previewScreen.stopVideo();
         }
         else if(currentScreen=="image"){
             musicScreenUp();
@@ -370,7 +370,9 @@ public class CreatorMain {
         }else if(currentScreen == "image"){
             loadPreviewScreen();
         }else if(currentScreen == "preview"){
-            previewScreen.createNew(this);
+            if(previewScreen.isValidName()) {
+            	previewScreen.createCreation(this);
+            }
         }
     }
     

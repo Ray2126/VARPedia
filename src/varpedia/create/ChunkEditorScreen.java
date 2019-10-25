@@ -48,7 +48,7 @@ public class ChunkEditorScreen extends BorderPane{
                //error
             }else {
                 //Should be images but not done yet
-                mainScreen.getPreview().audioAndImageCombine(mainScreen, mainScreen.getImageAmount());
+                mainScreen.getPreview().makePreview(mainScreen, mainScreen.getImageAmount());
             }
         });
         // Run the task in a background thread

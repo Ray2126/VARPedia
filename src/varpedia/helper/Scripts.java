@@ -167,6 +167,7 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
+			printWriter.println("rm -fr ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name+"/quiz");
 			printWriter.println("mv ./temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
