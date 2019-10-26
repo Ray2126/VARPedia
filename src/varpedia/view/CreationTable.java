@@ -72,7 +72,7 @@ public class CreationTable extends TableView<Creation>{
         numberColumn.setMaxWidth(50);
         numberColumn.setStyle("-fx-alignment: CENTER");
         numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
-        numberColumn.setReorderable(false);
+        //numberColumn.setReorderable(false);
         
 
         //Name Column
@@ -80,22 +80,22 @@ public class CreationTable extends TableView<Creation>{
         nameColumn.setMinWidth(100);
         nameColumn.setStyle("-fx-alignment: CENTER");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameColumn.setReorderable(false);
+        //nameColumn.setReorderable(false);
 
         //Search term Column
         TableColumn<Creation, String> searchColumn = new TableColumn<>("Topic");
         searchColumn.setMinWidth(100);
         searchColumn.setStyle("-fx-alignment: CENTER");
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
-        searchColumn.setReorderable(false);
+        //searchColumn.setReorderable(false);
         
         //Play buttons column
         TableColumn<Creation, Boolean> playButtonColumn = new PlayButtonColumn<Creation> (this);
-        playButtonColumn.setReorderable(false);
+        //playButtonColumn.setReorderable(false);
         
         //Delete Buttons Column
         TableColumn<Creation, Boolean> deleteButtonColumn = new DeleteButtonColumn<Creation> (this);
-        deleteButtonColumn.setReorderable(false);
+        //deleteButtonColumn.setReorderable(false);
 
         //Add event handler for when they press a button in table
         this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {

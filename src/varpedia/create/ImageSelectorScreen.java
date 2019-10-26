@@ -191,7 +191,7 @@ public class ImageSelectorScreen extends BorderPane{
 		scripts.getScript("clearSelImg", new String[]{});
 		for(int i = 0; i < _listOfSelectedImages.size(); i++) {
 			String name = _listOfSelectedImages.get(i).getNumber();
-			scripts.getScript("copyImg", new String[]{name+".jpg"});
+			scripts.getScript("copyImg", new String[]{name+".jpg", Integer.toString(i+1)});
 		}
 		amountSelected = _listOfSelectedImages.size();
 	}

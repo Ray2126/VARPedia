@@ -128,7 +128,7 @@ public class MusicSelectorScreen extends VBox{
 		_musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
 		_musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		_musicColumn.setSortable(false);
-		_musicColumn.setReorderable(false);
+		//_musicColumn.setReorderable(false);
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class MusicSelectorScreen extends VBox{
 	private void setUpRadioColumn() {
 		_selectColumn = new RadioButtonColumn(_musicTable);
 		_selectColumn.setSortable(false);
-		_selectColumn.setReorderable(false);
+		//_selectColumn.setReorderable(false);
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class MusicSelectorScreen extends VBox{
 		_buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
 	    _buttonColumn.setCellFactory(col -> new PlayButtonCell() {});
 	    _buttonColumn.setSortable(false);
-	    _buttonColumn.setReorderable(false);
+	    //_buttonColumn.setReorderable(false);
 	}
 
 	/**

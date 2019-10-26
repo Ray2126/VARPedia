@@ -22,6 +22,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -50,6 +51,11 @@ public class QuizNavigator {
 	public QuizNavigator(Home home) {
 		this.home = home;
 		quizPanel = new VBox();
+		int width = 780;
+		int height = 600;
+		quizPanel.setMaxWidth(width);
+		quizPanel.setMinWidth(width);
+		quizPanel.setPrefWidth(width);
 		creationsAmount = getAmount();
 		creations = getCreations();
 		
@@ -140,6 +146,9 @@ public class QuizNavigator {
         navBar.getChildren().addAll(backBtn, nextBtn, cancelBtn);
         
         quizPanel.getChildren().addAll(videoBox, options, navBar);
+        ScrollPane scroll = new ScrollPane();
+        Styling.yellowBG(scroll);
+        scroll.setContent(quizPanel);
 	}
 	
 	private void getActual() {

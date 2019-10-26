@@ -75,13 +75,13 @@ public class ChunkTable extends TableView<Audio>{
         chunkColumn = new TableColumn<>("Chunks");
         chunkColumn.setMinWidth(880);
         chunkColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        chunkColumn.setReorderable(false);
+        //chunkColumn.setReorderable(false);
         
         playColumn = new StopButtonColumn<Audio>(this);
-        playColumn.setReorderable(false);
+        //playColumn.setReorderable(false);
         
       	deleteColumn = new DeleteButtonColumn<Audio>(this);
-      	deleteColumn.setReorderable(false);
+      	//deleteColumn.setReorderable(false);
       	
       	addButtonHandlers();
       	setUpError();

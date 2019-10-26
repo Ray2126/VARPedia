@@ -17,7 +17,7 @@ public class Scripts {
 					tempScript = clearSelectedImg();
 					break;
 				case "copyImg":
-					tempScript = copySelectedImg(params[0]);
+					tempScript = copySelectedImg(params[0], params[1]);
 					break;
 				case "name":
 					tempScript = renamePreview(params[0], params[1]);
@@ -162,7 +162,7 @@ public class Scripts {
 		}
 	}
 
-	public File copySelectedImg(String name) {
+	public File copySelectedImg(String name, String index) {
 		try {
 			File tempScript = File.createTempFile("script", null);
 
@@ -171,7 +171,8 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
 			printWriter.println("NAME="+name);
-			printWriter.println("cp ./images/${NAME} ./selectedImages/${NAME}");
+			printWriter.println("I="+index+".jpg");
+			printWriter.println("cp ./images/${NAME} ./selectedImages/${I}");
 
 			printWriter.close();
 
@@ -192,7 +193,9 @@ public class Scripts {
 			printWriter.println("rm -fr ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name);
 			printWriter.println("mkdir ./creations/"+name+"/quiz");
+			printWriter.println("mkdir ./src/resources/"+name);
 			printWriter.println("mv ./temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
+			printWriter.println("cp ./selectedImages/1.jpg ./src/resources/"+name+"/thumb.jpg");
       //Create text file for searched
 			printWriter.println("echo "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
 			printWriter.println("mv ./temp/preview/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");

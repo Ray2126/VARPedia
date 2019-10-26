@@ -3,6 +3,7 @@ package varpedia.quiz;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,14 +15,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import varpedia.helper.LoadIcon;
+import varpedia.helper.Styling;
 import varpedia.home.Home;
 
 public class FeedbackScreen {
@@ -38,17 +43,23 @@ public class FeedbackScreen {
 	
 	public FeedbackScreen(List<String> creations, List<String> guesses, List<String> actual, Home home) {
 		this.home = home;
+		
+        ScrollPane scroll = new ScrollPane();
+        Styling.yellowBG(scroll);
+        
 		layout = new GridPane();
 		layout.setPadding(new Insets(20,20,20,20));
 		labels();
+		Styling.yellowBG(layout);
 		layout.setAlignment(Pos.CENTER);
-		layout.setHgap(50);
-		layout.setVgap(50);
-		layout.setMaxWidth(1000);
+		layout.setHgap(20);
+		layout.setVgap(20);
+		
 		
 		panel = new BorderPane();
-		BorderPane.setAlignment(layout, Pos.CENTER);
-		panel.setCenter(layout);
+		panel.setTop(layout);
+		Styling.yellowBG(panel);
+		layout.setMaxWidth(781);
 		
 		this.creations = creations;
 		this.guesses = guesses;
@@ -60,8 +71,8 @@ public class FeedbackScreen {
 		 //Initialize nav bar
         navBar = new HBox();
         homeBtn = new Button();
+        Styling.blueButton(homeBtn);
         homeBtn.setGraphic(LoadIcon.loadIcon("home", 30, 30));
-        homeBtn.setDefaultButton(true);
         homeBtn.setFont(Font.font ("Verdana", 15));
         homeBtn.setOnAction(e -> {
         	home.showHome();
@@ -75,6 +86,7 @@ public class FeedbackScreen {
         BorderPane.setAlignment(navBar, Pos.CENTER_RIGHT);
         
         navBar.getChildren().addAll(homeBtn);
+        panel.setPrefHeight(773);
         panel.setBottom(navBar);
 	}
 	
@@ -83,9 +95,15 @@ public class FeedbackScreen {
 	 */
 	private void addRows() {
 		for(int i = 0; i < creations.size(); i++) {
-			Label creation = new Label(creations.get(i));
+			HBox creation = new HBox();
 			creation.setAlignment(Pos.CENTER);
-			creation.setFont(Font.font ("Verdana", 20));
+			creation.setSpacing(10);
+			ImageView img = getImageView(creations.get(i));
+			Label name = new Label(creations.get(i));
+			name.setAlignment(Pos.CENTER);
+			name.setFont(Font.font ("Verdana", 20));
+			creation.getChildren().addAll(img, name);
+			
 			GridPane.setHalignment(creation, HPos.CENTER);
 			Label search = new Label(actual.get(i));
 			search.setAlignment(Pos.CENTER);
@@ -108,6 +126,30 @@ public class FeedbackScreen {
 		}
 	}
 	
+	private ImageView getImageView(String creation) {
+		// load the image
+		Image image=null;
+		try {
+			image = new Image(getClass().getResource("/resources/"+creation+"/thumb.jpg").toURI().toString());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        // simple displays ImageView the image as is
+        ImageView iv = new ImageView();
+        iv.setImage(image);
+
+        // resizes the image to have width of 100 while preserving the ratio and using
+        // higher quality filtering method; this ImageView is also cached to
+        // improve performance
+        iv.setImage(image);
+        iv.setFitWidth(80);
+        iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        return iv;
+	}
+	
 	/**
 	 * Return screen
 	 * @return
@@ -120,7 +162,7 @@ public class FeedbackScreen {
 	 * Add labels to the column headers in the GridPane
 	 */
 	private void labels() {
-		Label creation = new Label("Creation Name");
+		Label creation = new Label("Creation");
 		creation.setAlignment(Pos.CENTER);
 		layout.setFillWidth(creation, true);
 		creation.setFont(Font.font ("Verdana", 25));
