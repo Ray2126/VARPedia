@@ -79,9 +79,12 @@ public class Scripts {
 			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
+//			printWriter.println("if [ ! -d ./bin ]; then");
+//			printWriter.println("mkdir -p ./bin;");
+//			printWriter.println("fi");
 			printWriter.println("#!/bin/bash");
-			//printWriter.println("lsof +D ./creations/"+creation+"/ | awk '{print $2}' | tail -n +2 | xargs kill -9");
-			printWriter.println("rm -rf ./creations/"+creation+"/");
+			printWriter.println("mv ./creations/"+creation+"/ /dev/null &> /dev/null");
+			printWriter.println("mv ./src/resources/creations/"+creation+"/ /dev/null &> /dev/null");
 
 			printWriter.close();
 
@@ -190,13 +193,12 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
-			printWriter.println("rm -fr ./creations/"+name);
-			printWriter.println("mkdir ./creations/"+name);
-			printWriter.println("mkdir ./creations/"+name+"/quiz");
-			printWriter.println("mkdir ./src/resources/"+name);
+			//printWriter.println("mkdir ./creations/"+name);
+			printWriter.println("mkdir -p ./creations/"+name+"/quiz");
+			printWriter.println("mkdir -p ./src/resources/creations/"+name);
 			printWriter.println("mv ./temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
-			printWriter.println("cp ./selectedImages/1.jpg ./src/resources/"+name+"/thumb.jpg");
-      //Create text file for searched
+			printWriter.println("cp ./selectedImages/1.jpg ./src/resources/creations/"+name+"/thumb.jpg");
+			//Create text file for searched
 			printWriter.println("echo "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
 			printWriter.println("mv ./temp/preview/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
 

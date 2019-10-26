@@ -128,13 +128,9 @@ public class FeedbackScreen {
 	
 	private ImageView getImageView(String creation) {
 		// load the image
-		Image image=null;
-		try {
-			image = new Image(getClass().getResource("/resources/"+creation+"/thumb.jpg").toURI().toString());
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	    File file = new File("./creations/"+creation+"/thumb.jpg");
+	    Image image = new Image(file.toURI().toString());
+
         // simple displays ImageView the image as is
         ImageView iv = new ImageView();
         iv.setImage(image);
