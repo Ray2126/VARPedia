@@ -1,55 +1,31 @@
 package varpedia.view;
 
-
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
-
-import javax.imageio.ImageIO;
-
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ListChangeListener.Change;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.util.Callback;
 import varpedia.components.tables.Creation;
 import varpedia.components.tables.DeleteButtonClickedEvent;
 import varpedia.components.tables.DeleteButtonColumn;
 import varpedia.components.tables.PlayButtonClickedEvent;
-import varpedia.components.videoPlayer.PauseButton;
 import varpedia.components.videoPlayer.VideoPlayer;
 import varpedia.helper.Scripts;
 import varpedia.helper.Styling;
 import varpedia.components.tables.PlayButtonColumn;
-import varpedia.components.tables.TableButtonHandler;
 import varpedia.components.tables.TableButtonHandler;
 
 /**
@@ -61,19 +37,16 @@ public class CreationTable extends TableView<Creation>{
 	Creation _selectedCreation;
 	VideoPlayer _videoPlayer;
 	
+	@SuppressWarnings("unchecked")
 	public CreationTable(VideoPlayer videoPlayer) {
 		_videoPlayer = videoPlayer;
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		Styling.tableView(this);
-		
-		//Number column
-		TableColumn<Creation, Integer> numberColumn = new TableColumn<>();
-        numberColumn.setMinWidth(50);
-        numberColumn.setMaxWidth(50);
-        numberColumn.setStyle("-fx-alignment: CENTER");
-        numberColumn.setCellValueFactory(new PropertyValueFactory<>("number"));
-        //numberColumn.setReorderable(false);
-        
+
+        /* initialize and specify table column */
+        TableColumn<Creation, ImageView> firstColumn = new TableColumn<Creation, ImageView>("");
+        firstColumn.setCellValueFactory(new PropertyValueFactory<Creation, ImageView>("image"));
+        firstColumn.setPrefWidth(60);  
 
         //Name Column
         TableColumn<Creation, String> nameColumn = new TableColumn<>("Name");
@@ -87,15 +60,20 @@ public class CreationTable extends TableView<Creation>{
         searchColumn.setMinWidth(100);
         searchColumn.setStyle("-fx-alignment: CENTER");
         searchColumn.setCellValueFactory(new PropertyValueFactory<>("search"));
-        //searchColumn.setReorderable(false);
         
         //Play buttons column
         TableColumn<Creation, Boolean> playButtonColumn = new PlayButtonColumn<Creation> (this);
-        //playButtonColumn.setReorderable(false);
         
         //Delete Buttons Column
         TableColumn<Creation, Boolean> deleteButtonColumn = new DeleteButtonColumn<Creation> (this);
-        //deleteButtonColumn.setReorderable(false);
+        
+        int buttonWidth = 40;
+        playButtonColumn.setPrefWidth(buttonWidth);
+        deleteButtonColumn.setPrefWidth(buttonWidth);
+        playButtonColumn.setMinWidth(buttonWidth);
+        deleteButtonColumn.setMinWidth(buttonWidth);
+        playButtonColumn.setMaxWidth(buttonWidth);
+        deleteButtonColumn.setMaxWidth(buttonWidth);
 
         //Add event handler for when they press a button in table
         this.addEventHandler(ActionEvent.ANY, new TableButtonHandler() {
@@ -117,11 +95,11 @@ public class CreationTable extends TableView<Creation>{
         setEditable(false);
 	    //When they have no creations
         this.setPlaceholder(new Label("You currently have no creations"));
-        this.getColumns().addAll(numberColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);
+        this.getColumns().addAll(firstColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);
         refreshTable();
         
 	}
-	    
+	
     private void deleteButtonClicked() {
 		
 		if(_selectedCreation != null) {

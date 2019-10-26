@@ -1,8 +1,6 @@
 package varpedia.helper;
 
 import java.io.*;
-import java.nio.file.Files;
-
 
 public class Scripts {
 	//Have made all Bash command chunks to do with a certain topic create their own script file
@@ -33,9 +31,6 @@ public class Scripts {
 					break;
 				case "deleteAudio":
 					tempScript = deleteAudioScript(params[0]);
-					break;
-				case "playAudio":
-					tempScript = playAudioScript(params[0]);
 					break;
 				case "selectSave":
 					tempScript = saveSelected(params[0], params[1], params[2]);
@@ -79,12 +74,11 @@ public class Scripts {
 			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
-//			printWriter.println("if [ ! -d ./bin ]; then");
-//			printWriter.println("mkdir -p ./bin;");
-//			printWriter.println("fi");
 			printWriter.println("#!/bin/bash");
-			printWriter.println("mv ./creations/"+creation+"/ /dev/null &> /dev/null");
-			printWriter.println("mv ./src/resources/creations/"+creation+"/ /dev/null &> /dev/null");
+			printWriter.println("if [ ! -f ./trash ]; then");
+			printWriter.println("mkdir ./trash");
+			printWriter.println("fi");
+			printWriter.println("mv ./creations/"+creation+"/ ./trash/");
 
 			printWriter.close();
 
@@ -193,11 +187,9 @@ public class Scripts {
 					tempScript));
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 			printWriter.println("#!/bin/bash");
-			//printWriter.println("mkdir ./creations/"+name);
 			printWriter.println("mkdir -p ./creations/"+name+"/quiz");
-			printWriter.println("mkdir -p ./src/resources/creations/"+name);
 			printWriter.println("mv ./temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
-			printWriter.println("cp ./selectedImages/1.jpg ./src/resources/creations/"+name+"/thumb.jpg");
+			printWriter.println("cp ./selectedImages/1.jpg ./creations/"+name+"/thumb.jpg");
 			//Create text file for searched
 			printWriter.println("echo "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
 			printWriter.println("mv ./temp/preview/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
@@ -331,28 +323,6 @@ public class Scripts {
 			return null;
 		}
 	}
-
-	public File playAudioScript(String name) {
-		try {
-			File tempScript = File.createTempFile("script", null);
-
-			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-					tempScript));
-			PrintWriter printWriter = new PrintWriter(streamWriter);
-
-//			printWriter.println("#!/bin/bash");
-//			printWriter.println("SELECTED="+name);
-//			printWriter.println("ffplay -loglevel quiet -autoexit ${SELECTED}.wav");
-			String cmd = "ffplay -loglevel quiet -autoexit "+name+".wav";
-			ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
-			pb.start();
-
-			return tempScript;
-		}catch (Exception e) {
-			return null;
-		}
-	}
-
     
     public File nameValidScript(String name) {
     	try {

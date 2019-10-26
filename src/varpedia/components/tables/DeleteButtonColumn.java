@@ -30,7 +30,6 @@ public class DeleteButtonColumn<T> extends TableColumn< T, Boolean> {
 private TableView<T> _tableView;
 	
 	public DeleteButtonColumn(TableView<T> tableView) {
-		this.setText("Delete");
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";-fx-font-weight: bold;");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {

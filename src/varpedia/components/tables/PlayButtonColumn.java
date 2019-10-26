@@ -20,7 +20,6 @@ public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 	private TableView<T> _tableView;
 
 	public PlayButtonColumn(TableView<T> tableView) {
-		this.setText("Play");
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";-fx-font-weight: bold;");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {
