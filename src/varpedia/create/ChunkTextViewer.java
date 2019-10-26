@@ -161,6 +161,7 @@ public class ChunkTextViewer extends BorderPane{
 		voices.setMinWidth(230);
 		voices.setStyle("-fx-font: 16px \"Verdana\";");
 		voices.getSelectionModel().selectFirst();
+		Styling.comboBox(voices);
 	}
     
     /**
