@@ -3,6 +3,7 @@ package varpedia.create;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -26,8 +27,9 @@ import java.util.Optional;
  * choose a name for their creation on this screen.
  *
  */
-public class FinalPreviewScreen extends BorderPane{
+public class FinalPreviewScreen{
 
+	private BorderPane screen;
 	/**
 	 * The video player the plays the preview
 	 */
@@ -60,8 +62,13 @@ public class FinalPreviewScreen extends BorderPane{
      */
     public FinalPreviewScreen(String searched){
     	this.searched = searched;
+    	screen = new BorderPane();
         scripts = new Scripts();
-        Styling.yellowBG(this);
+        nameInput = new TextField();
+        videoPlayer = new VideoPlayer();
+        
+        Styling.yellowBG(screen);
+        
         setUp();
     }
     
@@ -81,42 +88,45 @@ public class FinalPreviewScreen extends BorderPane{
     	invalidNameText = new Text("");
         invalidNameText.setFill(Color.RED);
         invalidNameText.setFont(Font.font(Font.getDefault().getName(),20));
-        this.setCenter(invalidNameText);
+        screen.setCenter(invalidNameText);
 	}
 
     /**
      * Set up the text field where the user enters the name of the creation
      */
 	private void setUpNameInput() {
-    	nameInput = new TextField();
+		HBox namePane = new HBox(10);
+		
     	nameInput.setMaxWidth(250);
         Styling.textField(nameInput);
         
-        Text nameText = new Text("Name: ");
+        Label nameText = new Label("Name: ");
         nameText.setFont(Font.font(Font.getDefault().getName(),20));
         Styling.textColor(nameText);
         
-        HBox namePane = new HBox(10);
-        namePane.getChildren().addAll(nameText, nameInput);
         BorderPane.setAlignment(namePane, Pos.BOTTOM_CENTER);
         namePane.setAlignment(Pos.CENTER);
         namePane.setPadding(new Insets(0,0,30,0));
-        this.setBottom(namePane);
+        
+        namePane.getChildren().addAll(nameText, nameInput);
+
+        screen.setBottom(namePane);
 	}
 
 	/**
 	 * Set up the video player
 	 */
 	private void setUpVideoPlayer() {
-		videoPlayer = new VideoPlayer();
-		
     	HBox videoBox = new HBox();
+    	
         videoBox.setPadding(new Insets(40,40,40,40));
         videoBox.setMaxSize(500,1000);
         videoBox.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(videoBox, Pos.TOP_CENTER);
+        
         videoBox.getChildren().add(videoPlayer);
-        this.setTop(videoBox);
+       
+        screen.setTop(videoBox);
 	}
 	
 	/**
@@ -164,13 +174,13 @@ public class FinalPreviewScreen extends BorderPane{
 	private double findFramerate(int imgCount) {
 		File file = new File("./voice.wav");
         AudioInputStream audioInputStream = null;
+        
         try {
             audioInputStream = AudioSystem.getAudioInputStream(file);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+        
         AudioFormat format = audioInputStream.getFormat();
         long frames = audioInputStream.getFrameLength();
         double durationInSeconds = (frames+0.0) / format.getFrameRate();
@@ -185,10 +195,12 @@ public class FinalPreviewScreen extends BorderPane{
 	 */
     public boolean isValidName() {
     	boolean valid = true;
+    	
         if(nameInput.getText().isEmpty()){
         	invalidNameText.setText("Invalid creation name, please try again");
             return false;
         }
+        
         char[] a = nameInput.getText().toCharArray();
 
         for (char c: a)
@@ -205,6 +217,7 @@ public class FinalPreviewScreen extends BorderPane{
                 return false;
             }
         }
+        
         return true;
     }
 
@@ -266,6 +279,10 @@ public class FinalPreviewScreen extends BorderPane{
         	mainScreen.close();
 		}
     }
+
+	public BorderPane getScreen() {
+		return screen;
+	}
 
 
 }

@@ -29,8 +29,9 @@ import java.io.IOException;
  * Top half of the chunk screen. Contains text area to edit, play and save chunks, and voice options.
  *
  */
-public class ChunkTextViewer extends BorderPane{
+public class ChunkTextViewer{
 	
+	BorderPane screen;
 	/**
 	 * The table of chunks this is associated to.
 	 */
@@ -81,64 +82,75 @@ public class ChunkTextViewer extends BorderPane{
 	 * Constructor.
 	 * @param chunkTable	the chunk table this will be associated with
 	 */
-	public ChunkTextViewer(ChunkTable chunkTable){
-		scripts = new Scripts();
+	public ChunkTextViewer(ChunkTable chunkTable) {
 	    this.chunkTable = chunkTable;
-	    this.setMaxWidth(1100);
+	    scripts = new Scripts();
+	    screen = new BorderPane();
+	    buttonVoicePane = new HBox();
+	    playBtn = new StopPlayButton(30,30);
+	    saveBtn = new Button();
+	    
+	    screen.setMaxWidth(1100);
     }
+	
+	public BorderPane getScreen() {
+		return screen;
+	}
 	
 	/**
 	 * Set up this screen .
 	 * @param searched  the term the user searched
 	 */
     public void setUp(String searched){
-    	titleSearchTerm(searched);
-		setUpOptionsButtons();
+    	setTitle(searched);
+		setUpButtons();
     }
     
     /**
      * Set up the title showing what they searched on top of this screen.
      * @param searched	the term the user searched
      */
-    private void titleSearchTerm(String searched) {
+    private void setTitle(String searched) {
+    	Label searchTerm = new Label(searched);
+    	HBox titlePane = new HBox();
+    	
     	searched = searched.toUpperCase();
-        Text searchTerm = new Text(searched);
 		searchTerm.setFont(Font.font(Font.getDefault().getName(),26));
 		Styling.textColor(searchTerm);
 		
-        HBox titlePane = new HBox();
 		titlePane.setPadding(new Insets(10,10,10,30));
 		titlePane.getChildren().add(searchTerm);
         titlePane.setAlignment(Pos.CENTER_LEFT);
-        this.setTop(titlePane);
+        
+        screen.setTop(titlePane);
     }
 
     /**
      * Set up pane for the buttons, voices options and error text.
      */
-    private void setUpOptionsButtons(){
-    	buttonVoicePane = new HBox();
+    private void setUpButtons(){
     	buttonVoicePane.setSpacing(10);
 		buttonVoicePane.setAlignment(Pos.CENTER);
 		buttonVoicePane.setPadding(new Insets(10));
+		
     	addButtons();
 		loadVoicesBox();
 		addVoiceOptions();
-		this.setBottom(addErrorText());
+		
+		screen.setBottom(addErrorText());
 	}
     
     /**
      * Add buttons to the pane.
      */
     private void addButtons() {
-    	playBtn = new StopPlayButton(30,30);
 		playBtn.setOnAction(e -> playClicked());
-		Styling.blueButton(playBtn);
-		
-		saveBtn = new Button();
+
 		saveBtn.setGraphic(LoadIcon.loadIcon("save", 30, 30));
 		saveBtn.setOnAction(e -> saveClicked());
+		
 		Styling.blueButton(saveBtn);
+		Styling.blueButton(playBtn);
 		
 		//Centre the buttons
     	Region region = new Region();
@@ -157,10 +169,13 @@ public class ChunkTextViewer extends BorderPane{
 						"New Zealand Accent",
 						"Robot Voice"
 				);
+		
 		voices = new ComboBox<String>(voiceOptions);
+		
 		voices.setMinWidth(230);
 		voices.setStyle("-fx-font: 16px \"Verdana\";");
 		voices.getSelectionModel().selectFirst();
+		
 		Styling.comboBox(voices);
 	}
     
@@ -169,10 +184,11 @@ public class ChunkTextViewer extends BorderPane{
      */
     private void addVoiceOptions() {
     	Label voiceIcon = new Label();
+		Region region = new Region();
+		
 		voiceIcon.setGraphic(LoadIcon.loadIcon("voice", 30, 30));
 		
 		//Anchor voices to right
-		Region region = new Region();
 		HBox.setHgrow(region, Priority.ALWAYS);
 		buttonVoicePane.getChildren().addAll(region,voiceIcon, voices);
     }
@@ -182,13 +198,17 @@ public class ChunkTextViewer extends BorderPane{
      */
     private VBox addErrorText(){
     	VBox plusErrorPane = new VBox();
+    	
+    	error = new Text("");
+		error.setFont(Font.font ("Verdana", 16));
+		error.setFill(Color.RED);
+    	
     	plusErrorPane.setAlignment(Pos.CENTER);
     	plusErrorPane.setMaxWidth(1100);
-		error = new Text("");
-		error.setFont(Font.font ("Verdana", 16));
-		plusErrorPane.setPadding(new Insets(10));
-		error.setFill(Color.RED);
+    	plusErrorPane.setPadding(new Insets(10));
+		
 		plusErrorPane.getChildren().addAll(error, buttonVoicePane);
+		
 		return plusErrorPane;
 	}
 
@@ -197,16 +217,19 @@ public class ChunkTextViewer extends BorderPane{
      * @param textArea	the text area to add to this screen
      */
     public void searchComplete(TextArea textArea) {
+    	
     	textArea.setMinHeight(350);
     	textArea.setMaxHeight(1100);
-    	textArea.setOnMouseClicked(e -> {error.setText("");});
-    	textArea.setOnMousePressed(e -> {error.setText("");});
-    	this.textArea=textArea;
-    	this.setCenter(this.textArea);
     	textArea.setWrapText(true);
     	textArea.setStyle("-fx-font: 16px \"Verdana\";");
+    	
+    	textArea.setOnMouseClicked(e -> {error.setText("");});
+    	textArea.setOnMousePressed(e -> {error.setText("");});
+    	
+    	this.textArea=textArea;
 
 		BorderPane.setAlignment(textArea, Pos.TOP_CENTER);
+		screen.setCenter(this.textArea);
     }
     
     /**
@@ -214,7 +237,7 @@ public class ChunkTextViewer extends BorderPane{
      */
 	private void playClicked(){
 		if(validSelection()) {
-			scripts.getScript("selectSave", new String[]{getSelectionFormatted(), "temp",voices.getSelectionModel().getSelectedItem()});
+			scripts.getScript("selectSave", new String[]{formatSelected(), "temp",voices.getSelectionModel().getSelectedItem()});
 			Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
 			playBtn.audioPlayed(audio);
 			removeTemp();
@@ -228,7 +251,7 @@ public class ChunkTextViewer extends BorderPane{
 		if(validSelection()) {
 			savedChunks++;
 			String name = Integer.toString(savedChunks);
-			Process process = scripts.getScript("selectSave", new String[]{getSelectionFormatted(), name, voices.getSelectionModel().getSelectedItem()});
+			Process process = scripts.getScript("selectSave", new String[]{formatSelected(), name, voices.getSelectionModel().getSelectedItem()});
 			if (process.exitValue() == 1){
 				error.setText("Can't play selected text: Please change settings or a new chunk");
 			}else{
@@ -241,7 +264,7 @@ public class ChunkTextViewer extends BorderPane{
 	 * Get the user selected text and format it to remove newlines, apostrophes and slashes.
 	 * @return	the formatted selected text
 	 */
-	private String getSelectionFormatted() {
+	private String formatSelected() {
 		String selected = textArea.getSelectedText();
 		selected = selected.trim();
         selected = selected.replaceAll("\n"," ");
@@ -257,7 +280,7 @@ public class ChunkTextViewer extends BorderPane{
 	 */
 	private boolean validSelection() {
 		error.setText("");
-        String selected = getSelectionFormatted();
+        String selected = formatSelected();
         if (selected == null || selected.isEmpty()) {
         	error.setText("Please select a chunk of text");
             return false;

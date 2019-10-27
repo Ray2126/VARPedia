@@ -1,5 +1,7 @@
 package varpedia.home;
 
+import java.io.File;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,7 +12,10 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -19,7 +24,7 @@ import varpedia.helper.Styling;
 import varpedia.quiz.QuizNavigator;
 import varpedia.view.CreationsViewerScreen;
 
-public class Home extends VBox{
+public class Home extends BorderPane{
 	
 	private Label title;
 	private Button play, viewCreations, newCreation, help, exit;
@@ -52,16 +57,44 @@ public class Home extends VBox{
 
 		setExit();
 		
-		this.getChildren().addAll(title, play, viewCreations, newCreation, help, exit);
-		Styling.yellowBG(this);
+		VBox buttons = new VBox();
 		
+		buttons.getChildren().addAll(title, play, viewCreations, newCreation, help, exit);
+		Styling.yellowBG(buttons);
+		this.setLeft(buttons);
+		ImageView iv = loadImage();
+		BorderPane.setAlignment(iv, Pos.CENTER);
+		BorderPane.setMargin(iv, new Insets(10,50,10,10));
+		this.setRight(iv);
+		
+		Styling.yellowBG(this);
 		this.primaryStage = primaryStage;
 		creationsStage = new Stage();
 		quizStage = new Stage();
 		
-		this.setSpacing(20);
-		this.setPadding(new Insets(20,20,20,20));
-		this.setAlignment(Pos.CENTER_LEFT);
+		buttons.setSpacing(20);
+		buttons.setPadding(new Insets(20,20,20,20));
+		buttons.setAlignment(Pos.CENTER_LEFT);
+	}
+	
+	public ImageView loadImage() {
+		// load the image
+	    File file = new File("./resources/book.png");
+	    Image image = new Image(file.toURI().toString());
+
+        // simple displays ImageView the image as is
+        ImageView iv = new ImageView();
+        iv.setImage(image);
+
+        // resizes the image to have width of 100 while preserving the ratio and using
+        // higher quality filtering method; this ImageView is also cached to
+        // improve performance
+        iv.setImage(image);
+        iv.setFitWidth(300);
+        iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        iv.setCache(true);
+        return iv;
 	}
 	
 	/**

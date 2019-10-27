@@ -30,8 +30,9 @@ import varpedia.helper.Styling;
  * The screen where the user selects the images they would like in their creation
  *
  */
-public class ImageSelectorScreen extends BorderPane{
+public class ImageSelectorScreen{
 	
+	private BorderPane screen;
 	/**
 	 * The title of this screen - "Select images"
 	 */
@@ -71,10 +72,18 @@ public class ImageSelectorScreen extends BorderPane{
 	 * Constructor.
 	 */
 	public ImageSelectorScreen() {
+		screen = new BorderPane();
 		listOfImages = new ArrayList<ImageDisplayBox>();
 		listOfSelectedImages = new ArrayList<ImageDisplayBox>();
 		scripts = new Scripts();
-		Styling.yellowBG(this);
+		rowsPane = new VBox();
+		title = new Label("Select Images");
+		
+		Styling.yellowBG(screen);
+	}
+	
+	public BorderPane getScreen() {
+		return screen;
 	}
 	
 	/**
@@ -89,14 +98,14 @@ public class ImageSelectorScreen extends BorderPane{
 		getImageFiles();
 		setUpImages();
 		setUpError();
-		this.setCenter(rowsPane);
+		
+		screen.setCenter(rowsPane);
 	}
 	
 	/**
 	 * Set up the pane for the rows of images
 	 */
 	private void setUpPane() {
-		rowsPane = new VBox();
 		rowsPane.setSpacing(20);
 		rowsPane.setAlignment(Pos.CENTER);
 		rowsPane.setPadding(new Insets(10,20,10,20));
@@ -106,13 +115,12 @@ public class ImageSelectorScreen extends BorderPane{
 	 * Set up the title on the top of screen
 	 */
 	private void setUpTitle() {
-		title = new Label("Select Images");
 		title.setTextAlignment(TextAlignment.CENTER);
 		title.setFont(Font.font(Font.getDefault().getName(),20));
 		BorderPane.setAlignment(title, Pos.TOP_CENTER);
 		Styling.textColor(title);
 		title.setPadding(new Insets(30,20,10,20));
-		this.setTop(title);
+		screen.setTop(title);
 	}
 	
 	/**
@@ -138,13 +146,17 @@ public class ImageSelectorScreen extends BorderPane{
 	 */
 	private void setUpImages() {
 		HBox row1 = new HBox(10);
-		row1.setSpacing(20);
-		row1.setAlignment(Pos.CENTER);
-		row1.setPadding(new Insets(0,20,20,20));
 		HBox row2 = new HBox(10);
+		
+		row1.setSpacing(20);
 		row2.setSpacing(20);
+		
+		row1.setAlignment(Pos.CENTER);
 		row2.setAlignment(Pos.CENTER);
+		
+		row1.setPadding(new Insets(0,20,20,20));
 		row2.setPadding(new Insets(20,20,20,20));
+		
 		for(int i = 0; i < 5; i++) {
 			row1.getChildren().addAll(listOfImages.get(i));
 		}
@@ -152,6 +164,7 @@ public class ImageSelectorScreen extends BorderPane{
 		for(int i = 5; i < 10; i++) {
 			row2.getChildren().addAll(listOfImages.get(i));
 		}
+		
 		rowsPane.getChildren().addAll(row1, row2);
 	}
 	
@@ -162,9 +175,12 @@ public class ImageSelectorScreen extends BorderPane{
 		errorText = new Label("");
 		errorText.setFont(Font.font(Font.getDefault().getName(),20));
 		errorText.setTextFill(Color.RED);
+		
 		BorderPane.setAlignment(errorText, Pos.BOTTOM_CENTER);
+		
 		errorText.setPadding(new Insets(0,0,30,0));
-		this.setBottom(errorText);
+		
+		screen.setBottom(errorText);
 	}
 	
 	/**
@@ -189,10 +205,12 @@ public class ImageSelectorScreen extends BorderPane{
 	public void saveSelectedImages() {
 		//Clear selected images folder for when they press back and then next
 		scripts.getScript("clearSelImg", new String[]{});
+		
 		for(int i = 0; i < listOfSelectedImages.size(); i++) {
 			String name = listOfSelectedImages.get(i).getNumber();
 			scripts.getScript("copyImg", new String[]{name+".jpg", Integer.toString(i+1)});
 		}
+		
 		amountSelected = listOfSelectedImages.size();
 	}
 	
@@ -212,19 +230,21 @@ public class ImageSelectorScreen extends BorderPane{
 	private class ImageDisplayBox extends VBox{
 		
 		private ImageDisplayBox thisObject = this;
-		private BufferedImage _image;
-		private int _imageNumber;
-		private CheckBox _checkBox;
+		private BufferedImage image;
+		private int imageNumber;
+		private CheckBox checkBox;
 		
 		/**
 		 * @param image		the image this will display
 		 * @param index		the number of this image
 		 */
 		private ImageDisplayBox(BufferedImage image, int index) {
-			_image = image;
-			_imageNumber = index;
+			this.image = image;
+			imageNumber = index;
+			
 			setUpImageBox();
 			setUpCheckBox();
+			
 			this.setSpacing(10);
 			this.setAlignment(Pos.CENTER);
 		}
@@ -233,9 +253,9 @@ public class ImageSelectorScreen extends BorderPane{
 		 * Set up the image view of the image this will display
 		 */
 		private void setUpImageBox() {
-			_image = resize(_image, 200, 200);
 			ImageView imageBox = new ImageView();
-			imageBox.setImage(SwingFXUtils.toFXImage(_image, null));
+			image = resize(image, 200, 200);
+			imageBox.setImage(SwingFXUtils.toFXImage(image, null));
 			this.getChildren().add(imageBox);
 		}
 		
@@ -243,18 +263,18 @@ public class ImageSelectorScreen extends BorderPane{
 		 * Set up the checkbox
 		 */
 		private void setUpCheckBox() {
-			_checkBox = new CheckBox();
-			_checkBox.setIndeterminate(false);
+			checkBox = new CheckBox();
+			checkBox.setIndeterminate(false);
 			//When user checks the box it will add to the list and when they uncheck it will remove
-			_checkBox.setOnAction(e -> {
-				if(_checkBox.isSelected()) {
+			checkBox.setOnAction(e -> {
+				if(checkBox.isSelected()) {
 					listOfSelectedImages.add(thisObject);
 				}
-				else if((!_checkBox.isSelected())) {
+				else if((!checkBox.isSelected())) {
 					listOfSelectedImages.remove(thisObject);
 				}
 			});
-			this.getChildren().add(_checkBox);
+			this.getChildren().add(checkBox);
 		}
 		
 		/**
@@ -262,7 +282,7 @@ public class ImageSelectorScreen extends BorderPane{
 		 * @return	index as a string
 		 */
 		private String getNumber() {
-			return String.valueOf(_imageNumber);
+			return String.valueOf(imageNumber);
 		}
 		
 		/**

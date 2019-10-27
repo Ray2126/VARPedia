@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -27,8 +28,9 @@ import varpedia.helper.Styling;
  * Screen where the user selects background music
  *
  */
-public class MusicSelectorScreen extends VBox{
+public class MusicSelectorScreen{
 
+	private VBox screen;
 	/**
 	 * The title - "Select background music"
 	 */
@@ -58,18 +60,24 @@ public class MusicSelectorScreen extends VBox{
 	 * Constructor
 	 */
 	public MusicSelectorScreen() {
+		screen = new VBox();
+		title = new Label("Select background music");
+		musicTable = new TableView<>();
+		musicColumn = new TableColumn<>("Music");
+		selectColumn = new RadioButtonColumn(musicTable);
+		buttonColumn = new TableColumn<Music, Boolean>("Preview");
+		
 		setUpLabel();
 		setUpTable();
-		getChildren().addAll(title, musicTable);
-		setAlignment(Pos.CENTER);
-		Styling.yellowBG(this);
+		screen.getChildren().addAll(title, musicTable);
+		screen.setAlignment(Pos.CENTER);
+		Styling.yellowBG(screen);
 	}
 	
 	/**
 	 * Set up the label informing them to select background music
 	 */
 	private void setUpLabel() {
-		title = new Label("Select background music");
 		title.setAlignment(Pos.CENTER);
 		title.setFont(Font.font(Font.getDefault().getName(),30));
 		Styling.textColor(title);
@@ -81,7 +89,6 @@ public class MusicSelectorScreen extends VBox{
 	 */
 	@SuppressWarnings("unchecked")
 	private void setUpTable() {
-		musicTable = new TableView<>();
 		musicTable.setItems(getMusic());
 		setUpColumns();
 		musicTable.getColumns().addAll(selectColumn, musicColumn, buttonColumn);
@@ -123,33 +130,27 @@ public class MusicSelectorScreen extends VBox{
 	 * Set up the column showing names of the music
 	 */
 	private void setUpMusicColumn() {
-		musicColumn = new TableColumn<>("Music");
 		musicColumn.setMinWidth(400);
 		musicColumn.setStyle("-fx-font: 16px \"Verdana\";");
 		musicColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 		musicColumn.setSortable(false);
-		//_musicColumn.setReorderable(false);
 	}
 
 	/**
 	 * Set up the radio buttons to allow user to select music
 	 */
 	private void setUpRadioColumn() {
-		selectColumn = new RadioButtonColumn(musicTable);
 		selectColumn.setSortable(false);
-		//_selectColumn.setReorderable(false);
 	}
 	
 	/**
 	 * Set up buttons to allow user to preview music
 	 */
 	private void setUpPlayColumn() {
-		buttonColumn = new TableColumn<Music, Boolean>("Preview");
 		buttonColumn.setMinWidth(100);
 		buttonColumn.setStyle("-fx-font: 16px \"Verdana\";");
 	    buttonColumn.setCellFactory(col -> new PlayButtonCell() {});
 	    buttonColumn.setSortable(false);
-	    //_buttonColumn.setReorderable(false);
 	}
 
 	/**
@@ -166,19 +167,19 @@ public class MusicSelectorScreen extends VBox{
 	 */
 	private class PlayButtonCell extends TableCell<Music, Boolean> {
 
-		private StopPlayButton _stopButton = new StopPlayButton(20,20);
+		private StopPlayButton stopButton = new StopPlayButton(20,20);
 		private StackPane paddedButton = new StackPane();
 
 	    public PlayButtonCell() {
 		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_stopButton);
+		    paddedButton.getChildren().add(stopButton);
 		
-		    _stopButton.setOnAction(new EventHandler<ActionEvent>() {
+		    stopButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 			    public void handle(ActionEvent actionEvent) {
 			    	musicTable.getSelectionModel().select(getTableRow().getIndex());
 			    	Media audio = new Media(new File("resources/music/" + musicTable.getSelectionModel().getSelectedItem().getName()+".wav").toURI().toString());
-		        	_stopButton.audioPlayed(audio);
+		        	stopButton.audioPlayed(audio);
 			    }
 		    });
 	    }
@@ -203,5 +204,9 @@ public class MusicSelectorScreen extends VBox{
 	    		setGraphic(null);
 	    	}
 	    }
+	}
+
+	public VBox getScreen() {
+		return screen;
 	}
 }

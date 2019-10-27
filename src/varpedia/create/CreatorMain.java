@@ -75,11 +75,6 @@ public class CreatorMain {
 	private Button nextBtn;
 	private Button cancelBtn;
     private String searchedTerm;
-    
-    /**
-     * The number of images the user selected on the image selector screen.
-     */
-    private int imageAmount;
 
     /**
      * Linux scripts.
@@ -93,8 +88,8 @@ public class CreatorMain {
     public CreatorMain(Home home){
     	this.home = home;
         scripts = new Scripts();
-        
         stage = new Stage();
+        
         stackPane = new StackPane();
         mainPane = new BorderPane();
         loadingPane = new BorderPane();
@@ -107,11 +102,11 @@ public class CreatorMain {
         progressIndicator = new ProgressIndicator();
         
         navBar = new HBox();
-        
         backBtn = new Button("Back");
         nextBtn = new Button("Next");
         cancelBtn = new Button("Cancel");
         
+        initStage();
     	initialiseNavBar();
     	initialiseProgressIndicator();
     
@@ -155,7 +150,7 @@ public class CreatorMain {
 	}
     
     /**
-     * Confirm closing with pop-up.
+     * Confirm closing creation process with pop-up.
      */
     private void closeRequest() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -196,11 +191,9 @@ public class CreatorMain {
     }
     
     /**
-     * Initial screen up when entering create mode.
+     * Initialize Stage  
      */
-    public void beginCreate() {
-        searchScreenUp();
-
+    private void initStage() {
         stage.setTitle("Creation Maker");
         Scene scene = new Scene(stackPane, 1200, 810);
         stage.setScene(scene);
@@ -211,6 +204,13 @@ public class CreatorMain {
         	closeRequest();
         	e.consume();
         });
+    }
+    
+    /**
+     * Initial screen up when entering create mode.
+     */
+    public void beginCreate() {
+        searchScreenUp();
         stage.show();
     }
 
@@ -232,7 +232,7 @@ public class CreatorMain {
         searchedTerm.trim();
         searchedTerm.toLowerCase();
         if(searchedTerm.isEmpty() || searchedTerm.contains(" ")){
-            invalidSearch();
+            searchScreen.invalidSearch();
             hideProgressIndicator();
             return;
         }
@@ -249,7 +249,7 @@ public class CreatorMain {
 		task.setOnSucceeded(e -> {
 			TextArea dummy = task.getValue();
 			if(dummy == null) {
-				invalidSearch();
+				searchScreen.invalidSearch();
 				hideProgressIndicator();
 			}else {
 				chunkScreen.getTextSection().searchComplete(dummy);
@@ -265,20 +265,13 @@ public class CreatorMain {
 			e1.printStackTrace();
 		}
 	}
-    
-    /**
-     * When the searched word is invalid.
-     */
-	private void invalidSearch(){
-        searchScreen.invalidSearch();
-    }
 
     /**
      * Set the screen to the chunk screen.
      */
     private void chunkScreenUp(){
         backBtn.setDisable(false);
-        mainPane.setCenter(chunkScreen);
+        mainPane.setCenter(chunkScreen.getScreen());
         currentScreen="create";
     }
     
@@ -298,7 +291,7 @@ public class CreatorMain {
      */
     private void musicScreenUp() {
     	currentScreen = "music";
-    	mainPane.setCenter(musicScreen);
+    	mainPane.setCenter(musicScreen.getScreen());
     }
 
 	/**
@@ -324,7 +317,7 @@ public class CreatorMain {
 	 */
     private void imageScreenUp(){
         currentScreen="image";
-        mainPane.setCenter(imagesScreen);
+        mainPane.setCenter(imagesScreen.getScreen());
     }
     
     /**
@@ -333,8 +326,7 @@ public class CreatorMain {
      */
     public int getImageAmount() {
         imagesScreen.saveSelectedImages();
-        imageAmount = imagesScreen.getAmountSelected();
-        return imageAmount;
+        return imagesScreen.getAmountSelected();
     }
 	
     /**
@@ -353,7 +345,7 @@ public class CreatorMain {
      */
     public void previewScreenUp(){
         previewScreen.playVideo();
-        mainPane.setCenter(previewScreen);
+        mainPane.setCenter(previewScreen.getScreen());
         nextBtn.setText("Finish");
         currentScreen="preview";
         hideProgressIndicator();

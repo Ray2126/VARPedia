@@ -10,15 +10,16 @@ import varpedia.helper.Styling;
  * The screen where the user can choose the chunks they want in their creation.
  *
  */
-public class ChunkEditorScreen extends BorderPane{
+public class ChunkEditorScreen{
 	
+	private BorderPane chunkScreen;
 	/**
-	 * The top half of chunk screen.
+	 * The top half of chunk screen where user selects text.
 	 */
     private ChunkTextViewer textSection;
     
     /**
-     * The bottom half of chunk screen.
+     * The bottom half of chunk screen where selected text is saved.
      */
     private ChunkTable tableSection;
 
@@ -26,14 +27,23 @@ public class ChunkEditorScreen extends BorderPane{
      * Constructor.
      */
     public ChunkEditorScreen(){
-    	Styling.yellowBG(this);
+    	chunkScreen = new BorderPane();
     	tableSection = new ChunkTable();
         textSection = new ChunkTextViewer(tableSection);
-
-        BorderPane.setAlignment(textSection, Pos.TOP_CENTER);
         
-        this.setTop(textSection);
-        this.setBottom(tableSection.getMainPane());
+    	Styling.yellowBG(chunkScreen);
+        BorderPane.setAlignment(textSection.getScreen(), Pos.TOP_CENTER);
+        
+        chunkScreen.setTop(textSection.getScreen());
+        chunkScreen.setBottom(tableSection.getMainPane());
+    }
+    
+    /**
+     * Gets the screen for the Chunk Editor
+     * @return BorderPane of chunk screen
+     */
+    public BorderPane getScreen() {
+    	return chunkScreen;
     }
 
     /**
@@ -43,19 +53,10 @@ public class ChunkEditorScreen extends BorderPane{
     public ChunkTextViewer getTextSection() {
         return textSection;
     }
-    
-    /**
-     * Get the bottom half of the chunk screen, the table.
-     * @return	the chunk audio table
-     */
-    public ChunkTable getVoiceSection() {
-        return tableSection;
-    }
 
     /**
      * Check they have at least one chunk saved.
-     * @return false  no chunks saved
-     * 		   true   at least one chunk saved
+     * @return false when no chunks saved, true when at least one chunk saved
      */
     public boolean anyChunksCreated(){
         return tableSection.anyChunksCreated();
@@ -63,8 +64,8 @@ public class ChunkEditorScreen extends BorderPane{
 
     /**
      * Combining the audio chunks and music. Then once that is complete, make the preview creation.
-     * @param mainScreen	the creation stage
-     * @param music			the music the user selected
+     * @param mainScreen: the creation stage
+     * @param music: the music the user selected
      */
     public void combineTheAudio(CreatorMain mainScreen, String music) {
         Scripts scripts = new Scripts();
