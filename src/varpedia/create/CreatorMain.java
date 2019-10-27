@@ -95,7 +95,6 @@ public class CreatorMain {
         loadingPane = new BorderPane();
         
         searchScreen = new SearchSelectorScreen();
-        chunkScreen = new ChunkEditorScreen();
         musicScreen = new MusicSelectorScreen();
         imagesScreen = new ImageSelectorScreen();
         
@@ -228,6 +227,7 @@ public class CreatorMain {
      * Set up the chunk screen and search for word.
      */
     private void loadChunkScreen(){
+        chunkScreen = new ChunkEditorScreen();
     	showProgressIndicator();
         searchedTerm = searchScreen.getInput();
         searchedTerm.trim();

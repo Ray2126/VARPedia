@@ -64,7 +64,7 @@ public class MusicSelectorScreen{
 		musicTable = new TableView<>();
 		musicColumn = new TableColumn<>("Music");
 		selectColumn = new RadioButtonColumn(musicTable);
-		buttonColumn = new TableColumn<Music, Boolean>("Preview");
+		buttonColumn = new TableColumn<Music, Boolean>();
 		
 		setUpLabel();
 		setUpTable();

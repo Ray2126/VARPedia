@@ -20,7 +20,6 @@ public class StopButtonColumn<T> extends TableColumn< T, Button> {
 	private StopPlayButton stopButton;
 
 	public StopButtonColumn(TableView<T> tv) {
-		this.setText("Play");
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		

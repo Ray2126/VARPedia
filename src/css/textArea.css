@@ -1,0 +1,20 @@
+.text-area {
+	-fx-background-color: #6E6E6E;
+	-fx-focus-color: #6E6E6E;
+	-fx-text-fill: white;
+}
+
+.text-area:focused {
+	-fx-background-color: #6E6E6E;
+	-fx-border-color: #6E6E6E;
+}
+
+.text-area .content{
+	-fx-background-color: #6E6E6E;
+	-fx-text-fill: white;
+}
+
+.text-area .content:selected{
+    	-fx-background-color: #36b5f5;
+	-fx-text-fill: white;
+}

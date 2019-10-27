@@ -17,7 +17,7 @@ public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 	private Music selectedMusic;
 	
 	public RadioButtonColumn(TableView<Music> tv) {
-		super("Select");
+		super();
 		
 		//Set default to no music
 		selectedMusic = new Music("No music");

@@ -111,13 +111,12 @@ public class ChunkTextViewer{
      * @param searched	the term the user searched
      */
     private void setTitle(String searched) {
-    	Label searchTerm = new Label(searched);
-    	HBox titlePane = new HBox();
-    	
     	searched = searched.toUpperCase();
+    	Label searchTerm = new Label(searched);
 		searchTerm.setFont(Font.font(Font.getDefault().getName(),26));
 		Styling.textColor(searchTerm);
 		
+    	HBox titlePane = new HBox();
 		titlePane.setPadding(new Insets(10,10,10,30));
 		titlePane.getChildren().add(searchTerm);
         titlePane.setAlignment(Pos.CENTER_LEFT);
@@ -217,7 +216,6 @@ public class ChunkTextViewer{
      * @param textArea	the text area to add to this screen
      */
     public void searchComplete(TextArea textArea) {
-    	
     	textArea.setMinHeight(350);
     	textArea.setMaxHeight(1100);
     	textArea.setWrapText(true);
@@ -227,7 +225,7 @@ public class ChunkTextViewer{
     	textArea.setOnMousePressed(e -> {error.setText("");});
     	
     	this.textArea=textArea;
-
+    	Styling.textArea(this.textArea);
 		BorderPane.setAlignment(textArea, Pos.TOP_CENTER);
 		screen.setCenter(this.textArea);
     }
