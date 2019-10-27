@@ -116,7 +116,7 @@ public class ImageSelectorScreen{
 	 */
 	private void setUpTitle() {
 		title.setTextAlignment(TextAlignment.CENTER);
-		title.setFont(Font.font(Font.getDefault().getName(),20));
+		title.setFont(Font.font(Font.getDefault().getName(),25));
 		BorderPane.setAlignment(title, Pos.TOP_CENTER);
 		Styling.textColor(title);
 		title.setPadding(new Insets(30,20,10,20));

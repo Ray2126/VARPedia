@@ -223,12 +223,17 @@ public class Scripts {
 			printWriter.println("rm -f audios");
 			printWriter.println("rm -f listing");
 			printWriter.println("rm -f voice.wav");
+			
+			printWriter.println("if [ ! -d trash ]; then");
+			printWriter.println("mkdir -p trash;");
+			printWriter.println("fi");
+			
+			printWriter.println("mv temp trash");
 			printWriter.println("rm -rf trash");
 			printWriter.println("rm -rf images");
 			printWriter.println("rm -rf audio");
 			printWriter.println("rm -rf resampledAudio");
 			printWriter.println("rm -rf selectedImages");
-			printWriter.println("rm -rf temp");
 
 			printWriter.close();
 
@@ -360,6 +365,10 @@ public class Scripts {
 			PrintWriter printWriter = new PrintWriter(streamWriter);
 
 			printWriter.println("#!/bin/bash");
+			printWriter.println("FILE=./audio");
+			printWriter.println("if [ ! -d \"$FILE\" ]; then");
+			printWriter.println("mkdir audio");
+			printWriter.println("fi");
 			printWriter.println("NAME="+name);
 			printWriter.println("TEXT='"+selected+"'");
 			printWriter.println("echo $TEXT > ./audio/$NAME.txt");

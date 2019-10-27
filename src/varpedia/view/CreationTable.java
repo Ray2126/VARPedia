@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -125,8 +126,10 @@ public class CreationTable{
 			Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
 			((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 			confirmAlert.setTitle("Confirmation");
-			confirmAlert.setHeaderText(null);
-			confirmAlert.setContentText("You are about to delete " + selectedCreation.getName() + ". Are you sure?");
+			confirmAlert.setHeaderText("You are about to delete " + selectedCreation.getName());
+			confirmAlert.setContentText("Are you sure?");
+	    	DialogPane dialogPane = confirmAlert.getDialogPane();
+	    	Styling.dialogStyle(dialogPane);
 			Optional<ButtonType> result = confirmAlert.showAndWait();
 			
 			if(result.get() == ButtonType.OK) {

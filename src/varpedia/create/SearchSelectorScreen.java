@@ -2,10 +2,10 @@ package varpedia.create;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import varpedia.helper.Styling;
 
 /**
@@ -34,7 +34,7 @@ public class SearchSelectorScreen extends HBox{
      * Set up the label - "search:"
      */
     private void setUpPrompt() {
-    	Text prompt = new Text("Search: ");
+    	Label prompt = new Label("Search: ");
         prompt.setFont(Font.font ("Verdana", 20));
         Styling.textColor(prompt);
         this.getChildren().add(prompt);

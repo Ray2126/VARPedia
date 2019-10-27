@@ -195,8 +195,9 @@ public class CreatorMain {
      */
     private void initStage() {
         stage.setTitle("Creation Maker");
-        Scene scene = new Scene(stackPane, 1200, 810);
+        Scene scene = new Scene(stackPane, 1200, 815);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.setTitle("VARpedia Create");
         
         //When top right exit pressed does this
@@ -377,6 +378,7 @@ public class CreatorMain {
         	chunkScreenUp();
         }
         else if(currentScreen == "create"){
+        	//remove the text files
             searchScreenUp();
         }
     }
