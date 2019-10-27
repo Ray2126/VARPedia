@@ -1,4 +1,7 @@
-
+.table-view {
+  -fx-background-color: #6E6E6E;
+  -fx-text-fill: white;
+}
 
 .table-view .column-header,
 .table-view .column-header-background .filler {
@@ -13,7 +16,7 @@
   -fx-font-family: Verdana;
 }
 
-.table-view .place-holder{
+.table-view .place-holder .label{
   -fx-cell-size: 60;
   -fx-alignment: center-left;
   -fx-background-color: #6E6E6E;
@@ -27,6 +30,15 @@
   -fx-alignment: center-left;
   -fx-background-color: #6E6E6E;
   -fx-border-color: #6E6E6E;
+  -fx-text-fill: white;
+  -fx-alignment: CENTER;
+}
+
+.table-view .cell:odd{
+  -fx-cell-size: 60;
+  -fx-alignment: center-left;
+  -fx-background-color: #4C4C4C;
+  -fx-border-color: #4C4C4C;
   -fx-text-fill: white;
   -fx-alignment: CENTER;
 }

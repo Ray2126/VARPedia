@@ -114,10 +114,9 @@ public class CreationTable{
         playButtonColumn.setMaxWidth(buttonWidth);
         deleteButtonColumn.setMaxWidth(buttonWidth);
         
-      	HBox placeholder = new HBox();
-      	placeholder.setStyle("-fx-background-color: #6E6E6E;");
-      	placeholder.setAlignment(Pos.CENTER);
-      	table.setPlaceholder(placeholder);
+      	Label noCreations = new Label("You currently have no chunks");
+      	noCreations.setStyle("-fx-text-fill: white;");
+      	table.setPlaceholder(noCreations);
         
         table.getColumns().addAll(firstColumn, nameColumn, searchColumn, playButtonColumn, deleteButtonColumn);
 	}

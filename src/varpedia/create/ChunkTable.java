@@ -151,11 +151,9 @@ public class ChunkTable{
      * Set up the placeholder as same colour as table so it is not white
      */
     private void setUpPlaceHolder() {
-      	HBox placeholder = new HBox();
-      	placeholder.setStyle("-fx-background-color: #6E6E6E;");
-      	placeholder.getChildren().add(errorText);
-      	placeholder.setAlignment(Pos.CENTER);
-      	table.setPlaceholder(placeholder);
+      	Label noChunks = new Label("You currently have no chunks");
+      	noChunks.setStyle("-fx-text-fill: white;");
+      	table.setPlaceholder(noChunks);
     }
     
     
