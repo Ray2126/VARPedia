@@ -265,6 +265,7 @@ public class ImageSelectorScreen{
 		private void setUpCheckBox() {
 			checkBox = new CheckBox();
 			checkBox.setIndeterminate(false);
+			Styling.checkBox(checkBox);
 			//When user checks the box it will add to the list and when they uncheck it will remove
 			checkBox.setOnAction(e -> {
 				if(checkBox.isSelected()) {
