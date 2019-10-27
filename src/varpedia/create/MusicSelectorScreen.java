@@ -29,7 +29,11 @@ import varpedia.helper.Styling;
  */
 public class MusicSelectorScreen{
 
+	/**
+	 * The main pane for this screen
+	 */
 	private VBox screen;
+	
 	/**
 	 * The title - "Select background music"
 	 */
@@ -205,6 +209,10 @@ public class MusicSelectorScreen{
 	    }
 	}
 
+	/**
+	 * Get the main pane of this screen
+	 * @return	the main pane of this screen
+	 */
 	public VBox getScreen() {
 		return screen;
 	}

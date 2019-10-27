@@ -12,8 +12,11 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -59,6 +62,11 @@ public class ImageSelectorScreen{
 	private List<ImageDisplayBox> listOfSelectedImages;
 	
 	/**
+	 * The list of the checkboxes seen on screen
+	 */
+	private List<CheckBox> listOfCheckBoxes;
+	
+	/**
 	 * The number of images the user has selected
 	 */
 	private int amountSelected;
@@ -67,6 +75,7 @@ public class ImageSelectorScreen{
 	 * Linux scripts
 	 */
 	private Scripts scripts;
+	
 
 	/**
 	 * Constructor.
@@ -75,6 +84,7 @@ public class ImageSelectorScreen{
 		screen = new BorderPane();
 		listOfImages = new ArrayList<ImageDisplayBox>();
 		listOfSelectedImages = new ArrayList<ImageDisplayBox>();
+		listOfCheckBoxes = new ArrayList<CheckBox>();
 		scripts = new Scripts();
 		rowsPane = new VBox();
 		title = new Label("Select Images");
@@ -95,6 +105,7 @@ public class ImageSelectorScreen{
 		listOfSelectedImages.clear();
 		setUpPane();
 		setUpTitle();
+		setUpSelectAll();
 		getImageFiles();
 		setUpImages();
 		setUpError();
@@ -120,7 +131,29 @@ public class ImageSelectorScreen{
 		BorderPane.setAlignment(title, Pos.TOP_CENTER);
 		Styling.textColor(title);
 		title.setPadding(new Insets(30,20,10,20));
-		screen.setTop(title);
+	}
+	
+	/**
+	 * Set up the select all button
+	 */
+	private void setUpSelectAll() {
+		Button selectAllBtn = new Button("Select All");
+		selectAllBtn.setOnAction(new EventHandler<ActionEvent>() {	
+			@Override
+			public void handle(ActionEvent arg0) {
+				for(CheckBox c : listOfCheckBoxes) {
+					c.setSelected(true);
+					
+				}
+				listOfSelectedImages.removeAll(listOfSelectedImages);
+				listOfSelectedImages.addAll(listOfImages);
+			}
+		});
+		Styling.blueButton(selectAllBtn);
+		VBox v = new VBox(10);
+		v.getChildren().addAll(title, selectAllBtn);
+		v.setAlignment(Pos.CENTER);
+		screen.setTop(v);
 	}
 	
 	/**
@@ -275,6 +308,7 @@ public class ImageSelectorScreen{
 					listOfSelectedImages.remove(thisObject);
 				}
 			});
+			listOfCheckBoxes.add(checkBox);
 			this.getChildren().add(checkBox);
 		}
 		

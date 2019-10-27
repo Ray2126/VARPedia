@@ -148,7 +148,7 @@ public class ChunkTable{
     }
     
     /**
-     * Set up the placeholder as same colour as table so it is not white
+     * Set up the placeholder for when there are no chunks
      */
     private void setUpPlaceHolder() {
       	Label noChunks = new Label("You currently have no chunks");
