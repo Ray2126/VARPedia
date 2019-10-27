@@ -4,9 +4,7 @@ import java.io.File;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import varpedia.create.MusicSelectorScreen;
 import varpedia.helper.Scripts;
 
 public class Main extends Application {
@@ -14,15 +12,15 @@ public class Main extends Application {
 	/**
 	 * Folder for the creations to be put in
 	 */
-	private File _creationsFolder;
+	private File creationsFolder;
 	
 	/**
 	 * Temporary folders
 	 */
-	private File _audioFolder;
-	private File _imagesFolder;
-	private File _selectedImagesFolder;
-	private File _resampledAudioFolder;
+	private File audioFolder;
+	private File imagesFolder;
+	private File selectedImagesFolder;
+	private File resampledAudioFolder;
 
 	
 	public static void main(String args[]) {
@@ -50,28 +48,28 @@ public class Main extends Application {
 	 */
 	private void setUpFiles() {
 		//Create creations folder if it's the first time they are using this app
-		_creationsFolder = new File("creations");
-		_creationsFolder.mkdir();
+		creationsFolder = new File("creations");
+		creationsFolder.mkdir();
 		
 		//Create temporary folders
-		_audioFolder = new File("audio");
-		_audioFolder.mkdir();
-		_imagesFolder = new File("images");
-		_imagesFolder.mkdir();
-		_selectedImagesFolder = new File("selectedImages");
-		_selectedImagesFolder.mkdir();
-		_resampledAudioFolder = new File("resampledAudio");
-		_resampledAudioFolder.mkdir();
+		audioFolder = new File("audio");
+		audioFolder.mkdir();
+		imagesFolder = new File("images");
+		imagesFolder.mkdir();
+		selectedImagesFolder = new File("selectedImages");
+		selectedImagesFolder.mkdir();
+		resampledAudioFolder = new File("resampledAudio");
+		resampledAudioFolder.mkdir();
 	}
 	
 	/**
 	 * Clean up files when the app is closed
 	 */
 	private void cleanUpFiles() {
-		_audioFolder.delete();
-		_imagesFolder.delete();
-		_selectedImagesFolder.delete();
-		_resampledAudioFolder.delete();
+		audioFolder.delete();
+		imagesFolder.delete();
+		selectedImagesFolder.delete();
+		resampledAudioFolder.delete();
 		
 		Scripts scripts = new Scripts();
         scripts.getScript("cleanup", new String[]{});

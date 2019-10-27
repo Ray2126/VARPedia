@@ -22,10 +22,10 @@ import javafx.concurrent.Task;
 public class GetImageTask extends Task<Void>{
 	//retrieve with wget
 	
-private String _wordToSearch;
+private String wordToSearch;
 	
 	public GetImageTask(String wordToSearch) {
-		_wordToSearch = wordToSearch;
+		this.wordToSearch = wordToSearch;
 	}
 	
 	//Get either the api key or shared secret from the text file
@@ -62,7 +62,7 @@ private String _wordToSearch;
 		
 			Flickr flickr = new Flickr(apiKey, sharedSecret, new REST());
 			
-			String query = _wordToSearch;
+			String query = wordToSearch;
 			int resultsPerPage = 10;
 			int page = 0;
 			

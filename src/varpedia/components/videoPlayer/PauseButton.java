@@ -1,23 +1,12 @@
 package varpedia.components.videoPlayer;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
-import javafx.scene.shape.Circle;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
-import varpedia.home.Main;
 
 /**
  * The play/pause button for the video player
@@ -25,19 +14,19 @@ import varpedia.home.Main;
  */
 public class PauseButton extends Button{
 
-	private int _width;
-	private int _height;
+	private int width;
+	private int height;
 	
 	public PauseButton(int width, int height) {
 		super();
-		_width = width;
-		_height = height;
+		this.width = width;
+		this.height = height;
 		Styling.blueButton(this);
 		
 		playImage();
 		
-		this.setMaxHeight(_height);
-		this.setMaxWidth(_width);
+		this.setMaxHeight(this.height);
+		this.setMaxWidth(this.width);
 		this.setDisable(true);
 	}
 	
@@ -68,10 +57,10 @@ public class PauseButton extends Button{
 	}
 
 	private void playImage() {
-		this.setGraphic(LoadIcon.loadIcon("play", _width, _height));
+		this.setGraphic(LoadIcon.loadIcon("play", width, height));
 	}
 	
 	private void pauseImage() {
-		this.setGraphic(LoadIcon.loadIcon("pause", _width, _height));
+		this.setGraphic(LoadIcon.loadIcon("pause", width, height));
 	}
 }

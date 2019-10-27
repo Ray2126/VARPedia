@@ -1,24 +1,14 @@
 package varpedia.components.videoPlayer;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -28,7 +18,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import varpedia.components.tables.Creation;
+import varpedia.helper.Creation;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
 
@@ -37,48 +27,50 @@ import varpedia.helper.Styling;
  */
 public class VideoPlayer extends VBox{
 
-	private PauseButton _playPauseButton;
-	private Button _skipForwardButton;
-	private Button _skipBackwardButton;
-	private TimeSlider _timeSlider;
-	private VBox _mediaPlayerPane;
-	private MediaPlayer _mediaPlayer;
-	private MediaView _mediaView;
-	private Label _durationVideo;
-	private VolumeControl _volume;
+	private PauseButton playPauseButton;
+	private Button skipForwardButton;
+	private Button skipBackwardButton;
+	private TimeSlider timeSlider;
+	private VBox mediaPlayerPane;
+	private MediaPlayer mediaPlayer;
+	private MediaView mediaView;
+	private Label durationVideo;
+	private VolumeControl volume;
 	private int width = 700;
 	
 	public VideoPlayer() {
-		_playPauseButton = new PauseButton(30,30);
-		_skipForwardButton = new Button();
-		Styling.blueButton(_skipForwardButton);;
-		_skipForwardButton.setGraphic(LoadIcon.loadIcon("skipForward", 30, 30));
-		_skipBackwardButton = new Button();
-		Styling.blueButton(_skipBackwardButton);
-		_skipBackwardButton.setGraphic(LoadIcon.loadIcon("skipBackward", 30, 30));
-		_timeSlider = new TimeSlider();
+		playPauseButton = new PauseButton(30,30);
+		skipForwardButton = new Button();
+		Styling.blueButton(skipForwardButton);;
+		skipForwardButton.setGraphic(LoadIcon.loadIcon("skipForward", 30, 30));
+		skipBackwardButton = new Button();
+		Styling.blueButton(skipBackwardButton);
+		skipBackwardButton.setGraphic(LoadIcon.loadIcon("skipBackward", 30, 30));
+		timeSlider = new TimeSlider();
 		
-		_durationVideo = new Label("00:00");
-		_durationVideo.setStyle("-fx-font: 16px \"Verdana\";");
+		durationVideo = new Label("00:00");
+		durationVideo.setStyle("-fx-font: 16px \"Verdana\";");
 		
 		//Disable buttons when video is not played yet
-		_skipForwardButton.setDisable(true);
-		_skipBackwardButton.setDisable(true);
+		skipForwardButton.setDisable(true);
+		skipBackwardButton.setDisable(true);
 		
-		_mediaPlayerPane = new VBox();
+		mediaPlayerPane = new VBox();
 		
 		//Set a black box as a placeholder for the video
 		Rectangle r = new Rectangle(width,500);
 		r.setStyle("-fx-fill: #36b5f5");
-		_mediaPlayerPane.getChildren().addAll(r);
+		mediaPlayerPane.getChildren().addAll(r);
 		
 		//Set size of video player pane
-		_mediaPlayerPane.setMinHeight(500);
-		_mediaPlayerPane.setMaxHeight(500);
-		_mediaPlayerPane.setPrefHeight(500);
-		_mediaPlayerPane.setMinWidth(width);
-		_mediaPlayerPane.setMaxWidth(width);
-		_mediaPlayerPane.setPrefWidth(width);
+		mediaPlayerPane.setMinHeight(500);
+		mediaPlayerPane.setMaxHeight(500);
+		mediaPlayerPane.setPrefHeight(500);
+		mediaPlayerPane.setMinWidth(width);
+		mediaPlayerPane.setMaxWidth(width);
+		mediaPlayerPane.setPrefWidth(width);
+		
+		this.setPadding(new Insets(20,20,0,20));
 		
 		//Pane for the buttons and volume sliders
 		HBox bottomPane = new HBox();
@@ -90,19 +82,19 @@ public class VideoPlayer extends VBox{
 		region2.setMinWidth(120);
 		HBox.setHgrow(region2, Priority.ALWAYS);
 		
-		_volume = new VolumeControl();
+		volume = new VolumeControl();
 		bottomPane.setPadding(new Insets(10,10,10,10));
 		bottomPane.setSpacing(10);
 		bottomPane.setAlignment(Pos.CENTER);
-		bottomPane.getChildren().addAll(region2,_skipBackwardButton, _playPauseButton, _skipForwardButton, region, _volume);
+		bottomPane.getChildren().addAll(region2,skipBackwardButton, playPauseButton, skipForwardButton, region, volume);
 		
 		HBox sliderPane = new HBox();
-		_timeSlider.setMinWidth(width-50);
-		_timeSlider.setMaxWidth(width-50);
-		_timeSlider.setPrefWidth(width-50);
-		sliderPane.getChildren().addAll(_timeSlider, _durationVideo);
+		timeSlider.setMinWidth(width-50);
+		timeSlider.setMaxWidth(width-50);
+		timeSlider.setPrefWidth(width-50);
+		sliderPane.getChildren().addAll(timeSlider, durationVideo);
 		
-		this.getChildren().addAll(_mediaPlayerPane, sliderPane, bottomPane);
+		this.getChildren().addAll(mediaPlayerPane, sliderPane, bottomPane);
 	}
 	
 	/**
@@ -117,19 +109,19 @@ public class VideoPlayer extends VBox{
 		//Stop the previous video playing
 		this.stop();
 		
-		_mediaPlayer = new MediaPlayer(video);
-		_mediaPlayer.setAutoPlay(true);
+		mediaPlayer = new MediaPlayer(video);
+		mediaPlayer.setAutoPlay(true);
 		
-		_mediaView = new MediaView(_mediaPlayer);
+		mediaView = new MediaView(mediaPlayer);
 		
 		//Size video to pane
-		_mediaView.setPreserveRatio(false);
-		_mediaView.fitWidthProperty().bind(_mediaPlayerPane.maxWidthProperty());
-		_mediaView.fitHeightProperty().bind(_mediaPlayerPane.maxHeightProperty());
+		mediaView.setPreserveRatio(false);
+		mediaView.fitWidthProperty().bind(mediaPlayerPane.maxWidthProperty());
+		mediaView.fitHeightProperty().bind(mediaPlayerPane.maxHeightProperty());
 		
 		//Replace black box with media view
-		_mediaPlayerPane.getChildren().remove(0);
-		_mediaPlayerPane.getChildren().addAll(_mediaView);
+		mediaPlayerPane.getChildren().remove(0);
+		mediaPlayerPane.getChildren().addAll(mediaView);
 		
 		changeGUIVideoHasBeenPlayed();
 	}
@@ -146,19 +138,19 @@ public class VideoPlayer extends VBox{
 		//Stop the previous video playing
 		this.stop();
 		
-		_mediaPlayer = new MediaPlayer(video);
-		_mediaPlayer.setAutoPlay(true);
+		mediaPlayer = new MediaPlayer(video);
+		mediaPlayer.setAutoPlay(true);
 		
-		_mediaView = new MediaView(_mediaPlayer);
+		mediaView = new MediaView(mediaPlayer);
 		
 		//Size video to pane
-		_mediaView.setPreserveRatio(false);
-		_mediaView.fitWidthProperty().bind(_mediaPlayerPane.maxWidthProperty());
-		_mediaView.fitHeightProperty().bind(_mediaPlayerPane.maxHeightProperty());
+		mediaView.setPreserveRatio(false);
+		mediaView.fitWidthProperty().bind(mediaPlayerPane.maxWidthProperty());
+		mediaView.fitHeightProperty().bind(mediaPlayerPane.maxHeightProperty());
 		
 		//Replace black box with media view
-		_mediaPlayerPane.getChildren().remove(0);
-		_mediaPlayerPane.getChildren().addAll(_mediaView);
+		mediaPlayerPane.getChildren().remove(0);
+		mediaPlayerPane.getChildren().addAll(mediaView);
 		
 		changeGUIVideoHasBeenPlayed();
 	}
@@ -175,19 +167,19 @@ public class VideoPlayer extends VBox{
 		//Stop the previous video playing
 		this.stop();
 		
-		_mediaPlayer = new MediaPlayer(video);
-		_mediaPlayer.setAutoPlay(true);
+		mediaPlayer = new MediaPlayer(video);
+		mediaPlayer.setAutoPlay(true);
 		
-		_mediaView = new MediaView(_mediaPlayer);
+		mediaView = new MediaView(mediaPlayer);
 		
 		//Size video to pane
-		_mediaView.setPreserveRatio(false);
-		_mediaView.fitWidthProperty().bind(_mediaPlayerPane.maxWidthProperty());
-		_mediaView.fitHeightProperty().bind(_mediaPlayerPane.maxHeightProperty());
+		mediaView.setPreserveRatio(false);
+		mediaView.fitWidthProperty().bind(mediaPlayerPane.maxWidthProperty());
+		mediaView.fitHeightProperty().bind(mediaPlayerPane.maxHeightProperty());
 		
 		//Replace black box with media view
-		_mediaPlayerPane.getChildren().remove(0);
-		_mediaPlayerPane.getChildren().addAll(_mediaView);
+		mediaPlayerPane.getChildren().remove(0);
+		mediaPlayerPane.getChildren().addAll(mediaView);
 		
 		changeGUIVideoHasBeenPlayed();
 	}
@@ -198,37 +190,37 @@ public class VideoPlayer extends VBox{
 	 */
 	private void changeGUIVideoHasBeenPlayed() {
 		//Re-enable buttons and sliders as video is now played
-		_skipForwardButton.setDisable(false);
-		_skipBackwardButton.setDisable(false);
-		_timeSlider.videoPlayed(_mediaPlayer);
-		_playPauseButton.videoPlayed(_mediaPlayer);
-		_volume.videoPlayed(_mediaPlayer);
+		skipForwardButton.setDisable(false);
+		skipBackwardButton.setDisable(false);
+		timeSlider.videoPlayed(mediaPlayer);
+		playPauseButton.videoPlayed(mediaPlayer);
+		volume.videoPlayed(mediaPlayer);
 		
 		//Duration of video
-		_mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
+		mediaPlayer.currentTimeProperty().addListener(new ChangeListener<Duration>() {
 			@Override
 			public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
 				String time = "";
 				time += String.format("%02d", (int)newValue.toMinutes());
 				time += ":";
 				time += String.format("%02d", (int)newValue.toSeconds());
-				_durationVideo.setText(time);
+				durationVideo.setText(time);
 			}
 		});
 		
 		//Functionality of skip forward button
-		_skipForwardButton.setOnAction(new EventHandler<ActionEvent>() {
+		skipForwardButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				_mediaPlayer.seek(_mediaPlayer.getCurrentTime().add(Duration.seconds(5)));
+				mediaPlayer.seek(mediaPlayer.getCurrentTime().add(Duration.seconds(5)));
 			}
 		});
 		
 		//Functionality of skip backward button
-		_skipBackwardButton.setOnAction(new EventHandler<ActionEvent>() {
+		skipBackwardButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				_mediaPlayer.seek(_mediaPlayer.getCurrentTime().add(Duration.seconds(-5)));
+				mediaPlayer.seek(mediaPlayer.getCurrentTime().add(Duration.seconds(-5)));
 			}
 		});
 	}
@@ -237,29 +229,29 @@ public class VideoPlayer extends VBox{
 	 * Stop the media player
 	 */
 	public void stop() {
-		if(_mediaPlayer != null) {
-			_mediaPlayer.stop();
+		if(mediaPlayer != null) {
+			mediaPlayer.stop();
 		}
 	}
 	
 	public MediaPlayer getMediaPlayer() {
-		return _mediaPlayer;
+		return mediaPlayer;
 	}
 	
 	/**
 	 * Reverts video player back to default state(not playing video)
 	 */
 	public void disposeMedia() {
-		_mediaPlayerPane.getChildren().remove(_mediaView);
+		mediaPlayerPane.getChildren().remove(mediaView);
 		
 		//Set a black box as a placeholder for the video
 		Rectangle r = new Rectangle(width,500);
-		_mediaPlayerPane.getChildren().addAll(r);
+		mediaPlayerPane.getChildren().addAll(r);
 		
-		_playPauseButton.setDisable(true);
-		_skipForwardButton.setDisable(true);
-		_skipBackwardButton.setDisable(true);
-		_timeSlider.setDisable(true);
+		playPauseButton.setDisable(true);
+		skipForwardButton.setDisable(true);
+		skipBackwardButton.setDisable(true);
+		timeSlider.setDisable(true);
 	}
 	
 }

@@ -223,7 +223,12 @@ public class Scripts {
 			printWriter.println("rm -f audios");
 			printWriter.println("rm -f listing");
 			printWriter.println("rm -f voice.wav");
-
+			printWriter.println("rm -rf trash");
+			printWriter.println("rm -rf images");
+			printWriter.println("rm -rf audio");
+			printWriter.println("rm -rf resampledAudio");
+			printWriter.println("rm -rf selectedImages");
+			printWriter.println("rm -rf temp");
 
 			printWriter.close();
 
@@ -273,8 +278,7 @@ public class Scripts {
 	
 	        printWriter.println("#!/bin/bash");
 	        printWriter.println("touch listing");
-	        printWriter.println("ls ./creations >listing 2> /dev/null");
-	        printWriter.println("cat listing | sed 's/\\..*$//'");
+	        printWriter.println("ls ./creations 1>listing 2> /dev/null");
 	        
 	        printWriter.close();
 	
@@ -415,23 +419,5 @@ public class Scripts {
 		}
 	}
 
-	public File makeImageFiles(String amount) {
-		try {
-			File tempScript = File.createTempFile("script", null);
-
-			Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
-					tempScript));
-			PrintWriter printWriter = new PrintWriter(streamWriter);
-
-			printWriter.println("amount="+amount);
-			printWriter.println("cat ./selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y ./temp/preview/preview.mp4 &> /dev/null" );
-
-			printWriter.close();
-
-			return tempScript;
-		}catch (Exception e) {
-			return null;
-		}
-	}
 
 }

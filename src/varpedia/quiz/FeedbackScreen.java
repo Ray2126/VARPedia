@@ -7,73 +7,71 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import varpedia.helper.Creation;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
-import varpedia.home.Home;
 
 public class FeedbackScreen {
+	
 	private GridPane layout;
 	private BorderPane panel;
-	private List<String> creations;
-	private List<String> guesses;
-	private List<String> actual;
-	
 	private HBox navBar;
 	private Button homeBtn;
+	private QuizNavigator navigator;
 	
-	public FeedbackScreen(List<String> creations, List<String> guesses, List<String> actual, Home home) {
+	private List<Creation> creations;
+	private List<String> guesses;
+	
+	public FeedbackScreen(List<Creation> creations, List<String> guesses, QuizNavigator navigator) {
 		
-        ScrollPane scroll = new ScrollPane();
-        Styling.yellowBG(scroll);
-        
-		layout = new GridPane();
-		layout.setPadding(new Insets(20,20,20,20));
-		labels();
-		Styling.yellowBG(layout);
-		layout.setAlignment(Pos.CENTER);
-		layout.setHgap(20);
-		layout.setVgap(20);
-		
-		
-		panel = new BorderPane();
-		panel.setTop(layout);
-		Styling.yellowBG(panel);
-		layout.setMaxWidth(781);
-		
+		this.navigator = navigator;
 		this.creations = creations;
 		this.guesses = guesses;
-		this.actual = actual;
+		layout = new GridPane();
+		panel = new BorderPane();
 		
+        initGrid();
+        initNavBar();
+		addLabels();
 		addRows();
 		
-		
-		 //Initialize nav bar
+		Styling.yellowBG(panel);
+        panel.setPrefHeight(793);
+        panel.setTop(layout);
+        panel.setBottom(navBar);
+	}
+	
+	private void initGrid() {
+		layout.setPadding(new Insets(20,20,20,20));
+		Styling.yellowBG(layout);
+		layout.setAlignment(Pos.CENTER);
+		layout.setHgap(50);
+		layout.setVgap(30);
+		layout.setMaxWidth(1000);
+	}
+	
+	private void initNavBar() {
         navBar = new HBox();
         homeBtn = new Button();
         Styling.blueButton(homeBtn);
         homeBtn.setGraphic(LoadIcon.loadIcon("home", 30, 30));
         homeBtn.setFont(Font.font ("Verdana", 15));
         homeBtn.setOnAction(e -> {
-        	home.showHome();
+        	navigator.closeQuiz();
         });
-
         
-        //Navbar style
         navBar.setPadding(new Insets(10,10,10,10));
         navBar.setSpacing(10);
         navBar.setAlignment(Pos.CENTER_RIGHT);
         BorderPane.setAlignment(navBar, Pos.CENTER_RIGHT);
         
         navBar.getChildren().addAll(homeBtn);
-        panel.setPrefHeight(773);
-        panel.setBottom(navBar);
 	}
 	
 	/**
@@ -81,37 +79,50 @@ public class FeedbackScreen {
 	 */
 	private void addRows() {
 		for(int i = 0; i < creations.size(); i++) {
-			ImageView img = getImageView(creations.get(i));
-			Label name = new Label(creations.get(i));
-			name.setAlignment(Pos.CENTER);
-			name.setFont(Font.font ("Verdana", 20));
+			ImageView img = creations.get(i).getImage();
 			
+			Label name = new Label(creations.get(i).getName());
+			Label search = new Label(creations.get(i).getSearch());
+			Label guess = new Label(guesses.get(i));
+			ImageView result;
+			if(creations.get(i).getSearch().equals(guesses.get(i))) {
+				result = loadImage(true);
+			}else {
+				result = loadImage(false);
+			}
+			
+			Styling.textColorNotBold(name);
+			Styling.textColorNotBold(guess);
+			Styling.textColorNotBold(search);
+			
+			int fontSize = 20;
+			
+			search.setFont(Font.font ("Verdana", fontSize));
+			name.setFont(Font.font ("Verdana", fontSize));
+			guess.setFont(Font.font ("Verdana", fontSize));
+			
+			name.setAlignment(Pos.CENTER);
+			guess.setAlignment(Pos.CENTER);
+			search.setAlignment(Pos.CENTER);
+			
+			GridPane.setHalignment(search, HPos.CENTER);
+			GridPane.setHalignment(guess, HPos.CENTER);
 			GridPane.setHalignment(img, HPos.CENTER);
 			GridPane.setHalignment(name, HPos.CENTER);
-			Label search = new Label(actual.get(i));
-			search.setAlignment(Pos.CENTER);
-			search.setFont(Font.font ("Verdana", 20));
-			GridPane.setHalignment(search, HPos.CENTER);
-			Label guess = new Label(guesses.get(i));
-			guess.setAlignment(Pos.CENTER);
-			guess.setFont(Font.font ("Verdana", 20));
-			GridPane.setHalignment(guess, HPos.CENTER);
-			Label result;
-			if(actual.get(i).equals(guesses.get(i))) {
-				result = new Label("Correct!");
-			}else {
-				result = new Label("Incorrect!");
-			}
-			result.setAlignment(Pos.CENTER);
-			result.setFont(Font.font ("Verdana", 20));
 			GridPane.setHalignment(result, HPos.CENTER);
+			
 			layout.addRow(i+1, img,name, search, guess, result);
 		}
 	}
 	
-	private ImageView getImageView(String creation) {
+	public ImageView loadImage(Boolean result) {
 		// load the image
-	    File file = new File("./creations/"+creation+"/thumb.jpg");
+		File file;
+		if(result) {
+			file = new File("./resources/icons/tick.png");
+		}else {
+			file = new File("./resources/icons/cross.png");
+		}
 	    Image image = new Image(file.toURI().toString());
 
         // simple displays ImageView the image as is
@@ -122,7 +133,7 @@ public class FeedbackScreen {
         // higher quality filtering method; this ImageView is also cached to
         // improve performance
         iv.setImage(image);
-        iv.setFitWidth(80);
+        iv.setFitWidth(40);
         iv.setPreserveRatio(true);
         iv.setSmooth(true);
         iv.setCache(true);
@@ -140,25 +151,33 @@ public class FeedbackScreen {
 	/**
 	 * Add labels to the column headers in the GridPane
 	 */
-	private void labels() {
+	private void addLabels() {
 		Label creation = new Label("Creation");
-		creation.setAlignment(Pos.CENTER);
-		creation.setFont(Font.font ("Verdana", 25));
 		Label search = new Label("Topic");
-		search.setAlignment(Pos.CENTER);
-		search.setFont(Font.font ("Verdana", 25));
 		Label guess = new Label("Your Guess");
-		guess.setAlignment(Pos.CENTER);
-		guess.setFont(Font.font ("Verdana", 25));
 		Label result = new Label("Result");
-		result.setAlignment(Pos.CENTER);
 		result.setFont(Font.font ("Verdana", 25));
+
+		creation.setFont(Font.font ("Verdana", 25));
+		search.setFont(Font.font ("Verdana", 25));
+		guess.setFont(Font.font ("Verdana", 25));
+		result.setFont(Font.font ("Verdana", 25));
+
+		result.setAlignment(Pos.CENTER);
+		guess.setAlignment(Pos.CENTER);
+		search.setAlignment(Pos.CENTER);
+		creation.setAlignment(Pos.CENTER);
+		
+		Styling.textColor(result);
+		Styling.textColor(guess);
+		Styling.textColor(search);
+		Styling.textColor(creation);
+		
 		GridPane.setHalignment(creation, HPos.CENTER);
 		GridPane.setHalignment(search, HPos.CENTER);
 		GridPane.setHalignment(guess, HPos.CENTER);
 		GridPane.setHalignment(result, HPos.CENTER);
 		
-		// node, columnIndex, rowIndex, columnSpan, rowSpan:
 		layout.add(creation, 0, 0, 2, 1);
 		layout.add(search, 2, 0);
 		layout.add(guess, 3, 0);

@@ -2,17 +2,17 @@ package varpedia.components.tables;
 
 public class Music {
 	
-	private String _name;
+	private String name;
 	
 	public Music(String name) {
-		_name = name;
+		this.name = name;
 	}
 	
 	public String getName() {
-		return _name;
+		return name;
 	}
 
 	public void setName(String name) {
-		_name = name;
+		this.name = name;
 	}
 }

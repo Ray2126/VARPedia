@@ -1,15 +1,8 @@
 package varpedia.components.tables;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import varpedia.helper.Styling;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,18 +11,15 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
-import varpedia.components.videoPlayer.PauseButton;
 import varpedia.helper.LoadIcon;
 
 public class DeleteButtonColumn<T> extends TableColumn< T, Boolean> {
 
-private TableView<T> _tableView;
+private TableView<T> tableView;
 	
-	public DeleteButtonColumn(TableView<T> tableView) {
+	public DeleteButtonColumn(TableView<T> tv) {
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";-fx-font-weight: bold;");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {
@@ -45,25 +35,25 @@ private TableView<T> _tableView;
 				return new DeleteButtonCell();
 			}
 		});
-		_tableView = tableView;
+		tableView = tv;
 	}
 	
 	private class DeleteButtonCell extends TableCell< T, Boolean> {
 
-		private Button _deleteButton = new Button();
+		private Button deleteButton = new Button();
 		private StackPane paddedButton = new StackPane();
 
 	    public DeleteButtonCell() {
-	    	Styling.blueButton(_deleteButton);
-	    	_deleteButton.setGraphic(LoadIcon.loadIcon("delete", 20, 20));
+	    	Styling.blueButton(deleteButton);
+	    	deleteButton.setGraphic(LoadIcon.loadIcon("delete", 20, 20));
 		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_deleteButton);
+		    paddedButton.getChildren().add(deleteButton);
 	    
-		    _deleteButton.setOnAction(new EventHandler<ActionEvent>() {
+		    deleteButton.setOnAction(new EventHandler<ActionEvent>() {
 			    @Override 
 			    public void handle(ActionEvent actionEvent) {
-			    	_tableView.getSelectionModel().select(getTableRow().getIndex());
-			    	DeleteButtonClickedEvent.fireEvent(_tableView, new DeleteButtonClickedEvent());
+			    	tableView.getSelectionModel().select(getTableRow().getIndex());
+			    	DeleteButtonClickedEvent.fireEvent(tableView, new DeleteButtonClickedEvent());
 		    	}
 		    });
 	    }

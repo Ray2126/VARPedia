@@ -11,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -54,35 +55,11 @@ public class CreatorMain {
 	 * The progress indicator shown when tasks are running.
 	 */
 	private ProgressIndicator progressIndicator;
-	
-	/**
-	 * The home screen.
-	 */
 	private Home home;
-	
-	/**
-	 * The search screen.
-	 */
 	private SearchSelectorScreen searchScreen;
-	
-	/**
-	 * The chunk editor screen.
-	 */
 	private ChunkEditorScreen chunkScreen;
-	
-	/**
-	 * The music selector screen.
-	 */
 	private MusicSelectorScreen musicScreen;
-	
-	/**
-	 * The image selector screen.
-	 */
 	private ImageSelectorScreen imagesScreen;
-	
-	/**
-	 * The final preview screen.
-	 */
 	private FinalPreviewScreen previewScreen;
 	
 	/**
@@ -94,25 +71,9 @@ public class CreatorMain {
 	 * The navigation bar pane that will have back, next and cancel buttons.
 	 */
 	private HBox navBar;
-	
-	/**
-	 * The back button.
-	 */
 	private Button backBtn;
-	
-	/**
-	 * The next button.
-	 */
 	private Button nextBtn;
-	
-	/**
-	 * The cancel button.
-	 */
 	private Button cancelBtn;
-	
-	/**
-	 * The term the user searched on the search screen.
-	 */
     private String searchedTerm;
     
     /**
@@ -143,43 +104,39 @@ public class CreatorMain {
         musicScreen = new MusicSelectorScreen();
         imagesScreen = new ImageSelectorScreen();
         
-        setUp();
+        progressIndicator = new ProgressIndicator();
+        
+        navBar = new HBox();
+        
+        backBtn = new Button("Back");
+        nextBtn = new Button("Next");
+        cancelBtn = new Button("Cancel");
+        
+    	initialiseNavBar();
+    	initialiseProgressIndicator();
     
         mainPane.setBottom(navBar);
         stackPane.getChildren().add(mainPane);
     }
 
     /**
-     * Initialises all the components seen on screen.
-     */
-    private void setUp() {
-    	initialiseNavBar();
-    	initialiseProgressIndicator();
-    }
-
-    /**
-     * Initialise the nav bar (back, next, cancel buttons).
+     * Initialize the nav bar (back, next, cancel buttons).
      */
 	private void initialiseNavBar() {
-        navBar = new HBox();
-        
-        backBtn = new Button("Back");
         Styling.blueButton(backBtn);
-        backBtn.setOnAction(e -> backButtonClicked());
-        backBtn.setFont(Font.font ("Verdana", 15));
-        
-        nextBtn = new Button("Next");
         Styling.blueButton(nextBtn);
-        nextBtn.setFont(Font.font ("Verdana", 15));
-        nextBtn.setOnAction(e -> nextButtonClicked());
-        nextBtn.setDefaultButton(true);
-        
-        cancelBtn = new Button("Cancel");
         Styling.blueButton(cancelBtn);
+        
+        backBtn.setFont(Font.font ("Verdana", 15));
+        nextBtn.setFont(Font.font ("Verdana", 15));
         cancelBtn.setFont(Font.font ("Verdana", 15));
+        
+        backBtn.setOnAction(e -> backButtonClicked());
+        nextBtn.setOnAction(e -> nextButtonClicked());
         cancelBtn.setOnAction(e -> closeRequest());
         
-        //Navbar style
+        nextBtn.setDefaultButton(true);
+
         navBar.setPadding(new Insets(10,10,10,10));
         navBar.setSpacing(10);
         navBar.setAlignment(Pos.CENTER_RIGHT);
@@ -189,25 +146,25 @@ public class CreatorMain {
     }
 	
 	/**
-	 * Initialise the progressIndicator which will show once background tasks are running.
+	 * Initialize the progressIndicator which will show once background tasks are running.
 	 */
     private void initialiseProgressIndicator() {
-    	progressIndicator = new ProgressIndicator();
         progressIndicator.isIndeterminate();
         loadingPane.setCenter(progressIndicator);
-        progressIndicator.setMaxWidth(2000);
-        progressIndicator.setMinWidth(2000);
         progressIndicator.setPrefWidth(2000);
 	}
     
     /**
-     * Confirm closing with popup.
+     * Confirm closing with pop-up.
      */
     private void closeRequest() {
     	Alert alert = new Alert(AlertType.CONFIRMATION);
     	alert.setTitle("Are you sure?");
     	alert.setHeaderText("Are you sure you want to cancel this creation?");
     	alert.setContentText("You will lose all saved data.");
+    	
+    	DialogPane dialogPane = alert.getDialogPane();
+    	Styling.dialogStyle(dialogPane);
 
     	ButtonType buttonTypeTwo = new ButtonType("Continue Creating");
     	ButtonType buttonTypeOne = new ButtonType("Exit");
@@ -247,6 +204,7 @@ public class CreatorMain {
         stage.setTitle("Creation Maker");
         Scene scene = new Scene(stackPane, 1200, 810);
         stage.setScene(scene);
+        stage.setTitle("VARpedia Create");
         
         //When top right exit pressed does this
         stage.setOnCloseRequest(e -> {

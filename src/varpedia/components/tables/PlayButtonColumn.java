@@ -12,14 +12,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import varpedia.components.videoPlayer.PauseButton;
-import varpedia.helper.Styling;
 
 
 public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 	
-	private TableView<T> _tableView;
+	private TableView<T> tableView;
 
-	public PlayButtonColumn(TableView<T> tableView) {
+	public PlayButtonColumn(TableView<T> tv) {
 		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";-fx-font-weight: bold;");
 		this.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<T, Boolean>, ObservableValue<Boolean>>() {
@@ -35,26 +34,26 @@ public class PlayButtonColumn<T> extends TableColumn< T, Boolean> {
 				return new PlayButtonCell();
 			}
 		});
-		_tableView = tableView;
+		tableView = tv;
 		
 
 	}
 	
 	private class PlayButtonCell extends TableCell< T, Boolean> {
 
-		private PauseButton _pauseButton = new PauseButton(20,20);
+		private PauseButton pauseButton = new PauseButton(20,20);
 		private StackPane paddedButton = new StackPane();
 
 	    public PlayButtonCell() {
-		    _pauseButton.setDisable(false);
+		    pauseButton.setDisable(false);
 		    paddedButton.setPadding(new Insets(3));
-		    paddedButton.getChildren().add(_pauseButton);
+		    paddedButton.getChildren().add(pauseButton);
 		
-		    _pauseButton.setOnAction(new EventHandler<ActionEvent>() {
+		    pauseButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 			    public void handle(ActionEvent actionEvent) {
-		    		_tableView.getSelectionModel().select(getTableRow().getIndex());
-			    	PlayButtonClickedEvent.fireEvent(_tableView, new PlayButtonClickedEvent());
+		    		tableView.getSelectionModel().select(getTableRow().getIndex());
+			    	PlayButtonClickedEvent.fireEvent(tableView, new PlayButtonClickedEvent());
 			    }
 		    });
 	    }

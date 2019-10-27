@@ -230,6 +230,8 @@ public class FinalPreviewScreen extends BorderPane{
                 case 0:
                     scripts.getScript("name", new String[] {name, searched});
                     Alert success = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created " + name, ButtonType.OK);
+                	DialogPane dialogPane = success.getDialogPane();
+                	Styling.dialogStyle(dialogPane);
                     success.showAndWait();
                     mainScreen.close();
                     break;
@@ -250,6 +252,8 @@ public class FinalPreviewScreen extends BorderPane{
      */
     private void deleteOrRename(CreatorMain mainScreen) {
 		Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    	DialogPane dialogPane = confirmAlert.getDialogPane();
+    	Styling.dialogStyle(dialogPane);
 		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		confirmAlert.setTitle("Confirmation");

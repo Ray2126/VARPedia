@@ -35,27 +35,27 @@ public class ImageSelectorScreen extends BorderPane{
 	/**
 	 * The title of this screen - "Select images"
 	 */
-	private Label _title;
+	private Label title;
 	
 	/**
 	 * Pane containing the rows of images. 
 	 */
-	private VBox _rowsPane;
+	private VBox rowsPane;
 	
 	/**
 	 * Error text when user selects no images
 	 */
-	private Label _errorText;
+	private Label errorText;
 	
 	/**
 	 * The list of boxes of images on the screen
 	 */
-	private List<ImageDisplayBox> _listOfImages;
+	private List<ImageDisplayBox> listOfImages;
 	
 	/**
 	 * The boxes of images the user has selected
 	 */
-	private List<ImageDisplayBox> _listOfSelectedImages;
+	private List<ImageDisplayBox> listOfSelectedImages;
 	
 	/**
 	 * The number of images the user has selected
@@ -71,8 +71,8 @@ public class ImageSelectorScreen extends BorderPane{
 	 * Constructor.
 	 */
 	public ImageSelectorScreen() {
-		_listOfImages = new ArrayList<ImageDisplayBox>();
-		_listOfSelectedImages = new ArrayList<ImageDisplayBox>();
+		listOfImages = new ArrayList<ImageDisplayBox>();
+		listOfSelectedImages = new ArrayList<ImageDisplayBox>();
 		scripts = new Scripts();
 		Styling.yellowBG(this);
 	}
@@ -82,37 +82,37 @@ public class ImageSelectorScreen extends BorderPane{
 	 */
 	public void setUp() {
 		//Clear lists for when they press back then go next to this screen
-		_listOfImages.clear();
-		_listOfSelectedImages.clear();
+		listOfImages.clear();
+		listOfSelectedImages.clear();
 		setUpPane();
 		setUpTitle();
 		getImageFiles();
 		setUpImages();
 		setUpError();
-		this.setCenter(_rowsPane);
+		this.setCenter(rowsPane);
 	}
 	
 	/**
 	 * Set up the pane for the rows of images
 	 */
 	private void setUpPane() {
-		_rowsPane = new VBox();
-		_rowsPane.setSpacing(20);
-		_rowsPane.setAlignment(Pos.CENTER);
-		_rowsPane.setPadding(new Insets(10,20,10,20));
+		rowsPane = new VBox();
+		rowsPane.setSpacing(20);
+		rowsPane.setAlignment(Pos.CENTER);
+		rowsPane.setPadding(new Insets(10,20,10,20));
 	}
 	
 	/**
 	 * Set up the title on the top of screen
 	 */
 	private void setUpTitle() {
-		_title = new Label("Select Images");
-		_title.setTextAlignment(TextAlignment.CENTER);
-		_title.setFont(Font.font(Font.getDefault().getName(),20));
-		BorderPane.setAlignment(_title, Pos.TOP_CENTER);
-		Styling.textColor(_title);
-		_title.setPadding(new Insets(30,20,10,20));
-		this.setTop(_title);
+		title = new Label("Select Images");
+		title.setTextAlignment(TextAlignment.CENTER);
+		title.setFont(Font.font(Font.getDefault().getName(),20));
+		BorderPane.setAlignment(title, Pos.TOP_CENTER);
+		Styling.textColor(title);
+		title.setPadding(new Insets(30,20,10,20));
+		this.setTop(title);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class ImageSelectorScreen extends BorderPane{
 		for(File i: images) {
 			try {
 				BufferedImage image = ImageIO.read(i);
-				_listOfImages.add(new ImageDisplayBox(image, ++index));
+				listOfImages.add(new ImageDisplayBox(image, ++index));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -146,25 +146,25 @@ public class ImageSelectorScreen extends BorderPane{
 		row2.setAlignment(Pos.CENTER);
 		row2.setPadding(new Insets(20,20,20,20));
 		for(int i = 0; i < 5; i++) {
-			row1.getChildren().addAll(_listOfImages.get(i));
+			row1.getChildren().addAll(listOfImages.get(i));
 		}
 		
 		for(int i = 5; i < 10; i++) {
-			row2.getChildren().addAll(_listOfImages.get(i));
+			row2.getChildren().addAll(listOfImages.get(i));
 		}
-		_rowsPane.getChildren().addAll(row1, row2);
+		rowsPane.getChildren().addAll(row1, row2);
 	}
 	
 	/**
 	 * Set up the error text for when they don't select at least one image
 	 */
 	private void setUpError() {
-		_errorText = new Label("");
-		_errorText.setFont(Font.font(Font.getDefault().getName(),20));
-		_errorText.setTextFill(Color.RED);
-		BorderPane.setAlignment(_errorText, Pos.BOTTOM_CENTER);
-		_errorText.setPadding(new Insets(0,0,30,0));
-		this.setBottom(_errorText);
+		errorText = new Label("");
+		errorText.setFont(Font.font(Font.getDefault().getName(),20));
+		errorText.setTextFill(Color.RED);
+		BorderPane.setAlignment(errorText, Pos.BOTTOM_CENTER);
+		errorText.setPadding(new Insets(0,0,30,0));
+		this.setBottom(errorText);
 	}
 	
 	/**
@@ -173,12 +173,12 @@ public class ImageSelectorScreen extends BorderPane{
 	 * 			false	no images are selected
 	 */
 	public boolean isSelected() {
-		if(_listOfSelectedImages.size() == 0){
-			_errorText.setText("You must have at least one image selected to continue");
-			_errorText.setFont(Font.font ("Verdana", 16));
+		if(listOfSelectedImages.size() == 0){
+			errorText.setText("You must have at least one image selected to continue");
+			errorText.setFont(Font.font ("Verdana", 16));
 			return false;
 		}else{
-			_errorText.setText("");
+			errorText.setText("");
 			return true;
 		}
 	}
@@ -189,11 +189,11 @@ public class ImageSelectorScreen extends BorderPane{
 	public void saveSelectedImages() {
 		//Clear selected images folder for when they press back and then next
 		scripts.getScript("clearSelImg", new String[]{});
-		for(int i = 0; i < _listOfSelectedImages.size(); i++) {
-			String name = _listOfSelectedImages.get(i).getNumber();
+		for(int i = 0; i < listOfSelectedImages.size(); i++) {
+			String name = listOfSelectedImages.get(i).getNumber();
 			scripts.getScript("copyImg", new String[]{name+".jpg", Integer.toString(i+1)});
 		}
-		amountSelected = _listOfSelectedImages.size();
+		amountSelected = listOfSelectedImages.size();
 	}
 	
 	/**
@@ -248,10 +248,10 @@ public class ImageSelectorScreen extends BorderPane{
 			//When user checks the box it will add to the list and when they uncheck it will remove
 			_checkBox.setOnAction(e -> {
 				if(_checkBox.isSelected()) {
-					_listOfSelectedImages.add(thisObject);
+					listOfSelectedImages.add(thisObject);
 				}
 				else if((!_checkBox.isSelected())) {
-					_listOfSelectedImages.remove(thisObject);
+					listOfSelectedImages.remove(thisObject);
 				}
 			});
 			this.getChildren().add(_checkBox);

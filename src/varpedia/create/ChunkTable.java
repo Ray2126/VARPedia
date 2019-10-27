@@ -71,7 +71,8 @@ public class ChunkTable extends TableView<Audio>{
     /**
      * Set up the columns and design of table.
      */
-    private void setUpTable() {
+    @SuppressWarnings("unchecked")
+	private void setUpTable() {
         chunkColumn = new TableColumn<>("Chunks");
         chunkColumn.setMinWidth(880);
         chunkColumn.setCellValueFactory(new PropertyValueFactory<>("name"));

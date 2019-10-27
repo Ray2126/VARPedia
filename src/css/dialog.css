@@ -1,0 +1,43 @@
+.myDialog{
+    -fx-background-color: #ffc71f;
+}
+.myDialog > *.button-bar > *.container{
+    -fx-background-color: #ffc71f;
+}
+.myDialog > *.label.content{
+	-fx-font-size: 16.0px;
+	-fx-text-fill:#4C4C4C;
+}
+.myDialog:header *.header-panel{
+    -fx-background-color: #F8C11C;
+}
+.myDialog:header *.header-panel *.label{
+    -fx-fill: #292929;
+}
+
+/**Costumization of Buttons**/
+.dialog-pane .button{
+	-fx-padding: 8 8 8 8;
+	-fx-background-radius: 8;
+	-fx-background-color: #36b5f5,
+	radial-gradient(center 50% 50%, radius 100%, #36b5f5, #2889b9);
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1);
+	-fx-font-weight: bold;
+	-fx-text-fill: white;
+	-fx-font-size: 1.1em;
+ }
+.dialog-pane .button:hover{     
+	-fx-padding: 8 8 8 8;
+	-fx-background-radius: 8;
+	-fx-background-color: #36b5f5,
+	radial-gradient(center 50% 50%, radius 100%, #36b5f5, #36b5f5);
+	-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1);
+	-fx-font-weight: bold;
+	-fx-text-fill: white;
+	-fx-font-size: 1.1em;
+ }
+
+.dialog-pane:header .header-panel .label{
+  -fx-font-size:18.0px;
+-fx-text-fill:#4C4C4C;
+}

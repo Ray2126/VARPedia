@@ -9,23 +9,23 @@ import javafx.scene.control.TextArea;
 
 public class SearchTask extends Task<TextArea>{
 
-	private String _searchTerm;
+	private String searchTerm;
 	private Scripts scripts;
 	
 	public SearchTask(String searchTerm) {
-		_searchTerm = searchTerm;
+		this.searchTerm = searchTerm;
 		scripts = new Scripts();
 	}
 	
 	@Override
 	protected TextArea call() throws Exception {
 		TextArea output = new TextArea();
-		Process process = scripts.getScript("search", new String[] {_searchTerm});
+		Process process = scripts.getScript("search", new String[] {searchTerm});
 		if(process.exitValue() == 1) {
 			return null;
 		}
 		try {
-			FileInputStream fstream = new FileInputStream(_searchTerm+".text");
+			FileInputStream fstream = new FileInputStream(searchTerm+".text");
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
 			String strLine;

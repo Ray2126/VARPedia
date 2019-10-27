@@ -1,7 +1,5 @@
 package varpedia.components;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -11,53 +9,53 @@ import varpedia.helper.Styling;
 
 public class StopPlayButton extends Button{
 	
-	private MediaPlayer _mediaPlayer;
-	private int _width;
-	private int _height;
+	private MediaPlayer mediaPlayer;
+	private int width;
+	private int height;
 	
 	public StopPlayButton(int height, int width) {
 		super();
 		Styling.blueButton(this);
-		_width = width;
-		_height = height;
+		this.width = width;
+		this.height = height;
 		playIcon();
 	}
 	
 	public void audioPlayed(Media audio) {
-    	if(_mediaPlayer != null) {
-			if(_mediaPlayer.getStatus() == Status.PLAYING) {
-				_mediaPlayer.stop();
+    	if(mediaPlayer != null) {
+			if(mediaPlayer.getStatus() == Status.PLAYING) {
+				mediaPlayer.stop();
 				playIcon();
 				
 			} else {
-				_mediaPlayer= new MediaPlayer(audio);
-				_mediaPlayer.play();
+				mediaPlayer= new MediaPlayer(audio);
+				mediaPlayer.play();
 				stopIcon();
 			}
     	} else {
-			_mediaPlayer= new MediaPlayer(audio);
-			_mediaPlayer.play();
+			mediaPlayer= new MediaPlayer(audio);
+			mediaPlayer.play();
 			stopIcon();
     	}
-    	_mediaPlayer.setOnEndOfMedia(new Runnable() {
+    	mediaPlayer.setOnEndOfMedia(new Runnable() {
 			
 			@Override
 			public void run() {
 				playIcon();
-				_mediaPlayer = null;
+				mediaPlayer = null;
 			}
 		});
 	}
 			
 	private void playIcon() {
-		this.setGraphic(LoadIcon.loadIcon("play", _width, _height));
+		this.setGraphic(LoadIcon.loadIcon("play", width, height));
 	}
 	
 	private void stopIcon() {
-		this.setGraphic(LoadIcon.loadIcon("stop", _width, _height));
+		this.setGraphic(LoadIcon.loadIcon("stop", width, height));
 	}
 	
 	public MediaPlayer getMediaPlayer() {
-		return _mediaPlayer;
+		return mediaPlayer;
 	}
 }

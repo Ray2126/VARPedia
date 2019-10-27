@@ -1,4 +1,4 @@
-package varpedia.components.tables;
+package varpedia.helper;
 
 import java.io.File;
 

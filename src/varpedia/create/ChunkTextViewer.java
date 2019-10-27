@@ -49,12 +49,12 @@ public class ChunkTextViewer extends BorderPane{
 	/**
 	 * The play button.
 	 */
-	private StopPlayButton _playBtn;
+	private StopPlayButton playBtn;
 	
 	/**
 	 * The save button.
 	 */
-	private Button _saveBtn;
+	private Button saveBtn;
 	
 	/**
 	 * The combo box of voices.
@@ -131,20 +131,20 @@ public class ChunkTextViewer extends BorderPane{
      * Add buttons to the pane.
      */
     private void addButtons() {
-    	_playBtn = new StopPlayButton(30,30);
-		_playBtn.setOnAction(e -> playClicked());
-		Styling.blueButton(_playBtn);
+    	playBtn = new StopPlayButton(30,30);
+		playBtn.setOnAction(e -> playClicked());
+		Styling.blueButton(playBtn);
 		
-		_saveBtn = new Button();
-		_saveBtn.setGraphic(LoadIcon.loadIcon("save", 30, 30));
-		_saveBtn.setOnAction(e -> saveClicked());
-		Styling.blueButton(_saveBtn);
+		saveBtn = new Button();
+		saveBtn.setGraphic(LoadIcon.loadIcon("save", 30, 30));
+		saveBtn.setOnAction(e -> saveClicked());
+		Styling.blueButton(saveBtn);
 		
 		//Centre the buttons
     	Region region = new Region();
 		region.setMaxWidth(450);
 		region.setMinWidth(450);
-		buttonVoicePane.getChildren().addAll(region, _playBtn, _saveBtn);
+		buttonVoicePane.getChildren().addAll(region, playBtn, saveBtn);
     }
 
     /**
@@ -216,7 +216,7 @@ public class ChunkTextViewer extends BorderPane{
 		if(validSelection()) {
 			scripts.getScript("selectSave", new String[]{getSelectionFormatted(), "temp",voices.getSelectionModel().getSelectedItem()});
 			Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
-			_playBtn.audioPlayed(audio);
+			playBtn.audioPlayed(audio);
 			removeTemp();
 		}
 	}

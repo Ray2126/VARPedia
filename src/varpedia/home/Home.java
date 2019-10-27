@@ -1,13 +1,12 @@
 package varpedia.home;
 
-import java.util.Optional;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
@@ -87,10 +86,11 @@ public class Home extends VBox{
 		    
 			CreationsViewerScreen creations = new CreationsViewerScreen(this);
 			
-			layout.setCenter(creations);
+			layout.setCenter(creations.getScreen());
 			Scene creationsScene = new Scene(layout);
 			creationsStage.setScene(creationsScene);
 			primaryStage.close();
+			creationsStage.setTitle("VARpedia Creations");
 			creationsStage.show();
 		});
 	}
@@ -121,6 +121,8 @@ public class Home extends VBox{
 		    	alert.setTitle("No Creations");
 		    	alert.setHeaderText("You need a creation made to play the game.");
 		    	alert.setContentText("Please create a creation first.");
+		    	DialogPane dialogPane = alert.getDialogPane();
+		    	Styling.dialogStyle(dialogPane);
 
 		    	ButtonType okay = new ButtonType("Okay");
 
@@ -132,6 +134,7 @@ public class Home extends VBox{
 			layout.setCenter(quiz.getQuiz());
 			Scene quizScene = new Scene(scroll);
 			quizStage.setScene(quizScene);
+			quizStage.setTitle("VARpedia Quiz");
 			primaryStage.close();
 			quizStage.show();
 		});

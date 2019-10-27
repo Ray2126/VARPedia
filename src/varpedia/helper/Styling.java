@@ -3,8 +3,8 @@ package varpedia.helper;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class Styling {
@@ -51,15 +51,26 @@ public class Styling {
 		node.setStyle("-fx-font-weight: bold; -fx-text-fill: #4C4C4C");
 	}
 	
+	public static void textColorNotBold(Node node) {
+		node.setStyle("-fx-text-fill: #4C4C4C");
+	}
+	
 	public static void errorSearch(Node node) {
 		node.setStyle("-fx-font: 16px \"Verdana\";-fx-background-color: radial-gradient(center 50% 50%, radius 100%, #d62929, #b02525); -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.75), 4, 0, 0, 1); -fx-font-weight: bold;"); 
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static void tableView(TableView t) {
-		t.getStylesheets().add("table.css");
+		t.getStylesheets().add("css/table.css");
 	}
 	
+	@SuppressWarnings("rawtypes")
 	public static void comboBox(ComboBox c) {
-		c.getStylesheets().add("combo.css");
+		c.getStylesheets().add("css/combo.css");
+	}
+	
+	public static void dialogStyle(DialogPane dialogPane) {
+		dialogPane.getStyleClass().add("myDialog");
+		dialogPane.getStylesheets().add("css/dialog.css");
 	}
 }

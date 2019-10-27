@@ -1,13 +1,9 @@
 package varpedia.view;
 
-import java.io.File;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -22,43 +18,71 @@ import varpedia.home.Home;
  * delete and return home.
  *
  */
-public class CreationsViewerScreen extends BorderPane{
+public class CreationsViewerScreen{
 	
-	private VideoPlayer _videoPlayer;
-	private CreationTable _creationTable;
-	private Button homeButton;
+	private BorderPane creationsScreen;
+	private VideoPlayer videoPlayer;
+	private CreationTable creationTable;
+	private HBox buttonsPane;
+	private Home home;
+	private VBox videoWrapper;
+	private Label title;
+	private VBox tableBox;
 	
 	public CreationsViewerScreen(Home home) {
-		super();
+		this.home = home;
+		creationsScreen = new BorderPane();
+		buttonsPane = new HBox(10);
+		videoPlayer = new VideoPlayer();
+		creationTable = new CreationTable(videoPlayer);
+		tableBox = new VBox();
 		
-		Styling.yellowBG(this);
+		HBox content = new HBox();
 		
-		_videoPlayer = new VideoPlayer();
+		Styling.yellowBG(creationsScreen);
 		
-		//Pane for the video to sit in
-		VBox videoWrapper = new VBox();
-		videoWrapper.setAlignment(Pos.CENTER);
-		HBox videoBox = new HBox();
-		videoWrapper.getChildren().add(videoBox);
-		videoBox.setAlignment(Pos.CENTER);
-		videoBox.setPadding(new Insets(10,10,10,10));
-		videoBox.getChildren().addAll(_videoPlayer);
+		initVideoPlayer();
+		initHomeButton();
+		initTitle();
+		initTable();
 		
-		Label title = new Label("Your Creations");
-		Styling.textColor(title);
-		title.setFont(Font.font("Verdana", 30));
-		_creationTable = new CreationTable(_videoPlayer);
-		_creationTable.setMaxWidth(455);
+		content.getChildren().addAll(tableBox, videoWrapper);
 		
-		//Pane for table of creations
-		VBox tableBox = new VBox();
-		tableBox.getChildren().addAll(title, _creationTable);
+		creationsScreen.setCenter(content);
+		creationsScreen.setBottom(buttonsPane);
+	}
+	
+	private void initTable() {
+		tableBox.getChildren().addAll(title, creationTable.getTable());
 		tableBox.setSpacing(20);
 		tableBox.setAlignment(Pos.TOP_CENTER);
-		tableBox.setPadding(new Insets(50,10,10,10));
+		tableBox.setPadding(new Insets(20,0,20,20));
+	}
+	
+	private void initTitle() {
+		title = new Label("Your Creations");
+		Styling.textColor(title);
+		title.setFont(Font.font("Verdana", 30));
+	}
+	
+	private void initVideoPlayer() {
+		videoWrapper = new VBox();
+		HBox videoBox = new HBox();
 		
+		videoBox.setAlignment(Pos.CENTER);
+		videoBox.setPadding(new Insets(10,10,10,10));
+		videoBox.getChildren().addAll(videoPlayer);
 		
-		homeButton = new Button();
+		videoWrapper.setAlignment(Pos.CENTER);
+		videoWrapper.getChildren().add(videoBox);
+	}
+	
+	public BorderPane getScreen() {
+		return creationsScreen;
+	}
+	
+	private void initHomeButton() {
+		Button homeButton = new Button();
 		homeButton.setGraphic(LoadIcon.loadIcon("home", 30, 30));
 		Styling.blueButton(homeButton);
 		
@@ -67,16 +91,10 @@ public class CreationsViewerScreen extends BorderPane{
 		});
 		
 		//Pane for the buttons
-		HBox buttonsPane = new HBox(10);
 		buttonsPane.setPadding(new Insets(0,10,10,10));
 		buttonsPane.setAlignment(Pos.CENTER_RIGHT);
 		
 		buttonsPane.getChildren().addAll(homeButton);
-		
-		HBox view = new HBox();
-		view.getChildren().addAll(tableBox, videoWrapper);
-		this.setCenter(view);
-		this.setBottom(buttonsPane);
 	}
 
 	
