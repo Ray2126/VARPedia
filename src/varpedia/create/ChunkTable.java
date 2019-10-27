@@ -164,7 +164,7 @@ public class ChunkTable{
         ObservableList<Audio> audios = FXCollections.observableArrayList();
         scripts.getScript("listAudio", null);
         try {
-            FileInputStream fstream = new FileInputStream("audios");
+            FileInputStream fstream = new FileInputStream(".temp/audios");
             BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
             String fileNumber;

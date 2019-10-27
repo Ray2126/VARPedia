@@ -169,7 +169,7 @@ public class FinalPreviewScreen{
 	 * @return			framerate of audio
 	 */
 	private double findFramerate(int imgCount) {
-		File file = new File("./voice.wav");
+		File file = new File(".temp/voice.wav");
         AudioInputStream audioInputStream = null;
         
         try {
@@ -243,6 +243,7 @@ public class FinalPreviewScreen{
                 	DialogPane dialogPane = success.getDialogPane();
                 	Styling.dialogStyle(dialogPane);
                     success.showAndWait();
+                    scripts.getScript("cleanup", null);
                     mainScreen.close();
                     break;
                 case 1:

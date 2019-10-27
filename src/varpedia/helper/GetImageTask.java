@@ -26,6 +26,14 @@ private String wordToSearch;
 	
 	public GetImageTask(String wordToSearch) {
 		this.wordToSearch = wordToSearch;
+		
+		//If user goes back and then forward to images screen, make sure no images roll over
+		File images = new File(".temp/images");
+		images.delete();
+		images.mkdir();
+		File selected = new File(".temp/selectedImages");
+		selected.delete();
+		selected.mkdir();
 	}
 	
 	//Get either the api key or shared secret from the text file
@@ -52,10 +60,6 @@ private String wordToSearch;
 
 	@Override
 	protected Void call() throws Exception{
-		//Create file for images to be stored
-		File f = new File("images");
-		f.mkdir();
-		
 		try {
 			String apiKey = getAPIKey("apiKey");
 			String sharedSecret = getAPIKey("sharedSecret");
@@ -81,7 +85,7 @@ private String wordToSearch;
 	        		
 		        	String fileName = (++i)+".jpg";
 		        	
-		        	File outputFile = new File("images",fileName);
+		        	File outputFile = new File(".temp/images",fileName);
 		        	outputFile.createNewFile();
 		        	
 		        	ImageIO.write(image, "jpg", outputFile);

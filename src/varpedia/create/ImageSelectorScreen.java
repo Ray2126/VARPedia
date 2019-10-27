@@ -161,7 +161,7 @@ public class ImageSelectorScreen{
 	 * each image and add them to list
 	 */
 	private void getImageFiles() {
-		File imagesDir = new File("images");
+		File imagesDir = new File(".temp/images");
 		File[] images = imagesDir.listFiles();
 		int index = 0;
 		for(File i: images) {

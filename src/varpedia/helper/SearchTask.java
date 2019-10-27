@@ -25,7 +25,7 @@ public class SearchTask extends Task<TextArea>{
 			return null;
 		}
 		try {
-			FileInputStream fstream = new FileInputStream(searchTerm+".text");
+			FileInputStream fstream = new FileInputStream(".temp/"+searchTerm+".text");
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 
 			String strLine;

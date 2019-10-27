@@ -131,7 +131,7 @@ public class VideoPlayer extends VBox{
 	 * @param creation   the creation to be played
 	 */
 	public void playPreview() {
-		File creationToPlay = new File("temp/preview/preview.mp4");
+		File creationToPlay = new File(".temp/preview/preview.mp4");
 		
 		Media video = new Media(creationToPlay.toURI().toString());
 		

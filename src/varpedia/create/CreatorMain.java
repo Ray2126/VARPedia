@@ -230,8 +230,8 @@ public class CreatorMain {
         chunkScreen = new ChunkEditorScreen();
     	showProgressIndicator();
         searchedTerm = searchScreen.getInput();
-        searchedTerm.trim();
-        searchedTerm.toLowerCase();
+        searchedTerm = searchedTerm.trim();
+        searchedTerm = searchedTerm.toLowerCase();
         if(searchedTerm.isEmpty() || searchedTerm.contains(" ")){
             searchScreen.invalidSearch();
             hideProgressIndicator();

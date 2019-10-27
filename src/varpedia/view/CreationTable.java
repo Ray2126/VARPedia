@@ -156,7 +156,7 @@ public class CreationTable{
         
 		try {
 			// Open the file
-			FileInputStream fstream = new FileInputStream("listing");
+			FileInputStream fstream = new FileInputStream(".temp/listing");
 			BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
 			BufferedReader Buff;
 			String strLine;

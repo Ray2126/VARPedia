@@ -138,6 +138,19 @@ public class Home extends BorderPane{
 		newCreation.setOnAction(e ->{
 			CreatorMain creator = new CreatorMain(this);
 			primaryStage.close();
+			
+			//Create temporary folders
+			File tempFolder = new File(".temp");
+			tempFolder.mkdir();
+			File audioFolder = new File(".temp/audio");
+			audioFolder.mkdir();
+			File imagesFolder = new File(".temp/images");
+			imagesFolder.mkdir();
+			File selectedImagesFolder = new File(".temp/selectedImages");
+			selectedImagesFolder.mkdir();
+			File resampledAudioFolder = new File(".temp/resampledAudio");
+			resampledAudioFolder.mkdir();
+			
 			creator.beginCreate();
 		});
 	}

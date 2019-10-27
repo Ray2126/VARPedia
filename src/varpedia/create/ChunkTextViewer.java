@@ -236,7 +236,7 @@ public class ChunkTextViewer{
 	private void playClicked(){
 		if(validSelection()) {
 			scripts.getScript("selectSave", new String[]{formatSelected(), "temp",voices.getSelectionModel().getSelectedItem()});
-			Media audio = new Media(new File("./audio/temp.wav").toURI().toString());
+			Media audio = new Media(new File(".temp/audio/temp.wav").toURI().toString());
 			playBtn.audioPlayed(audio);
 			removeTemp();
 		}
@@ -296,7 +296,7 @@ public class ChunkTextViewer{
 	 * Remove the temporary files made to preview a chunk.
 	 */
 	private void removeTemp() {
-		String cmd = "rm -f ./audio/temp.wav";
+		String cmd = "rm -f .temp/audio/temp.wav";
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
 		try {
 			pb.start();
@@ -304,7 +304,7 @@ public class ChunkTextViewer{
 			e.printStackTrace();
 		}
 		
-		String cmd2 = "rm -f ./audio/temp.txt";
+		String cmd2 = "rm -f .temp/audio/temp.txt";
 		ProcessBuilder pb2 = new ProcessBuilder("bash", "-c", cmd2);
 		try {
 			pb2.start();
