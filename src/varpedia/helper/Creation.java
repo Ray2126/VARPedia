@@ -65,7 +65,7 @@ public class Creation {
     public String getSearch(){
         return search;
     }
-    
+   
     public String getName(){
         return name;
     }

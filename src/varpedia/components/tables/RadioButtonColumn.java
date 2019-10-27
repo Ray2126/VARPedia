@@ -10,6 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
+import varpedia.helper.Styling;
 
 public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 	
@@ -34,6 +35,7 @@ public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 			{
 				select = new RadioButton();
 				select.setToggleGroup(group);
+				Styling.radioButton(select);
 				paddedButton.setPadding(new Insets(3));
 			    paddedButton.getChildren().add(select);
 			    

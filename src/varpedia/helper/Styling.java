@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -77,6 +78,10 @@ public class Styling {
 	
 	public static void checkBox(CheckBox c) {
 		c.getStylesheets().add("css/checkBox.css");
+	}
+	
+	public static void radioButton(RadioButton r) {
+		r.getStylesheets().add("css/radioButton.css");
 	}
 	
 	public static void dialogStyle(DialogPane dialogPane) {
