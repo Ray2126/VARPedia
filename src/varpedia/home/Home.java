@@ -1,6 +1,11 @@
 package varpedia.home;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +17,7 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -59,10 +65,10 @@ public class Home extends BorderPane{
 		
 		help = new Button("Get help");
 		Styling.blueButton(help);
+		setHelp();
 		
 		exit = new Button("Quit");
 		Styling.blueButton(exit);
-
 		setExit();
 		
 		VBox buttons = new VBox();
@@ -165,6 +171,51 @@ public class Home extends BorderPane{
 			resampledAudioFolder.mkdir();
 			
 			creator.beginCreate();
+		});
+	}
+	
+	/**
+	 * Loads the help manual
+	 */
+	private void setHelp(){
+		help.setOnAction(e -> {
+			Stage newStage = new Stage();
+			VBox comp = new VBox();
+			Label title = new Label("VARpedia User Manual");
+			TextArea help = new TextArea();
+			
+			comp.setAlignment(Pos.CENTER);
+			comp.setMinSize(500, 600);
+			help.setMinSize(500, 500);
+			comp.setSpacing(15);
+			
+			title.setFont(Font.font("Verdana", 20));
+			
+			Styling.textColorNotBold(title);
+			Styling.textArea(help);
+			Styling.yellowBG(comp);
+			
+			try {
+				FileInputStream fstream = new FileInputStream("./resources/man.txt");
+				BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+
+				String strLine;
+				while ((strLine = br.readLine()) != null) {
+					//append content of text file to TextArea output
+					help.appendText(strLine.trim()+ "\n");
+				}
+				
+				fstream.close();
+
+			}catch(Exception err) {
+				err.printStackTrace();
+			}
+			
+			comp.getChildren().addAll(title, help);
+	
+			Scene stageScene = new Scene(comp, 500, 600);
+			newStage.setScene(stageScene);
+			newStage.show();
 		});
 	}
 	
