@@ -53,6 +53,10 @@ public class ChunkEditorScreen{
     public ChunkTextViewer getTextSection() {
         return textSection;
     }
+    
+    public ChunkTable getChunkTable() {
+    	return tableSection;
+    }
 
     /**
      * Check they have at least one chunk saved.

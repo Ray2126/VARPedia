@@ -9,6 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -53,6 +54,10 @@ public class ChunkTable{
 	 * Error text when at least one chunk is not created
 	 */
 	private Text errorText;
+	
+	private Text placeHolderText;
+	
+	private Label placeHolderLabel;
 	
 	/**
 	 * Linux scripts.
@@ -130,6 +135,7 @@ public class ChunkTable{
             Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
             Optional<ButtonType> result = del.showAndWait();
             if (result.get() == ButtonType.YES){
+            	stopMedia();
                 scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
                 refreshTable();
             } else {
@@ -142,7 +148,7 @@ public class ChunkTable{
      * Set up the error text for when they have no creations and press next
      */
     private void setUpError() {
-    	errorText = new Text("");
+    	errorText = new Text("You must have at least one chunk saved to continue!");
     	errorText.setFont(Font.font(Font.getDefault().getName(),20));
         errorText.setFill(Color.ORANGERED);
     }
@@ -151,9 +157,13 @@ public class ChunkTable{
      * Set up the placeholder for when there are no chunks
      */
     private void setUpPlaceHolder() {
-      	Label noChunks = new Label("You currently have no chunks");
-      	noChunks.setStyle("-fx-text-fill: white;");
-      	table.setPlaceholder(noChunks);
+      	placeHolderText = new Text("You currently have no chunks");
+      	placeHolderLabel = new Label();
+      	placeHolderLabel.setText(placeHolderText.getText());
+      	
+      	placeHolderLabel.setStyle("-fx-text-fill: white;");
+      	
+      	table.setPlaceholder(placeHolderLabel);
     }
     
     
@@ -192,9 +202,12 @@ public class ChunkTable{
      */
     public boolean anyChunksCreated() {
         if(table.getItems().isEmpty()){
-            errorText.setText("You must have at least one chunk saved to continue!");
+            placeHolderLabel.setText(errorText.getText());
+            placeHolderLabel.setTextFill(Color.ORANGERED);
             return false;
         }else{
+        	placeHolderLabel.setText(placeHolderText.getText());
+        	placeHolderLabel.setTextFill(Color.WHITE);
             return true;
         }
     }
@@ -208,6 +221,10 @@ public class ChunkTable{
         pane.setAlignment(Pos.CENTER);
         pane.getChildren().addAll(table);
         return pane;
+    }
+    
+    public void stopMedia() {
+    	playColumn.stopMedia();
     }
 
 }

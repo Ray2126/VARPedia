@@ -14,6 +14,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -311,5 +312,9 @@ public class ChunkTextViewer{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public MediaPlayer getMediaPlayer() {
+		return playBtn.getMediaPlayer();
 	}
 }

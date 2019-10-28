@@ -1,6 +1,8 @@
 package varpedia.create;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -59,6 +61,8 @@ public class MusicSelectorScreen{
 	 */
 	private TableColumn<Music, Boolean> buttonColumn;
 	
+	private List<StopPlayButton> stopButtonList;
+	
 	/**
 	 * Constructor
 	 */
@@ -69,6 +73,7 @@ public class MusicSelectorScreen{
 		musicColumn = new TableColumn<>("Music");
 		selectColumn = new RadioButtonColumn(musicTable);
 		buttonColumn = new TableColumn<Music, Boolean>();
+		stopButtonList = new ArrayList<StopPlayButton>();
 		
 		setUpLabel();
 		setUpTable();
@@ -176,6 +181,7 @@ public class MusicSelectorScreen{
 	    public PlayButtonCell() {
 		    paddedButton.setPadding(new Insets(3));
 		    paddedButton.getChildren().add(stopButton);
+		    stopButtonList.add(stopButton);
 		
 		    stopButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
@@ -215,5 +221,13 @@ public class MusicSelectorScreen{
 	 */
 	public VBox getScreen() {
 		return screen;
+	}
+	
+	public void stopMedia() {
+		for(StopPlayButton s : stopButtonList) {
+			if(s.getMediaPlayer() != null) {
+				s.getMediaPlayer().stop();
+			}
+		}
 	}
 }

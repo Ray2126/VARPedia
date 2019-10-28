@@ -1,5 +1,9 @@
 package varpedia.components.videoPlayer;
 
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -37,6 +41,14 @@ public class PauseButton extends Button{
 	public void videoPlayed(MediaPlayer mediaPlayer) {
 		this.setDisable(false);
 
+		mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+			if(mediaPlayer.getStatus() == Status.PLAYING) {
+				pauseImage();
+			}
+			else {
+				playImage();
+			}
+		});
 		
 		//Add functionality for play/pause
 		this.setOnAction(new EventHandler<ActionEvent>() {
@@ -44,16 +56,12 @@ public class PauseButton extends Button{
 			public void handle(ActionEvent arg0) {
 				if(mediaPlayer.getStatus() == Status.PLAYING) {
 					mediaPlayer.pause();
-					playImage();
 				}
 				else {
 					mediaPlayer.play();
-					pauseImage();
 				}
 			}
 		});
-		
-		pauseImage();
 	}
 
 	private void playImage() {

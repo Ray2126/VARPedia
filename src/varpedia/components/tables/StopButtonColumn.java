@@ -64,5 +64,11 @@ public class StopButtonColumn<T> extends TableColumn< T, Button> {
 	
 	public StopPlayButton getStopButton() {
 		return stopButton;
+	}
+	
+	public void stopMedia() {
+		for(StopPlayButton s : stopButtonList) {
+			s.getMediaPlayer().stop();
+		}
 	}	
 }

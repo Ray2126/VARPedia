@@ -88,6 +88,7 @@ public class CreationsViewerScreen{
 		
 		homeButton.setOnAction(e -> {
 				home.showHome();
+				videoPlayer.stop();
 		});
 		
 		//Pane for the buttons

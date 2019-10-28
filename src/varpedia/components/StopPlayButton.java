@@ -36,6 +36,14 @@ public class StopPlayButton extends Button{
 			mediaPlayer= new MediaPlayer(audio);
 			mediaPlayer.play();
 			stopIcon();
+			mediaPlayer.statusProperty().addListener((observable, oldValue, newValue) -> {
+				if(mediaPlayer.getStatus() == Status.PLAYING) {
+					stopIcon();
+				}
+				else {
+					playIcon();
+				}
+			});
     	}
     	mediaPlayer.setOnEndOfMedia(new Runnable() {
 			

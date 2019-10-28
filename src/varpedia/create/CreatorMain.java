@@ -96,7 +96,6 @@ public class CreatorMain {
         
         searchScreen = new SearchSelectorScreen();
         musicScreen = new MusicSelectorScreen();
-        imagesScreen = new ImageSelectorScreen();
         
         progressIndicator = new ProgressIndicator();
         
@@ -276,6 +275,16 @@ public class CreatorMain {
         currentScreen="create";
     }
     
+    private void stopChunkScreenAudio() {
+    	if(chunkScreen.getTextSection().getMediaPlayer() != null) {
+        	chunkScreen.getTextSection().getMediaPlayer().stop();
+    	}
+    	if(chunkScreen.getChunkTable() != null) {
+    		chunkScreen.getChunkTable().stopMedia();
+    	}
+    	
+    }
+    
     /**
      * Before music screen, check they have at least one chunk.
      */
@@ -294,11 +303,16 @@ public class CreatorMain {
     	currentScreen = "music";
     	mainPane.setCenter(musicScreen.getScreen());
     }
+    
+    private void stopMusicScreenAudio() {
+    	musicScreen.stopMedia();
+    }
 
 	/**
 	 * Set up image screen and get images from Flickr.
 	 */
 	private void loadImageScreen(){
+		imagesScreen = new ImageSelectorScreen();
 		showProgressIndicator();
 		
         GetImageTask task = new GetImageTask(searchedTerm);
@@ -375,10 +389,12 @@ public class CreatorMain {
             musicScreenUp();
         }
         else if(currentScreen == "music") {
+        	stopMusicScreenAudio();
         	chunkScreenUp();
         }
         else if(currentScreen == "create"){
         	//remove the text files
+        	stopChunkScreenAudio();
             searchScreenUp();
         }
     }
@@ -390,8 +406,10 @@ public class CreatorMain {
         if(currentScreen == "search"){
             loadChunkScreen();
         }else if(currentScreen == "create") {
+        	stopChunkScreenAudio();
         	loadMusicScreen();
         }else if(currentScreen == "music") {
+        	stopMusicScreenAudio();
         	loadImageScreen();
         }else if(currentScreen == "image"){
             loadPreviewScreen();

@@ -141,6 +141,9 @@ public class CreationTable{
 			if(result.get() == ButtonType.OK) {
 				Scripts scripts = new Scripts();
 				scripts.getScript("delCreation", new String[] {selectedCreation.getName()});
+				if(selectedCreation.getName().equals(videoPlayer.getCurrentPlayingCreation().getName())) {
+					videoPlayer.disposeMedia();
+				}
 			}
 		}
     }

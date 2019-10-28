@@ -37,6 +37,7 @@ public class VideoPlayer extends VBox{
 	private Label durationVideo;
 	private VolumeControl volume;
 	private int width = 700;
+	private Creation currentPlayingCreation;
 	
 	public VideoPlayer() {
 		playPauseButton = new PauseButton(30,30);
@@ -103,6 +104,7 @@ public class VideoPlayer extends VBox{
 	 */
 	public void playVideo(Creation creation) {
 		File creationToPlay = new File("creations/"+creation.getName()+"/"+creation.getName()+".mp4");
+		currentPlayingCreation = creation;
 
 		Media video = new Media(creationToPlay.toURI().toString());
 		
@@ -223,6 +225,15 @@ public class VideoPlayer extends VBox{
 				mediaPlayer.seek(mediaPlayer.getCurrentTime().add(Duration.seconds(-5)));
 			}
 		});
+		
+		mediaPlayer.setOnEndOfMedia(new Runnable(){
+			@Override
+			public void run() {
+				mediaPlayer.seek(new Duration(0));
+				mediaPlayer.pause();
+				timeSlider.setValue(0);
+			}
+		});
 	}
 
 	/**
@@ -238,14 +249,20 @@ public class VideoPlayer extends VBox{
 		return mediaPlayer;
 	}
 	
+	public Creation getCurrentPlayingCreation() {
+		return currentPlayingCreation;
+	}
+	
 	/**
 	 * Reverts video player back to default state(not playing video)
 	 */
 	public void disposeMedia() {
 		mediaPlayerPane.getChildren().remove(mediaView);
+		mediaPlayer.stop();
 		
 		//Set a black box as a placeholder for the video
 		Rectangle r = new Rectangle(width,500);
+		r.setStyle("-fx-fill: #36b5f5");
 		mediaPlayerPane.getChildren().addAll(r);
 		
 		playPauseButton.setDisable(true);

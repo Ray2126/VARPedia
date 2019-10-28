@@ -289,7 +289,8 @@ public class Scripts {
 	        PrintWriter printWriter = new PrintWriter(streamWriter);
 	
 	        printWriter.println("#!/bin/bash");
-	        printWriter.println("touch .temp/listing");
+	        printWriter.println("mkdir .temp 2> /dev/null");
+	        printWriter.println("touch .temp/listing 2> /dev/null");
 	        printWriter.println("ls ./creations 1>.temp/listing 2> /dev/null");
 	        
 	        printWriter.close();
@@ -374,7 +375,7 @@ public class Scripts {
 			printWriter.println("#!/bin/bash");
 			printWriter.println("FILE=.temp/audio");
 			printWriter.println("if [ ! -d \"$FILE\" ]; then");
-			printWriter.println("mkdir .temp/audio");
+			printWriter.println("mkdir .temp/audio 2> /dev/null");
 			printWriter.println("fi");
 			printWriter.println("NAME="+name);
 			printWriter.println("TEXT='"+selected+"'");
@@ -419,7 +420,7 @@ public class Scripts {
 			String name = files[0].getName().substring(0, files[0].getName().lastIndexOf("."));
 			printWriter.println("length=$(soxi -D .temp/output.wav)");
 			printWriter.println("framerate="+framerate);
-			printWriter.println("mkdir .temp/preview");
+			printWriter.println("mkdir .temp/preview 2> /dev/null");
 
 			printWriter.println("cat .temp/selectedImages/*.jpg | ffmpeg -y -f image2pipe -framerate $framerate -i - -i .temp/output.wav -c:v libx264 -pix_fmt yuv420p -vf \"scale=1400:800\" -r 25 -max_muxing_queue_size 1024 -y .temp/preview/noText.mp4 &> /dev/null" );
 			printWriter.println("ffmpeg -y -i .temp/preview/noText.mp4 -vf drawtext=\"fontfile=OpenSans-bold.ttf: text='"+name+"': fontcolor=white: fontsize=50: box=1: boxcolor=black@0.5: boxborderw=5: x=(w-text_w)/2: y=(h-text_h)/2\" -codec:a copy .temp/preview/preview.mp4 &> /dev/null");
