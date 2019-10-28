@@ -1,19 +1,24 @@
 package varpedia.home;
 
 import java.io.File;
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import varpedia.helper.Scripts;
 
+/**
+ * Main class of VARpedia
+ *
+ */
 public class Main extends Application {
 	
 	public static void main(String args[]) {
 		launch(args);
 	}
 	
+	/**
+	 * Sets the home menu as the initial screen and to clean up user files on close
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		cleanUpFiles();

@@ -17,6 +17,11 @@ import varpedia.helper.Creation;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
 
+/**
+ * Manages the feedback provided to the user based on actual creations and their guesses
+ * Then displaying this info to the user
+ *
+ */
 public class FeedbackScreen {
 	
 	private GridPane layout;
@@ -47,6 +52,9 @@ public class FeedbackScreen {
         panel.setBottom(navBar);
 	}
 	
+	/**
+	 * Initializes the grid layout for the feedback with padding and design
+	 */
 	private void initGrid() {
 		layout.setPadding(new Insets(20,20,20,20));
 		Styling.yellowBG(layout);
@@ -56,6 +64,9 @@ public class FeedbackScreen {
 		layout.setMaxWidth(1000);
 	}
 	
+	/**
+	 * Initializes the navigation component and applying the functionality 
+	 */
 	private void initNavBar() {
         navBar = new HBox();
         homeBtn = new Button();
@@ -115,6 +126,11 @@ public class FeedbackScreen {
 		}
 	}
 	
+	/**
+	 * Returns the image view for each result feedback icon
+	 * @param result whether they got this creation correct or not
+	 * @return an ImageView with the given result icon
+	 */
 	public ImageView loadImage(Boolean result) {
 		// load the image
 		File file;
@@ -141,8 +157,8 @@ public class FeedbackScreen {
 	}
 	
 	/**
-	 * Return screen
-	 * @return
+	 * Return screen with the feedback for the user
+	 * @return feedback screen
 	 */
 	public BorderPane getScreen() {
 		return panel;

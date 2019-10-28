@@ -27,6 +27,7 @@ import varpedia.helper.Styling;
  *
  */
 public class QuizQuestionScreen {
+	QuizNavigator navigator;
 	private VBox quizPanel;
 	private VideoPlayer videoPlayer;
 	private TextField guessInput;
@@ -37,52 +38,59 @@ public class QuizQuestionScreen {
 	private Button backBtn;
 	private Button nextBtn;
 	private Button cancelBtn;
+	HBox options;
+	BooleanBinding guessValid;
 	
+	/**
+	 * Initialize class variables, panel formatting and component formatting
+	 * @param navigator the navigator that is controlling the process of this component
+	 */
 	public QuizQuestionScreen(QuizNavigator navigator) {
+		this.navigator = navigator;
 		quizPanel = new VBox();
 		int width = 780;
+		HBox videoBox = new HBox();
+		guesses = new ArrayList<String>();
+		currentVidIndex = 0;
+		videoPlayer = new VideoPlayer();
+        navBar = new HBox();
+        backBtn = new Button("Back");
+        cancelBtn = new Button("Cancel");
+        nextBtn = new Button("Next");
+		
 		quizPanel.setMaxWidth(width);
 		quizPanel.setMinWidth(width);
 		quizPanel.setPrefWidth(width);
 		creations = getCreations();
 		
-		HBox videoBox = new HBox();
         videoBox.setPadding(new Insets(40,40,40,40));
         videoBox.setMaxSize(500,1000);
-        videoBox.setAlignment(Pos.CENTER);
-        videoPlayer = new VideoPlayer();
+        videoBox.setAlignment(Pos.CENTER);    
         videoBox.getChildren().addAll(videoPlayer);
         
-        guesses = new ArrayList<String>();
+        initUserInput();
         
+        initNavBar();
         
+        quizPanel.getChildren().addAll(videoBox, options, navBar);
+	}
+	
+	/**
+	 * Initialize the nav bar and button styling and button functionality
+	 */
+	private void initNavBar() {
+		Styling.blueButton(backBtn);
+		Styling.blueButton(nextBtn);
+        Styling.blueButton(cancelBtn);
         
-        currentVidIndex = 0;
-        HBox options = new HBox();
-        Label what = new Label("What is this videos topic? ");
-		Styling.textColor(what);
-		what.setFont(Font.font("Verdana", 20));
-        options.setAlignment(Pos.CENTER);
-        guessInput = new TextField();
-        Styling.textField(guessInput);
-        Styling.yellowBG(quizPanel);
-        guessInput.requestFocus();
-        BooleanBinding guessValid = Bindings.createBooleanBinding(() -> {
-            if(guessInput.getText().isEmpty()) {
-            	return false;
-            }
-            return true;
-        }, guessInput.textProperty());
-        options.getChildren().addAll(what, guessInput);
-        options.setSpacing(10);
-        options.setPadding(new Insets(10,10,10,10));
-        
-        
-        //Initialize nav bar
-        navBar = new HBox();
-        backBtn = new Button("Back");
-        Styling.blueButton(backBtn);
+        backBtn.setFont(Font.font ("Verdana", 15));
+        nextBtn.setFont(Font.font ("Verdana", 15));
+        cancelBtn.setFont(Font.font ("Verdana", 15));
+		
+        nextBtn.disableProperty().bind(guessValid.not());
         backBtn.setDisable(true);
+        nextBtn.setDefaultButton(true);
+        
         backBtn.setOnAction(e -> {
         	if(currentVidIndex != 0) {
         		currentVidIndex--;
@@ -92,58 +100,88 @@ public class QuizQuestionScreen {
         		backBtn.setDisable(true);
         	}
         });
-        backBtn.setFont(Font.font ("Verdana", 15));
-        nextBtn = new Button("Next");
-        Styling.blueButton(nextBtn);
-        nextBtn.setDefaultButton(true);
-        nextBtn.disableProperty().bind(guessValid.not());
-        nextBtn.setFont(Font.font ("Verdana", 15));
-        cancelBtn = new Button("Cancel");
-        cancelBtn.setFont(Font.font ("Verdana", 15));
-        Styling.blueButton(cancelBtn);
+        
         cancelBtn.setOnAction(e -> {
         	videoPlayer.stop();
         	navigator.closeQuiz();
         });
         
-        nextBtn.setOnAction(e -> {
-        	backBtn.setDisable(false);
-        	guesses.add(currentVidIndex,guessInput.getText().toLowerCase());
-        	if(currentVidIndex < creations.size()-1) {
-            	currentVidIndex++;
-            	playNextVid();	
-        	}else {
-        		//Last video is played so show feedback screen
-        		videoPlayer.stop();
-        		backBtn.setDisable(true);
-        		quizPanel.getChildren().clear();
-        		FeedbackScreen fb = new FeedbackScreen(creations, guesses, navigator);
-        		navigator.showFeedback(fb);
-        	}
-        });
+        nextBtn.setOnAction(e -> next());
         
-        //Navbar style
         navBar.setPadding(new Insets(10,10,10,10));
         navBar.setSpacing(10);
         navBar.setAlignment(Pos.CENTER_RIGHT);
         
         navBar.getChildren().addAll(backBtn, nextBtn, cancelBtn);
-        
-        quizPanel.getChildren().addAll(videoBox, options, navBar);
 	}
 	
+	/**
+	 * Functionality of the next button, either next quiz button or the feedback screen
+	 */
+	private void next() {
+    	backBtn.setDisable(false);
+    	guesses.add(currentVidIndex,guessInput.getText().toLowerCase());
+    	if(currentVidIndex < creations.size()-1) {
+        	currentVidIndex++;
+        	playNextVid();	
+    	}else {
+    		//Last video is played so show feedback screen
+    		videoPlayer.stop();
+    		backBtn.setDisable(true);
+    		quizPanel.getChildren().clear();
+    		FeedbackScreen fb = new FeedbackScreen(creations, guesses, navigator);
+    		navigator.showFeedback(fb);
+    	}
+	}
+
+	/**
+	 * Initialize the user input prompt and and area also creating 
+	 * the binding of whether input is added
+	 */
+	private void initUserInput() {
+		options = new HBox();
+		Label what = new Label("What is this videos topic? ");
+		Styling.textColor(what);
+		what.setFont(Font.font("Verdana", 20));
+        options.setAlignment(Pos.CENTER);
+        guessInput = new TextField();
+        Styling.textField(guessInput);
+        Styling.yellowBG(quizPanel);
+        guessInput.requestFocus();
+        guessValid = Bindings.createBooleanBinding(() -> {
+            if(guessInput.getText().isEmpty()) {
+            	return false;
+            }
+            return true;
+        }, guessInput.textProperty());
+        options.getChildren().addAll(what, guessInput);
+        options.setSpacing(10);
+        options.setPadding(new Insets(10,10,10,10));
+	}
+	
+	/**
+	 * Begin showing the quiz videos and get quiz component
+	 * @return returns the quiz with video playing
+	 */
 	public VBox startQuiz() {
 		currentVidIndex = 0;
 		videoPlayer.playQuizVideo(creations.get(0).getName());
 		return quizPanel;
 	}
 	
+	/**
+	 * Plays the next creation
+	 */
 	private void playNextVid() {
 		guessInput.clear();
 		videoPlayer.stop();
 		videoPlayer.playQuizVideo(creations.get(currentVidIndex).getName());
 	}
 	
+	/**
+	 * Retrieves all creations from files and converts to java objects
+	 * @return List of all the users save creations
+	 */
 	private List<Creation> getCreations(){
 		List<Creation> creations = new ArrayList<Creation>();
         Scripts scripts =new Scripts();
@@ -174,6 +212,10 @@ public class QuizQuestionScreen {
 		return creations;
 	}
 
+	/**
+	 * Whether the user has any creations or not
+	 * @return true: creations exist false: no creations
+	 */
 	public boolean hasCreations() {
 		if(creations.size() == 0) {
 			return false;

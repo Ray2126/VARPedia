@@ -268,8 +268,8 @@ public class FinalPreviewScreen{
 		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.OK)).setText("Yes");
 		((Button) confirmAlert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("No");
 		confirmAlert.setTitle("Confirmation");
-		confirmAlert.setHeaderText(null);
-		confirmAlert.setContentText("Name already taken. Would you like to override?");
+		confirmAlert.setHeaderText("Name already taken");
+		confirmAlert.setContentText("Would you like to override?");
 		Optional<ButtonType> result = confirmAlert.showAndWait();
 		
 		if(result.get() == ButtonType.OK) {

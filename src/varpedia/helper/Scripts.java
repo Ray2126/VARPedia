@@ -78,7 +78,8 @@ public class Scripts {
 			printWriter.println("if [ ! -f ./trash ]; then");
 			printWriter.println("mkdir ./trash");
 			printWriter.println("fi");
-			printWriter.println("mv ./creations/"+creation+"/ ./trash/");
+			printWriter.println("VAR=$(ls -1 ./trash | wc -l)");
+			printWriter.println("mv ./creations/"+creation+"/ ./trash/${VAR}");
 
 			printWriter.close();
 
@@ -216,32 +217,6 @@ public class Scripts {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//			printWriter.println("#!/bin/bash");
-//			printWriter.println("rm -f pre.mp4");
-//			printWriter.println("rm -f ./creations/preview.mp4");
-//			printWriter.println("rm -f *.text");
-//			printWriter.println("rm -f ./images/*");
-//			printWriter.println("rm -f ./audio/*");
-//			printWriter.println("rm -f ./selectedImages/*");
-//			printWriter.println("rm -f ./resampledAudio/*");
-//			printWriter.println("rm -f output.wav");
-//			printWriter.println("rm -f selected.wav");
-//			printWriter.println("rm -f selected");
-//			printWriter.println("rm -f audios");
-//			printWriter.println("rm -f listing");
-//			printWriter.println("rm -f voice.wav");
-//			
-//			printWriter.println("if [ ! -d trash ]; then");
-//			printWriter.println("mkdir -p trash;");
-//			printWriter.println("fi");
-//			
-//			printWriter.println("mv temp trash");
-//			printWriter.println("rm -rf trash");
-//			printWriter.println("rm -rf images");
-//			printWriter.println("rm -rf audio");
-//			printWriter.println("rm -rf resampledAudio");
-//			printWriter.println("rm -rf selectedImages");
-
 			printWriter.close();
 
 			return tempScript;

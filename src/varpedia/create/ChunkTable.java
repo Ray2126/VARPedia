@@ -5,11 +5,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -132,9 +131,20 @@ public class ChunkTable{
         ObservableList<Audio> audioSelected = table.getSelectionModel().getSelectedItems();
         if(audioSelected.size() != 0) {
         	//Get confirmation of delete
-            Alert del = new Alert(Alert.AlertType.INFORMATION, "Are you sure you want to delete this audio chunk?", ButtonType.YES, ButtonType.NO);
-            Optional<ButtonType> result = del.showAndWait();
-            if (result.get() == ButtonType.YES){
+        	Alert alert = new Alert(AlertType.CONFIRMATION);
+        	alert.setTitle("Are you sure?");
+        	alert.setHeaderText("Are you sure you want to delete this audio chunk?");
+        	
+        	DialogPane dialogPane = alert.getDialogPane();
+        	Styling.dialogStyle(dialogPane);
+
+        	ButtonType buttonTypeTwo = new ButtonType("Yes");
+        	ButtonType buttonTypeOne = new ButtonType("No");
+        	
+        	alert.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == buttonTypeTwo){
             	stopMedia();
                 scripts.getScript("deleteAudio", new String[]{audioSelected.get(0).getNumber()});
                 refreshTable();

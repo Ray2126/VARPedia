@@ -23,6 +23,11 @@ import varpedia.helper.Styling;
 import varpedia.quiz.QuizNavigator;
 import varpedia.view.CreationsViewerScreen;
 
+/**
+ * The home screen of VARpedia
+ * Navigates and manages the current screen
+ *
+ */
 public class Home extends BorderPane{
 	
 	private Label title;
@@ -31,6 +36,10 @@ public class Home extends BorderPane{
 	private Stage creationsStage;
 	private Stage quizStage;
 	
+	/**
+	 * Loads buttons styling and adds everything to the screen
+	 * @param primaryStage
+	 */
 	public Home(Stage primaryStage) {
 		title = new Label("VARpedia");
 		title.setFont(new Font("Arial", 60));
@@ -80,6 +89,10 @@ public class Home extends BorderPane{
 		buttons.setAlignment(Pos.CENTER_LEFT);
 	}
 	
+	/**
+	 * Loads the main menu image
+	 * @return An instance of the node with the image
+	 */
 	public ImageView loadImage() {
 		// load the image
 	    File file = new File("./resources/book.png");
@@ -155,6 +168,9 @@ public class Home extends BorderPane{
 		});
 	}
 	
+	/**
+	 * Sets the active window as the quiz
+	 */
 	private void setQuiz() {
 		play.setOnAction(e -> {
 			

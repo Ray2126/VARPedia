@@ -29,6 +29,11 @@ public class CreationsViewerScreen{
 	private Label title;
 	private VBox tableBox;
 	
+	/**
+	 * Loads class variables and initializes components
+	 * Sets components on to the screen
+	 * @param home
+	 */
 	public CreationsViewerScreen(Home home) {
 		this.home = home;
 		creationsScreen = new BorderPane();
@@ -52,6 +57,9 @@ public class CreationsViewerScreen{
 		creationsScreen.setBottom(buttonsPane);
 	}
 	
+	/**
+	 * Initializes the creation view table
+	 */
 	private void initTable() {
 		tableBox.getChildren().addAll(title, creationTable.getTable());
 		tableBox.setSpacing(20);
@@ -59,12 +67,18 @@ public class CreationsViewerScreen{
 		tableBox.setPadding(new Insets(20,0,20,20));
 	}
 	
+	/**
+	 * Initializes the creations title above the table
+	 */
 	private void initTitle() {
 		title = new Label("Your Creations");
 		Styling.textColor(title);
 		title.setFont(Font.font("Verdana", 30));
 	}
 	
+	/**
+	 * Initializes the video component layout
+	 */
 	private void initVideoPlayer() {
 		videoWrapper = new VBox();
 		HBox videoBox = new HBox();
@@ -81,6 +95,9 @@ public class CreationsViewerScreen{
 		return creationsScreen;
 	}
 	
+	/**
+	 * Initializes the home buttons design and its functionality
+	 */
 	private void initHomeButton() {
 		Button homeButton = new Button();
 		homeButton.setGraphic(LoadIcon.loadIcon("home", 30, 30));
