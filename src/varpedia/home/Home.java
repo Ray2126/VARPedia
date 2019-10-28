@@ -3,10 +3,7 @@ package varpedia.home;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
-import java.util.Scanner;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -41,6 +38,7 @@ public class Home extends BorderPane{
 	private Stage primaryStage;
 	private Stage creationsStage;
 	private Stage quizStage;
+	private Stage helpStage;
 	
 	/**
 	 * Loads buttons styling and adds everything to the screen
@@ -179,7 +177,7 @@ public class Home extends BorderPane{
 	 */
 	private void setHelp(){
 		help.setOnAction(e -> {
-			Stage newStage = new Stage();
+			helpStage = new Stage();
 			VBox comp = new VBox();
 			Label title = new Label("VARpedia User Manual");
 			TextArea help = new TextArea();
@@ -214,8 +212,9 @@ public class Home extends BorderPane{
 			comp.getChildren().addAll(title, help);
 	
 			Scene stageScene = new Scene(comp, 500, 600);
-			newStage.setScene(stageScene);
-			newStage.show();
+			helpStage.setScene(stageScene);
+			helpStage.setTitle("Help Manual");
+			helpStage.show();
 		});
 	}
 	
@@ -262,6 +261,9 @@ public class Home extends BorderPane{
 	private void setExit() {
 		exit.setOnAction(e ->{
 			primaryStage.close();
+			if(helpStage.isShowing()) {
+				helpStage.close();
+			}
 		});
 	}
 }
