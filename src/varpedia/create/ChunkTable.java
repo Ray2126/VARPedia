@@ -33,20 +33,15 @@ import java.util.Optional;
  */
 public class ChunkTable{
 	
-	TableView<Audio> table;
+	private TableView<Audio> table;
+	
     /**
      * The column for the chunks information - displays text in the chunk.
      */
 	private TableColumn<Audio, String> chunkColumn;
 	
-	/**
-	 * The column with the play buttons.
-	 */
 	private StopButtonColumn<Audio> playColumn;
 	
-	/**
-	 * The column with the delete buttons.
-	 */
 	private TableColumn<Audio, Boolean> deleteColumn;
 	
 	/**
@@ -58,15 +53,8 @@ public class ChunkTable{
 	
 	private Label placeHolderLabel;
 	
-	/**
-	 * Linux scripts.
-	 */
     private Scripts scripts;
     
-
-	/**
-	 * Constructor.
-	 */
     public ChunkTable() {
     	table = new TableView<Audio>();
         scripts = new Scripts();
@@ -115,18 +103,12 @@ public class ChunkTable{
         });
     }
     
-    /**
-     * When play button is clicked, play chunk.
-     */
     private void playButtonClicked() {
     	ObservableList<Audio> audioSelected = table.getSelectionModel().getSelectedItems();
     	Media audio = new Media(new File(audioSelected.get(0).getNumber()+".wav").toURI().toString());
     	playColumn.getStopButton().audioPlayed(audio);
     }
     
-    /**
-     * Delete audio chunk.
-     */
     private void deleteButtonClicked(){
         ObservableList<Audio> audioSelected = table.getSelectionModel().getSelectedItems();
         if(audioSelected.size() != 0) {
@@ -176,9 +158,8 @@ public class ChunkTable{
       	table.setPlaceholder(placeHolderLabel);
     }
     
-    
 	/**
-	 * Loads the current chunks and displays in table.
+	 * Loads the currently saved chunks and displays in table.
 	 */
     public void refreshTable(){
         ObservableList<Audio> audios = FXCollections.observableArrayList();
@@ -207,8 +188,8 @@ public class ChunkTable{
    
     /**
      * Check they have at least one chunk saved.
-     * @return false  no chunks saved
-     * 		   true   at least one chunk saved
+     * @return false,  no chunks saved |
+     * 		   true,   at least one chunk saved
      */
     public boolean anyChunksCreated() {
         if(table.getItems().isEmpty()){
@@ -222,10 +203,6 @@ public class ChunkTable{
         }
     }
     
-    /**
-     * Returns a pane with the table in the center.
-     * @return  the pane containing table
-     */
     public VBox getMainPane(){
         VBox pane = new VBox();
         pane.setAlignment(Pos.CENTER);

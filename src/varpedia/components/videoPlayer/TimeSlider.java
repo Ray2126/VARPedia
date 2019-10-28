@@ -19,7 +19,7 @@ public class TimeSlider extends Slider{
 	}
 	
 	/**
-	 * Enable and add functionality to slider
+	 * Enable and add functionality to slider as video has been played
 	 * @param mediaPlayer   mediaPlayer this slider is binded to
 	 */
 	public void videoPlayed(MediaPlayer mediaPlayer) {

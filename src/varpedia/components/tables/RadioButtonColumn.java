@@ -12,9 +12,12 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.StackPane;
 import varpedia.helper.Styling;
 
+/**
+ * A table column used in the music screen for the column of radio buttons
+ * 
+ */
 public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 	
-	private TableView<Music> tableView;
 	private Music selectedMusic;
 	
 	public RadioButtonColumn(TableView<Music> tv) {
@@ -22,9 +25,7 @@ public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 		
 		//Set default to no music
 		selectedMusic = new Music("No music");
-		tableView = tv;
 		
-		this.setMinWidth(100);
 		this.setStyle("-fx-font: 16px \"Verdana\";");
 		ToggleGroup group = new ToggleGroup();
 		
@@ -43,8 +44,8 @@ public class RadioButtonColumn extends TableColumn<Music, Boolean>{
 
 					@Override 
 			    	public void handle(ActionEvent actionEvent) {
-			    		tableView.getSelectionModel().select(getTableRow().getIndex());
-			    		selectedMusic = tableView.getSelectionModel().getSelectedItem();
+			    		tv.getSelectionModel().select(getTableRow().getIndex());
+			    		selectedMusic = tv.getSelectionModel().getSelectedItem();
 			    	}
 			    });
 		    }

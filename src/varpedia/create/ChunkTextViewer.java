@@ -32,15 +32,10 @@ import java.io.IOException;
  */
 public class ChunkTextViewer{
 	
-	BorderPane screen;
-	/**
-	 * The table of chunks this is associated to.
-	 */
+	private BorderPane screen;
+	
 	private ChunkTable chunkTable;
 	
-	/**
-	 * The text area where user can edit and select text.
-	 */
 	private TextArea textArea;
 	
 	/**
@@ -48,41 +43,19 @@ public class ChunkTextViewer{
 	 */
 	private HBox buttonVoicePane;
 	
-	/**
-	 * The play button.
-	 */
 	private StopPlayButton playBtn;
 	
-	/**
-	 * The save button.
-	 */
 	private Button saveBtn;
 	
-	/**
-	 * The combo box of voices.
-	 */
 	private ComboBox<String> voices;
 	
-	/**
-	 * The text that displays error if selected text is not valid.
-	 */
 	private Text error;
 	
-	/**
-	 * The number of chunks the user has saved.
-	 */
 	private int savedChunks;
 	
-	/**
-	 * Linux scripts.
-	 */
 	private Scripts scripts;
 	
 	
-	/**
-	 * Constructor.
-	 * @param chunkTable	the chunk table this will be associated with
-	 */
 	public ChunkTextViewer(ChunkTable chunkTable) {
 	    this.chunkTable = chunkTable;
 	    scripts = new Scripts();
@@ -140,9 +113,6 @@ public class ChunkTextViewer{
 		screen.setBottom(addErrorText());
 	}
     
-    /**
-     * Add buttons to the pane.
-     */
     private void addButtons() {
 		playBtn.setOnAction(e -> playClicked());
 
@@ -231,21 +201,15 @@ public class ChunkTextViewer{
 		screen.setCenter(this.textArea);
     }
     
-    /**
-     * Play/preview button is clicked.
-     */
 	private void playClicked(){
 		if(validSelection()) {
 			scripts.getScript("selectSave", new String[]{formatSelected(), "temp",voices.getSelectionModel().getSelectedItem()});
 			Media audio = new Media(new File(".temp/audio/temp.wav").toURI().toString());
 			playBtn.audioPlayed(audio);
-			removeTemp();
+			removeTempFiles();
 		}
 	}
 
-	/**
-	 * Save button is clicked.
-	 */
 	private void saveClicked(){
 		if(validSelection()) {
 			savedChunks++;
@@ -274,8 +238,8 @@ public class ChunkTextViewer{
 	
 	/**
 	 * check if the user selected text is valid.
-	 * @return	true	selected text is valid
-	 * 			false 	selected text is invalid
+	 * @return	true:	selected text is valid |
+	 * 			false: 	selected text is invalid
 	 */
 	private boolean validSelection() {
 		error.setText("");
@@ -293,10 +257,7 @@ public class ChunkTextViewer{
 		return true;
 	}
 	
-	/**
-	 * Remove the temporary files made to preview a chunk.
-	 */
-	private void removeTemp() {
+	private void removeTempFiles() {
 		String cmd = "rm -f .temp/audio/temp.wav";
 		ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
 		try {

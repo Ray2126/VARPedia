@@ -19,10 +19,13 @@ import com.flickr4java.flickr.photos.Size;
 
 import javafx.concurrent.Task;
 
+/**
+ * The concurrency background task to get the images from Flickr
+ *
+ */
 public class GetImageTask extends Task<Void>{
-	//retrieve with wget
 	
-private String wordToSearch;
+	private String wordToSearch;
 	
 	public GetImageTask(String wordToSearch) {
 		this.wordToSearch = wordToSearch;
@@ -36,7 +39,6 @@ private String wordToSearch;
 		selected.mkdir();
 	}
 	
-	//Get either the api key or shared secret from the text file
 	private String getAPIKey(String key) throws IOException{
 
 		String apiKeyFile = System.getProperty("user.dir") 
@@ -90,13 +92,11 @@ private String wordToSearch;
 		        	
 		        	ImageIO.write(image, "jpg", outputFile);
 	        	} catch (FlickrException fe) {
-	        		//Error handling here, not sure what kind yet
 				}
 	        }
 		
 		}
 		catch (IOException e){
-			//Error handling here, not sure what kind yet
 		}
 
 		

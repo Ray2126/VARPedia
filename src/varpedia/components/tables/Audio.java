@@ -1,8 +1,12 @@
 package varpedia.components.tables;
 
+/**
+ * Used as the item in the chunk table.
+ *
+ */
 public class Audio {
-        String name;
-        String number;
+        private String name;
+        private String number;
 
         public Audio(){
             this.name = "";

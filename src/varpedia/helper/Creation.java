@@ -5,6 +5,11 @@ import java.io.File;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Encapsulates a creation, used for playing creations on the view creations screen
+ * @author student
+ *
+ */
 public class Creation {
 	private String name;
     private Integer number;
@@ -22,6 +27,11 @@ public class Creation {
         this.image = getImageView(name);
     }
     
+    /**
+     * Get the thumbnail of this creation
+     * @param creation	the creation to get thumbnail of
+     * @return	imageview containing thumbnail
+     */
 	private ImageView getImageView(String creation) {
 		// load the image
 	    File file = new File("./creations/"+creation+"/thumb.jpg");

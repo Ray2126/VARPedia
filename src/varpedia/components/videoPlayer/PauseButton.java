@@ -17,6 +17,11 @@ public class PauseButton extends Button{
 	private int width;
 	private int height;
 	
+	/**
+	 * The constructor with parameters for the height and width of this button
+	 * @param width		the width of this button
+	 * @param height	the height of this button
+	 */
 	public PauseButton(int width, int height) {
 		super();
 		this.width = width;
@@ -31,7 +36,7 @@ public class PauseButton extends Button{
 	}
 	
 	/**
-	 * Enable, change text and add functionality as video has been played
+	 * Add functionality to this button and enable as video has been played
 	 * @param mediaPlayer  the media player binded to this button
 	 */
 	public void videoPlayed(MediaPlayer mediaPlayer) {

@@ -7,12 +7,22 @@ import javafx.scene.media.MediaPlayer.Status;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
 
+/**
+ * A button that when pressed will play an audio and will then turn into a stop button.
+ * When pressed again the audio will stop and this button will turn back into a play button.
+ *
+ */
 public class StopPlayButton extends Button{
 	
 	private MediaPlayer mediaPlayer;
 	private int width;
 	private int height;
 	
+	/**
+	 * Constructor with parameters for height and width of the button
+	 * @param height	the height of the button
+	 * @param width		the width of the button
+	 */
 	public StopPlayButton(int height, int width) {
 		super();
 		Styling.blueButton(this);
@@ -21,6 +31,11 @@ public class StopPlayButton extends Button{
 		playIcon();
 	}
 	
+	/**
+	 * Play a media and associate the media player to this button
+	 * to stop and play the media
+	 * @param audio		the media to play
+	 */
 	public void audioPlayed(Media audio) {
     	if(mediaPlayer != null) {
 			if(mediaPlayer.getStatus() == Status.PLAYING) {
@@ -46,7 +61,6 @@ public class StopPlayButton extends Button{
 			});
     	}
     	mediaPlayer.setOnEndOfMedia(new Runnable() {
-			
 			@Override
 			public void run() {
 				playIcon();

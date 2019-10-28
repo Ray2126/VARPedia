@@ -13,21 +13,16 @@ import varpedia.helper.Styling;
  *
  */
 public class SearchSelectorScreen extends HBox{
-	
-	/**
-	 * Text field where user enters term
-	 */
+
     private TextField searchInput;
     
-    /**
-     * Constructor
-     */
+
     public SearchSelectorScreen(){
         Styling.yellowBG(this);
         this.setSpacing(10);
         this.setAlignment(Pos.CENTER);
         setUpPrompt();
-        setUpSearchInput();
+        setUpTextField();
     }
     
     /**
@@ -40,10 +35,7 @@ public class SearchSelectorScreen extends HBox{
         this.getChildren().add(prompt);
     }
     
-    /**
-     * Set up the text field
-     */
-    private void setUpSearchInput() {
+    private void setUpTextField() {
     	searchInput = new TextField();
         searchInput.setMinWidth(320);
         searchInput.setMaxWidth(320);
@@ -65,10 +57,6 @@ public class SearchSelectorScreen extends HBox{
         });
     }
 
-    /**
-     * Get the term the user searched
-     * @return	term the user searched
-     */
     public String getInput() {
         return searchInput.getText();
     }

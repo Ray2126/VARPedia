@@ -2,11 +2,13 @@ package varpedia.helper;
 
 import java.io.*;
 
+/**
+ * The class containing all of the linux scripts to be run in this application. Allows all code to be in their
+ * own spot. To use this - specify action to complete with a string.
+ *
+ */
 public class Scripts {
-	//Have made all Bash command chunks to do with a certain topic create their own script file
-	//Which is then executed and deleted.
 	
-	//This allows all the code for running a script to be in own spot and user specifies the action to complete with a string
 	public Process getScript(String request, String[] params) {
         File tempScript = null;
 		try {
@@ -61,12 +63,15 @@ public class Scripts {
 	            tempScript.delete();
 	        }
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	/**
+	 * Script to delete a creation in the view creations screen
+	 * 
+	 */
 	private File deleteCreationScript(String creation) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -89,6 +94,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Script to merge the chunks and the music together
+	 * 
+	 */
 	public File mergeAudioScript(String music) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -160,6 +169,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Put the images the user selected into a new directory
+	 * 
+	 */
 	public File copySelectedImg(String name, String index) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -180,6 +193,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Rename the preview of the final creation file to user specified name and move to creation folder
+	 * 
+	 */
 	public File renamePreview(String name, String searched) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -191,7 +208,6 @@ public class Scripts {
 			printWriter.println("mkdir -p ./creations/"+name+"/quiz");
 			printWriter.println("mv .temp/preview/preview.mp4 ./creations/"+name+"/"+name+".mp4");
 			printWriter.println("cp .temp/selectedImages/1.jpg ./creations/"+name+"/thumb.jpg");
-			//Create text file for searched
 			printWriter.println("echo "+searched+"> ./creations/"+name+"/quiz/searchTerm.text");
 			printWriter.println("mv .temp/preview/noText.mp4 ./creations/"+name+"/quiz/noText.mp4");
 
@@ -203,6 +219,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Remove .temp folder
+	 * 
+	 */
 	public File cleanupScript() {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -225,6 +245,10 @@ public class Scripts {
 		}
 	}
 	
+	/**
+	 * Search for the user entered term with wikit
+	 * 
+	 */
     public File searchScript(String searchTerm) {
     	try {
 	        File tempScript = File.createTempFile("script", null);
@@ -255,6 +279,10 @@ public class Scripts {
     	}
     }
     
+    /**
+     * Create a file that lists all of the creations the user currently has saved
+     * 
+     */
     public File createListFileScript() {
     	try {
 	        File tempScript = File.createTempFile("script", null);
@@ -276,6 +304,10 @@ public class Scripts {
     	}
     }
 
+    /**
+     * List the chunk text files the user has saved to a new file
+     * 
+     */
 	public File audioListFileScript() {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -295,6 +327,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Delete the temporary files created to preview a chunk
+	 * 
+	 */
 	public File deleteAudioScript(String name) {
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -316,6 +352,10 @@ public class Scripts {
 		}
 	}
     
+	/**
+	 * Check if the name entered is valid or not
+	 * 
+	 */
     public File nameValidScript(String name) {
     	try {
 	        File tempScript = File.createTempFile("script", null);
@@ -339,6 +379,9 @@ public class Scripts {
     	}
     }
 
+    /**
+     * Save the selected text into its own chunk, also takes voice selected into account
+     */
 	public File saveSelected(String selected, String name, String voice){
 		try {
 			File tempScript = File.createTempFile("script", null);
@@ -378,6 +421,10 @@ public class Scripts {
 		}
 	}
 
+	/**
+	 * Create the file with all the chunks, music and images which will then be previewed to the user before they choose name
+	 * 
+	 */
 	public File createPreviewScript(String framerate) {
 		try {
 			File tempScript = File.createTempFile("script", null);

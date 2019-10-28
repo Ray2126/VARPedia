@@ -10,6 +10,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
+/**
+ * Helper class to apply css to the various components in this application
+ * 
+ */
 public class Styling {
 	public static void blueButton(Button button) {
 		button.setStyle("-fx-padding: 8 8 8 8;\n" + 

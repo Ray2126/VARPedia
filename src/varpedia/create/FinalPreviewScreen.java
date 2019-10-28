@@ -27,14 +27,9 @@ import java.util.Optional;
 public class FinalPreviewScreen{
 
 	private BorderPane screen;
-	/**
-	 * The video player the plays the preview
-	 */
+
     private VideoPlayer videoPlayer;
     
-    /**
-     * The text field where user can enter name of creation.
-     */
     private TextField nameInput;
     
     /**
@@ -42,21 +37,11 @@ public class FinalPreviewScreen{
      */
     private Text invalidNameText;
     
-    /**
-     * The term the user searched.
-     */
     private String searched;
     
-    /**
-     * Linux scripts.
-     */
     private Scripts scripts;
     
 
-    /**
-     * Constructor.
-     * @param searched	The term the user searched
-     */
     public FinalPreviewScreen(String searched){
     	this.searched = searched;
     	screen = new BorderPane();
@@ -69,9 +54,6 @@ public class FinalPreviewScreen{
         setUp();
     }
     
-    /**
-     * Set up this screen
-     */
     private void setUp() {
     	setUpVideoPlayer();
     	setUpErrorText();
@@ -126,9 +108,6 @@ public class FinalPreviewScreen{
         screen.setTop(videoBox);
 	}
 	
-	/**
-	 * Play the preview video
-	 */
     public void playVideo() {
         videoPlayer.playPreview();
     }
@@ -187,8 +166,8 @@ public class FinalPreviewScreen{
 
 	/**
 	 * Check if the name the user entered is valid
-	 * @return	true	name is valid
-	 * 			false 	name is invalid
+	 * @return	true:	name is valid |
+	 * 			false: 	name is invalid
 	 */
     public boolean isValidName() {
     	boolean valid = true;
@@ -221,7 +200,7 @@ public class FinalPreviewScreen{
     /**
      * Once name is valid, rename the temp created video to entered name or if name is taken
      * create popup asking if they want to override
-     * @param mainScreen
+     * @param mainScreen	the stage of this screen
      */
     public void createCreation(CreatorMain mainScreen)
     {

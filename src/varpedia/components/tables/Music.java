@@ -1,5 +1,9 @@
 package varpedia.components.tables;
 
+/**
+ * Used as the item in the music table
+ *
+ */
 public class Music {
 	
 	private String name;

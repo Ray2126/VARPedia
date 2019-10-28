@@ -7,6 +7,10 @@ import java.io.InputStreamReader;
 import javafx.concurrent.Task;
 import javafx.scene.control.TextArea;
 
+/**
+ * The background task to search for a word with wikit
+ *
+ */
 public class SearchTask extends Task<TextArea>{
 
 	private String searchTerm;

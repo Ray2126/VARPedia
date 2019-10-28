@@ -36,9 +36,7 @@ import varpedia.helper.Styling;
 public class ImageSelectorScreen{
 	
 	private BorderPane screen;
-	/**
-	 * The title of this screen - "Select images"
-	 */
+
 	private Label title;
 	
 	/**
@@ -51,35 +49,17 @@ public class ImageSelectorScreen{
 	 */
 	private Label errorText;
 	
-	/**
-	 * The list of boxes of images on the screen
-	 */
 	private List<ImageDisplayBox> listOfImages;
 	
-	/**
-	 * The boxes of images the user has selected
-	 */
 	private List<ImageDisplayBox> listOfSelectedImages;
 	
-	/**
-	 * The list of the checkboxes seen on screen
-	 */
 	private List<CheckBox> listOfCheckBoxes;
 	
-	/**
-	 * The number of images the user has selected
-	 */
 	private int amountSelected;
 	
-	/**
-	 * Linux scripts
-	 */
 	private Scripts scripts;
 	
 
-	/**
-	 * Constructor.
-	 */
 	public ImageSelectorScreen() {
 		screen = new BorderPane();
 		listOfImages = new ArrayList<ImageDisplayBox>();
@@ -218,8 +198,8 @@ public class ImageSelectorScreen{
 	
 	/**
 	 * Check if there is at least one image selected
-	 * @return	true 	at least one image is selected
-	 * 			false	no images are selected
+	 * @return	true: 	at least one image is selected |
+	 * 			false:	no images are selected
 	 */
 	public boolean isSelected() {
 		if(listOfSelectedImages.size() == 0){
@@ -247,10 +227,6 @@ public class ImageSelectorScreen{
 		amountSelected = listOfSelectedImages.size();
 	}
 	
-	/**
-	 * Return the number of images user has selected
-	 * @return	number of images selected
-	 */
 	public int getAmountSelected(){
 		return amountSelected;
 	};
@@ -292,9 +268,6 @@ public class ImageSelectorScreen{
 			this.getChildren().add(imageBox);
 		}
 		
-		/**
-		 * Set up the checkbox
-		 */
 		private void setUpCheckBox() {
 			checkBox = new CheckBox();
 			checkBox.setIndeterminate(false);
@@ -312,16 +285,12 @@ public class ImageSelectorScreen{
 			this.getChildren().add(checkBox);
 		}
 		
-		/**
-		 * Gets the number(index) of this object
-		 * @return	index as a string
-		 */
 		private String getNumber() {
 			return String.valueOf(imageNumber);
 		}
 		
 		/**
-		 * Helper method to resize the images to fix in each box
+		 * Helper method to resize the images to fit in each box
 		 * @param img		image to resize
 		 * @param height	height to resize to
 		 * @param width		width to resize to

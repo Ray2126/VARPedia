@@ -31,41 +31,21 @@ import varpedia.helper.Styling;
  */
 public class MusicSelectorScreen{
 
-	/**
-	 * The main pane for this screen
-	 */
 	private VBox screen;
 	
-	/**
-	 * The title - "Select background music"
-	 */
 	private Label title;
 	
-	/**
-	 * The table of music and buttons on the center of screen.
-	 */
 	private TableView<Music> musicTable;
-	
-	/**
-	 * The column containing the radio buttons
-	 */
+
 	private RadioButtonColumn selectColumn;
-	
-	/**
-	 * The column containing the names of the music
-	 */
+
 	private TableColumn<Music, String> musicColumn;
 	
-	/**
-	 * The column containing the preview buttons
-	 */
 	private TableColumn<Music, Boolean> buttonColumn;
 	
 	private List<StopPlayButton> stopButtonList;
 	
-	/**
-	 * Constructor
-	 */
+	
 	public MusicSelectorScreen() {
 		screen = new VBox();
 		title = new Label("Select background music");
@@ -92,9 +72,6 @@ public class MusicSelectorScreen{
 		title.setPadding(new Insets(0,0,50,0));
 	}
 	
-	/**
-	 * Set up the music table
-	 */
 	@SuppressWarnings("unchecked")
 	private void setUpTable() {
 		musicTable.setItems(getMusic());
@@ -125,9 +102,6 @@ public class MusicSelectorScreen{
 		return musicList;
 	} 
 	
-	/**
-	 * Set up all the columns for the table
-	 */
 	private void setUpColumns() {
 		setUpMusicColumn();
 		setUpRadioColumn();
@@ -161,10 +135,6 @@ public class MusicSelectorScreen{
 	    buttonColumn.setSortable(false);
 	}
 
-	/**
-	 * Get the music the user has selected
-	 * @return	Music	the music user has selected
-	 */
 	public Music getSelectedMusic() {
 		return selectColumn.getSelectedMusic();
 	}
@@ -215,10 +185,6 @@ public class MusicSelectorScreen{
 	    }
 	}
 
-	/**
-	 * Get the main pane of this screen
-	 * @return	the main pane of this screen
-	 */
 	public VBox getScreen() {
 		return screen;
 	}

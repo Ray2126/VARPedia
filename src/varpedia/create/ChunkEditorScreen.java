@@ -13,6 +13,7 @@ import varpedia.helper.Styling;
 public class ChunkEditorScreen{
 	
 	private BorderPane chunkScreen;
+	
 	/**
 	 * The top half of chunk screen where user selects text.
 	 */
@@ -23,9 +24,7 @@ public class ChunkEditorScreen{
      */
     private ChunkTable tableSection;
 
-    /**
-     * Constructor.
-     */
+
     public ChunkEditorScreen(){
     	chunkScreen = new BorderPane();
     	tableSection = new ChunkTable();
@@ -38,18 +37,10 @@ public class ChunkEditorScreen{
         chunkScreen.setBottom(tableSection.getMainPane());
     }
     
-    /**
-     * Gets the screen for the Chunk Editor
-     * @return BorderPane of chunk screen
-     */
     public BorderPane getScreen() {
     	return chunkScreen;
     }
 
-    /**
-     * Get the top half of the chunk screen, the text area, voice and buttons.
-     * @return	the text area, voice and buttons
-     */
     public ChunkTextViewer getTextSection() {
         return textSection;
     }
@@ -68,8 +59,8 @@ public class ChunkEditorScreen{
 
     /**
      * Combining the audio chunks and music. Then once that is complete, make the preview creation.
-     * @param mainScreen: the creation stage
-     * @param music: the music the user selected
+     * @param mainScreen 	the creation stage
+     * @param music 	the music the user selected
      */
     public void combineTheAudio(CreatorMain mainScreen, String music) {
         Scripts scripts = new Scripts();
@@ -80,12 +71,7 @@ public class ChunkEditorScreen{
             }
         };
         task.setOnSucceeded(e -> {
-            int result = task.getValue();
-            if(result != 0) {
-               //TODO error handling
-            }else {
-                mainScreen.getPreview().makePreview(mainScreen, mainScreen.getImageAmount());
-            }
+        	mainScreen.getPreview().makePreview(mainScreen, mainScreen.getImageAmount());
         });
         Thread backgroundThread = new Thread(task);
         backgroundThread.setDaemon(true);

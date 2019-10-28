@@ -14,6 +14,10 @@ import javafx.scene.media.MediaPlayer;
 import varpedia.helper.LoadIcon;
 import varpedia.helper.Styling;
 
+/**
+ * The mute button and volume slider seen on video players
+ *
+ */
 public class VolumeControl extends HBox{
 	
 	private Button muteButton;
@@ -28,10 +32,11 @@ public class VolumeControl extends HBox{
 		muteButton.setMaxWidth(60);
 		muteButton.setMinWidth(60);
 		muteButton.setDisable(true);
+		
 		volumeSlider = new Slider(0,100,100);
 		volumeSlider.setDisable(true);
-		this.setAlignment(Pos.CENTER);
 		
+		this.setAlignment(Pos.CENTER);
 		this.getChildren().addAll(muteButton,volumeSlider);
 	}
 	
@@ -49,15 +54,18 @@ public class VolumeControl extends HBox{
 			public void handle(ActionEvent arg0) {
 				if(mediaPlayer.getVolume() == 0){
 					volumeOffIcon();
+					//Check if they muted audio by clicking button and not by sliding slider to 0
 					if(previousVolume == -1) {
 						mediaPlayer.setVolume(0);
 					}
+					//Push slider back to where it was before they pressed button
 					else {
 						mediaPlayer.setVolume(previousVolume);
 						previousVolume = -1;
 						volumeUpIcon();
 					}
 				}
+				//Mute the audio but keep a record of where it was
 				else {
 					previousVolume = mediaPlayer.getVolume();
 					mediaPlayer.setVolume(0);
@@ -79,7 +87,6 @@ public class VolumeControl extends HBox{
 		});
 
 		mediaPlayer.volumeProperty().addListener(new ChangeListener<Number>() {
-
 			@Override
 			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
 				volumeSlider.setValue(mediaPlayer.getVolume()*100);

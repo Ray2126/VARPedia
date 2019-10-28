@@ -45,15 +45,9 @@ public class CreatorMain {
 	 * The stack pane that will have the loading pane added on once task is running.
 	 */
 	private StackPane stackPane;
-	
-	/**
-	 * The creating stage.
-	 */
+
 	private Stage stage;
 	
-	/**
-	 * The progress indicator shown when tasks are running.
-	 */
 	private ProgressIndicator progressIndicator;
 	private Home home;
 	private SearchSelectorScreen searchScreen;
@@ -76,15 +70,9 @@ public class CreatorMain {
 	private Button cancelBtn;
     private String searchedTerm;
 
-    /**
-     * Linux scripts.
-     */
     private Scripts scripts;
     
-    /**
-     * Constructor.
-     * @param home	the home screen
-     */
+    
     public CreatorMain(Home home){
     	this.home = home;
         scripts = new Scripts();
@@ -188,9 +176,6 @@ public class CreatorMain {
         }
     }
     
-    /**
-     * Initialize Stage  
-     */
     private void initStage() {
         stage.setTitle("Creation Maker");
         Scene scene = new Scene(stackPane, 1200, 815);
@@ -275,6 +260,9 @@ public class CreatorMain {
         currentScreen="create";
     }
     
+    /**
+     * Stop the media players on the chunk screen when they go back or next
+     */
     private void stopChunkScreenAudio() {
     	if(chunkScreen.getTextSection().getMediaPlayer() != null) {
         	chunkScreen.getTextSection().getMediaPlayer().stop();
@@ -335,10 +323,6 @@ public class CreatorMain {
         mainPane.setCenter(imagesScreen.getScreen());
     }
     
-    /**
-     * Get the number of images that have been selected on the image screen.
-     * @return	number of images selected
-     */
     public int getImageAmount() {
         imagesScreen.saveSelectedImages();
         return imagesScreen.getAmountSelected();
@@ -366,10 +350,6 @@ public class CreatorMain {
         hideProgressIndicator();
     }
     
-    /**
-     * Get the preview screen.
-     * @return	the preview screen
-     */
     public FinalPreviewScreen getPreview() {
     	previewScreen = new FinalPreviewScreen(searchScreen.getInput());
         return previewScreen;
@@ -393,7 +373,6 @@ public class CreatorMain {
         	chunkScreenUp();
         }
         else if(currentScreen == "create"){
-        	//remove the text files
         	stopChunkScreenAudio();
             searchScreenUp();
         }

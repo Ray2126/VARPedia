@@ -13,9 +13,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import varpedia.components.StopPlayButton;
 
+/**
+ * A table column used for any of the tables that need a column of play/stop buttons
+ * @param <T>	the item in the table
+ */
 public class StopButtonColumn<T> extends TableColumn< T, Button> {
 	
-	private TableView<T> tableView;
 	private List<StopPlayButton> stopButtonList = new ArrayList<StopPlayButton>();
 	private StopPlayButton stopButton;
 
@@ -26,6 +29,7 @@ public class StopButtonColumn<T> extends TableColumn< T, Button> {
 		this.setCellFactory(col -> new TableCell<T, Button>() {
 			
 			private StackPane paddedButton;
+			
 			{
 				stopButton = new StopPlayButton(20, 20);
 				paddedButton = new StackPane();
@@ -35,11 +39,11 @@ public class StopButtonColumn<T> extends TableColumn< T, Button> {
 				stopButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 				    @Override 
 					    public void handle(MouseEvent actionEvent) {
-				    		tableView.getSelectionModel().select(getTableRow().getIndex());
+				    		tv.getSelectionModel().select(getTableRow().getIndex());
 				    		if(!stopButtonList.contains(stopButton)) {
 					    		stopButtonList.add(stopButton);
 				    		}
-					    	StopButtonClickedEvent.fireEvent(tableView, new StopButtonClickedEvent());
+					    	StopButtonClickedEvent.fireEvent(tv, new StopButtonClickedEvent());
 					    	
 					    }
 				});
@@ -58,8 +62,6 @@ public class StopButtonColumn<T> extends TableColumn< T, Button> {
 		    	}
 		    }
 		});
-		
-		this.tableView = tv;
 	}
 	
 	public StopPlayButton getStopButton() {
