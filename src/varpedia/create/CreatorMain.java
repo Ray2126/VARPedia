@@ -300,18 +300,22 @@ public class CreatorMain {
 	 * Set up image screen and get images from Flickr.
 	 */
 	private void loadImageScreen(){
-		imagesScreen = new ImageSelectorScreen();
-		showProgressIndicator();
-		
-        GetImageTask task = new GetImageTask(searchedTerm);
-        ExecutorService ex = Executors.newSingleThreadExecutor();
-        ex.submit(task);
-        
-        task.setOnSucceeded(e -> {
-        	imagesScreen.setUp();
-            imageScreenUp();
-            hideProgressIndicator();
-        });
+		try {
+			imagesScreen = new ImageSelectorScreen(this);
+			showProgressIndicator();
+			
+	        GetImageTask task = new GetImageTask(searchedTerm);
+	        ExecutorService ex = Executors.newSingleThreadExecutor();
+	        ex.submit(task);
+	        
+	        task.setOnSucceeded(e -> {
+	        	imagesScreen.setUp();
+	            imageScreenUp();
+	            hideProgressIndicator();
+	        });
+		}catch(Exception e) {
+			this.close();
+		}
         
 	}
 	

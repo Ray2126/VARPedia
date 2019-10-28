@@ -5,20 +5,21 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.imageio.ImageIO;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -59,8 +60,11 @@ public class ImageSelectorScreen{
 	
 	private Scripts scripts;
 	
+	private CreatorMain main;
+	
 
-	public ImageSelectorScreen() {
+	public ImageSelectorScreen(CreatorMain main) {
+		this.main = main;
 		screen = new BorderPane();
 		listOfImages = new ArrayList<ImageDisplayBox>();
 		listOfSelectedImages = new ArrayList<ImageDisplayBox>();
@@ -80,17 +84,21 @@ public class ImageSelectorScreen{
 	 * Images have completed downloading so set up this screen
 	 */
 	public void setUp() {
-		//Clear lists for when they press back then go next to this screen
-		listOfImages.clear();
-		listOfSelectedImages.clear();
-		setUpPane();
-		setUpTitle();
-		setUpSelectAll();
-		getImageFiles();
-		setUpImages();
-		setUpError();
-		
-		screen.setCenter(rowsPane);
+		try {
+			//Clear lists for when they press back then go next to this screen
+			listOfImages.clear();
+			listOfSelectedImages.clear();
+			setUpPane();
+			setUpTitle();
+			setUpSelectAll();
+			getImageFiles();
+			setUpImages();
+			setUpError();
+			
+			screen.setCenter(rowsPane);
+		}catch(Exception e) {
+			main.close();
+		}
 	}
 	
 	/**
@@ -144,12 +152,28 @@ public class ImageSelectorScreen{
 		File imagesDir = new File(".temp/images");
 		File[] images = imagesDir.listFiles();
 		int index = 0;
+		if(images.length < 10) {
+	    	Alert alert = new Alert(AlertType.ERROR);
+	    	alert.setTitle("Error");
+	    	alert.setHeaderText("There are not enough images");
+	    	alert.setContentText("Please create a different search term");
+	    	
+	    	DialogPane dialogPane = alert.getDialogPane();
+	    	Styling.dialogStyle(dialogPane);
+
+	    	ButtonType buttonTypeOne = new ButtonType("Okay");
+
+	    	alert.getButtonTypes().setAll(buttonTypeOne);
+
+	    	alert.showAndWait();
+	    	main.close();
+		}
 		for(File i: images) {
 			try {
 				BufferedImage image = ImageIO.read(i);
 				listOfImages.add(new ImageDisplayBox(image, ++index));
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				main.close();
 			}
 		}
 	}
