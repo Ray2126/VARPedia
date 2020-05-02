@@ -13,6 +13,8 @@ This application requires a UNIX/Linux based operating system and updated versio
 In the main directory, you should see a resources folder, a jar file and a script file. The resources folder contains all important files necessary to have VARpedia function properly. Do not change this file.
 
 The jar file contains the executable files that make the VARpedia magic happen. The script file is how YOU make the magic happen.
+### Flickr API
+To run VARpedia, you must include a Flickr API key. This can be obtained at https://www.flickr.com/services/api/misc.api_keys.html. Once you get a key and secret, enter these into the Flickr-api-key-sample.txt file (do not change formatting) found in the resources folder.
 ### Executing the programs script file
 To run VARpedia you must open a terminal in the applications main directory. This is the level that contains the script file mentioned above. Open a terminal in this file and execute the command 
 
