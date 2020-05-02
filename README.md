@@ -21,11 +21,11 @@ The jar file contains the executable files that make the VARpedia magic happen. 
 ### Executing the programs script file
 To run VARpedia you must open a terminal in the applications main directory. This is the level that contains the script file mentioned above.Open a terminal in this file and execute the command 
 
-`./var.sh`
+						`./var.sh`
 
 If you are told you do not have the permissions to execute the file then execute the command
 
-	`chmod +x var.sh`
+						`chmod +x var.sh`
 	
 Then you can attempt to run the first command again.
 
